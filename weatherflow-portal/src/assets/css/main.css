@@ -1,0 +1,85 @@
+html, body {
+	height: 100%;
+	/*color: #512b59;*/
+	font-family: Roboto, Sans-Serif;
+	font-size: 16px;
+}
+
+#main {
+	width: 100%;
+	max-width: 960px;
+	padding: 50px;
+	margin: 0 auto;
+}
+
+#grid {
+	display: flex;
+	flex-flow: row wrap;
+	margin: 20px 0 0 0;
+}
+
+.grid-item {
+	flex: 1;
+	background: #f9f9f9;
+	border-radius: 8px;
+	padding: 20px;
+	box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+	border: 1px solid #E2D8E4;
+	margin: 10px;
+	min-width: 300px;
+}
+
+.grid-item h2 {
+	background-color: #E2D8E4;
+	padding: 5px;
+	margin: 0;
+	color: #512b59;
+	text-align: center;
+	font-weight: normal;
+}
+
+.grid-content {
+	margin-top: 20px;
+}
+
+.grid-content table {
+	width: 100%;
+}
+
+.grid-content td {
+	vertical-align: baseline;
+	text-align: right;
+	width: 50%;
+	line-height: 31px;
+}
+
+.grid-content td.value {
+	font-family: Dosis, Sans-Serif;
+	font-size: 1.5em;
+	padding: 0 0 0 10px;
+	text-align: left;
+}
+
+.grid-content-footnote {
+	text-align: right;
+	text-transform: uppercase;
+	color: #512b59;
+	font-size: .75em;
+	margin: 0;
+	display: flex;
+	justify-content: space-between;
+}
+
+.offline-count {
+	display: flex;
+	flex-direction: column;
+	align-items: flex-start;
+}
+
+.offline-count > span {
+	padding: 0 0 2px 0;
+}
+
+#main-menu-line {
+	margin: 20px 0 0 0;
+}
