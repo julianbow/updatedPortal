@@ -12,28 +12,28 @@
 </template>
 
 <script>
-import '../assets/css/header.css';
+  import '../assets/css/header.css';
 
-export default {
-  name: 'NavigationBar',
-  data() {
-    return {
-      navItems: [
-        { name: 'Home', url: '/sw/index.html' },
-        { name: 'Users', url: '/sw/users' },
-        { name: 'Devices', url: '/sw/devices' },
-        { name: 'Station Map', url: '/sw/map' },
-        { name: 'Applications', url: '/sw/integrations' },
-        { name: 'System Metrics', url: '/sw/metrics' },
-        { name: 'API Monitoring', url: '/sw/apiMonitoring/index.html' },
-        { name: 'Tools', url: '/sw/tools/index.html' }
-      ]
-    };
-  },
-  methods: {
-    updateTitle(name) {
-      this.$emit('update-title', name);
+  export default {
+    name: 'NavigationBar',
+    data() {
+      return {
+        navItems: [
+          { name: 'Home', url: '/sw/home' },
+          { name: 'Users', url: '/sw/users' },
+          { name: 'Devices', url: '/sw/devices' },
+          { name: 'Station Map', url: '/sw/map' },
+          { name: 'Applications', url: '/sw/integrations' },
+          { name: 'System Metrics', url: '/sw/metrics' },
+          { name: 'API Monitoring', url: '/sw/apiMonitoring' },
+          { name: 'Tools', url: '/sw/tools' }
+        ]
+      };
+    },
+    methods: {
+      updateTitle(name) {
+        this.$emit('update-title', name);
+      }
     }
-  }
-};
+  };
 </script>
