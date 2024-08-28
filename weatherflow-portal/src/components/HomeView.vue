@@ -2,44 +2,44 @@
     <div id="main">
       <div id="grid">
         <div class="grid-item">
-          <h2>Accounts Created</h2>
-          <div class="grid-content">
-            <table>
-              <tr>
-                <td>Today:</td>
-                <td id="accounts-today" class="value">{{ accountsToday }}</td>
-              </tr>
-              <tr>
-                <td>Last 7 Days:</td>
-                <td id="created-7-days" class="value">{{ created7Days }}</td>
-              </tr>
-              <tr>
-                <td>Total:</td>
-                <td id="total-accounts" class="value">{{ totalAccounts }}</td>
-              </tr>
-            </table>
-            <p class="grid-content-footnote"><span></span><span>UTC Time</span></p>
-          </div>
+            <h2>Accounts Created</h2>
+            <div class="grid-content">
+                <table>
+                    <tr>
+                        <td>Today:</td>
+                        <td class="value">{{ accountsToday }}</td>
+                    </tr>
+                    <tr>
+                        <td>Last 7 Days:</td>
+                        <td class="value">{{ created7Days }}</td>
+                    </tr>
+                    <tr>
+                        <td>Total:</td>
+                        <td class="value">{{ totalAccounts }}</td>
+                    </tr>
+                </table>
+                <p class="grid-content-footnote"><span></span><span>UTC Time</span></p>
+            </div>
         </div>
         <div class="grid-item">
-          <h2>Active Users</h2>
-          <div class="grid-content">
-            <table>
-              <tr>
-                <td>Today:</td>
-                <td id="active-accounts-today" class="value">{{ activeToday }}</td>
-              </tr>
-              <tr>
-                <td>Last 3 Days:</td>
-                <td id="active-3-days" class="value">{{ active3Days }}</td>
-              </tr>
-              <tr>
-                <td>Last 7 Days:</td>
-                <td id="active-7-days" class="value">{{ active7Days }}</td>
-              </tr>
-            </table>
-            <p class="grid-content-footnote">UTC Time</p>
-          </div>
+            <h2>Active Users</h2>
+            <div class="grid-content">
+                <table>
+                    <tr>
+                        <td>Today:</td>
+                        <td class="value">{{ activeToday }}</td>
+                    </tr>
+                    <tr>
+                        <td>Last 3 Days:</td>
+                        <td class="value">{{ active3Days }}</td>
+                    </tr>
+                    <tr>
+                        <td>Last 7 Days:</td>
+                        <td class="value">{{ active7Days }}</td>
+                    </tr>
+                </table>
+                <p class="grid-content-footnote">UTC Time</p>
+            </div>
         </div>
         <div class="grid-item">
             <h2>Online Tempests by Firmware Version</h2>
@@ -49,7 +49,7 @@
                     :chartOptions="firmwareChartOptions"
                 />
             </div>
-            <p id="network-online-offline-station-count" class="grid-content-footnote">
+            <p class="grid-content-footnote">
                 <span>{{ onlineTempestCount }} Online Tempests</span>
                 <span>{{ latestTimestamp }}</span>
             </p>
@@ -62,7 +62,7 @@
                     :chartOptions="firmwareChartOptions"
               />
           </div>
-          <p id="online-stations-count" class="grid-content-footnote">
+          <p class="grid-content-footnote">
             <span>{{ onlineStationCount }} Online Stations</span>
             <span>{{ latestTimestamp }}</span>
           </p>
@@ -104,9 +104,9 @@
                     labels: [],
                     datasets: [
                         {
-                        data: [],
-                        backgroundColor: [],
-                        hoverBackgroundColor: [],
+                            data: [],
+                            backgroundColor: [],
+                            hoverBackgroundColor: [],
                         },
                     ],
                 },
@@ -114,9 +114,9 @@
                     labels: [],
                     datasets: [
                         {
-                        data: [],
-                        backgroundColor: [],
-                        hoverBackgroundColor: [],
+                            data: [],
+                            backgroundColor: [],
+                            hoverBackgroundColor: [],
                         },
                     ],
                 },
@@ -144,8 +144,6 @@
                 activeToday: 0,
                 active3Days: 0,
                 active7Days: 0,
-                offlineTempestCount: 0,
-                offlineStationCount: 0
             };
         },
         methods: {

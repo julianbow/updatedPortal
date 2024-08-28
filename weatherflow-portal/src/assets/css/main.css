@@ -1,6 +1,5 @@
 html, body {
 	height: 100%;
-	/*color: #512b59;*/
 	font-family: Roboto, Sans-Serif;
 	font-size: 16px;
 }
@@ -68,18 +67,4 @@ html, body {
 	margin: 0;
 	display: flex;
 	justify-content: space-between;
-}
-
-.offline-count {
-	display: flex;
-	flex-direction: column;
-	align-items: flex-start;
-}
-
-.offline-count > span {
-	padding: 0 0 2px 0;
-}
-
-#main-menu-line {
-	margin: 20px 0 0 0;
 }
