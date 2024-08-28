@@ -1,0 +1,63 @@
+#users-view {
+	max-width: 960px;
+	padding: 50px;
+	margin: 0 auto;
+}
+
+/* Styling the search box and error message */
+#search-box {
+    width: 100%;
+    padding: 10px;
+    margin-top: 10px;
+    border: 1px solid #ccc;
+    border-radius: 15px 15px;
+    font-size: 1em;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    outline: none;
+  }
+
+  #search-box:focus {
+    border-color: #512b59;
+    box-shadow: 0 2px 5px rgba(81, 43, 89, 0.5);
+  }
+
+  .err-msg {
+    color: red;
+    margin-top: 10px;
+    font-size: 0.9em;
+    display: none;
+  }
+
+  /* Show error message */
+  .err-msg {
+    display: block;
+  }
+
+  /* Additional styling for other elements */
+  #search-section {
+    margin-bottom: 20px;
+  }
+
+  #user-list table {
+    width: 100%;
+    border-collapse: collapse;
+  }
+
+  #user-list th, #user-list td {
+    border: 1px solid #ddd;
+    padding: 8px;
+  }
+
+  #user-list tr:hover {
+    background-color: #f1f1f1;
+  }
+
+  #user-info {
+    margin-top: 30px;
+  }
+
+  .station {
+    margin-top: 20px;
+    padding: 10px;
+    border: 1px solid #ddd;
+  }

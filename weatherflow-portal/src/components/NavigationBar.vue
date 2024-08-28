@@ -19,14 +19,14 @@
     data() {
       return {
         navItems: [
-          { name: 'Home', url: '/sw/home' },
-          { name: 'Users', url: '/sw/users' },
-          { name: 'Devices', url: '/sw/devices' },
-          { name: 'Station Map', url: '/sw/map' },
-          { name: 'Applications', url: '/sw/integrations' },
-          { name: 'System Metrics', url: '/sw/metrics' },
-          { name: 'API Monitoring', url: '/sw/apiMonitoring' },
-          { name: 'Tools', url: '/sw/tools' }
+          { name: 'Home', url: '/home' },
+          { name: 'Users', url: '/users' },
+          { name: 'Devices', url: '/devices' },
+          { name: 'Station Map', url: '/map' },
+          { name: 'Applications', url: '/integrations' },
+          { name: 'System Metrics', url: '/metrics' },
+          { name: 'API Monitoring', url: '/apiMonitoring' },
+          { name: 'Tools', url: '/tools' }
         ]
       };
     },
