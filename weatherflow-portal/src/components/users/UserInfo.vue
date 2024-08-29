@@ -34,7 +34,7 @@
             </h3>
             <a href="#" :data-station-id="station.location_id">{{ station.location_id }}</a>
           </div>
-          <span v-if="index > 0" class="down-arrow"></span>
+          <span v-if="index > 0" class="down-arrow" :class="{'up' : expandedStation === station.location_id}"></span>
         </div>
 
         <div class="station-hdr-2">
