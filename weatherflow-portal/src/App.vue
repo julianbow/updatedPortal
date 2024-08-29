@@ -10,27 +10,27 @@
 </template>
 
 <script>
-  import AppHeader from './components/AppHeader.vue';
-  import NavigationBar from './components/NavigationBar.vue';
-  import HomeView from './components/HomeView.vue';
-  import UsersView from './components/UsersView.vue';
+import AppHeader from './components/AppHeader.vue';
+import NavigationBar from './components/NavigationBar.vue';
+import HomeView from './components/HomeView.vue';
+import UsersView from './components/users/UsersView.vue';
 
-  export default {
-    components: {
-      AppHeader,
-      NavigationBar,
-      HomeView,
-      UsersView,
-    },
-    data() {
-      return {
-        selectedMenuTitle: 'Home'
-      };
-    },
-    methods: {
-      setMenuTitle(title) {
-        this.selectedMenuTitle = title;
-      }
+export default {
+  components: {
+    AppHeader,
+    NavigationBar,
+    HomeView,
+    UsersView,
+  },
+  data() {
+    return {
+      selectedMenuTitle: 'Home'
+    };
+  },
+  methods: {
+    setMenuTitle(title) {
+      this.selectedMenuTitle = title;
     }
   }
+}
 </script>

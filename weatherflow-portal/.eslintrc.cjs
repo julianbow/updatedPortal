@@ -1,5 +1,5 @@
 /* eslint-env node */
-require('@rushstack/eslint-patch/modern-module-resolution')
+require('@rushstack/eslint-patch/modern-module-resolution');
 
 module.exports = {
   root: true,
@@ -9,9 +9,10 @@ module.exports = {
     '@vue/eslint-config-prettier/skip-formatting',
   ],
   parserOptions: {
-    ecmaVersion: 'latest'
+    ecmaVersion: 'latest',
   },
   rules: {
-    "vue/no-multiple-template-root": "off"
-  }
-}
+    'vue/no-multiple-template-root': 'off',
+    'indent': ['error', 2],
+  },
+};

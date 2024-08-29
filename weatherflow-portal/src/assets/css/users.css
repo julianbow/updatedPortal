@@ -4,15 +4,15 @@
 	margin: 0 auto;
 }
 
-/* Styling the search box and error message */
 #search-box {
-    width: 100%;
+    width: 50%;
     padding: 10px;
-    margin-top: 10px;
+    margin-top: 20px;
     border: 1px solid #ccc;
     border-radius: 15px 15px;
     font-size: 1em;
     box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    text-align: center;
     outline: none;
   }
 
@@ -28,13 +28,12 @@
     display: none;
   }
 
-  /* Show error message */
   .err-msg {
     display: block;
   }
 
-  /* Additional styling for other elements */
   #search-section {
+    text-align: center;
     margin-bottom: 20px;
   }
 
@@ -57,7 +56,114 @@
   }
 
   .station {
+    overflow: auto;
     margin-top: 20px;
     padding: 10px;
     border: 1px solid #ddd;
   }
+
+  #user-info {
+    display: block;
+    width: 100%;
+    max-width: 960px;
+    margin: 0 auto;
+    padding: 20px;
+    background-color: #f9f9f9;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+#user-info h2 {
+    font-size: 24px;
+    margin-bottom: 10px;
+    color: #333;
+}
+
+#user-info p {
+    margin-bottom: 8px;
+    color: #666;
+}
+
+.account-info {
+	display: flex;
+	flex-direction: row;
+	justify-content: space-between;
+}
+
+.station {
+    margin-bottom: 20px;
+    padding: 15px;
+    background-color: #efebf1;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+}
+
+.station-hdr {
+    display: flex;
+    justify-content: flex-start;
+    align-items: baseline;
+    background-color: #512b59;
+    color: #fff;
+    padding: 15px;
+    border-radius: 4px 4px 0 0;
+}
+
+.station-hdr > *:first-child {
+    margin-right: 15px;
+}
+
+.station-hdr a {
+    color: white;
+}
+
+.station-hdr h3 {
+    margin: 0;
+    font-size: 18px;
+}
+
+.station-hdr-2 {
+    display: flex;
+    justify-content: space-between;
+    background-color: #e2d8e4;
+    color: #000;
+    padding: 5px 10px;
+    border-radius: 0 0 4px 4px;
+}
+
+.station-hdr-2 .label, .station-hdr-2 .value {
+    margin: 0;
+    font-size: 12px;
+}
+
+.station-info-col-1,
+.station-info-col-2 {
+    width: 50%;
+    float: left;
+    padding: 5px 10px;
+    box-sizing: border-box;
+    background-color: #efebf1;
+}
+
+.station-info-col-1 .label,
+.station-info-col-2 .label {
+    display: inline-block;
+    text-transform: none;
+    color: #000;
+    font-size: 1em;
+}
+
+#stations .value {
+    float: right;
+}
+
+.boolean-display {
+    font-size: .9em;
+    text-transform: uppercase;
+}
+
+.clearfix::after {
+    content: "";
+    display: table;
+    clear: both;
+}

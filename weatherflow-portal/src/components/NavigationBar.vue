@@ -12,28 +12,28 @@
 </template>
 
 <script>
-  import '../assets/css/header.css';
+import '../assets/css/header.css';
 
-  export default {
-    name: 'NavigationBar',
-    data() {
-      return {
-        navItems: [
-          { name: 'Home', url: '/home' },
-          { name: 'Users', url: '/users' },
-          { name: 'Devices', url: '/devices' },
-          { name: 'Station Map', url: '/map' },
-          { name: 'Applications', url: '/integrations' },
-          { name: 'System Metrics', url: '/metrics' },
-          { name: 'API Monitoring', url: '/apiMonitoring' },
-          { name: 'Tools', url: '/tools' }
-        ]
-      };
-    },
-    methods: {
-      updateTitle(name) {
-        this.$emit('update-title', name);
-      }
+export default {
+  name: 'NavigationBar',
+  data() {
+    return {
+      navItems: [
+        { name: 'Home', url: '/home' },
+        { name: 'Users', url: '/users' },
+        { name: 'Devices', url: '/devices' },
+        { name: 'Station Map', url: '/map' },
+        { name: 'Applications', url: '/integrations' },
+        { name: 'System Metrics', url: '/metrics' },
+        { name: 'API Monitoring', url: '/apiMonitoring' },
+        { name: 'Tools', url: '/tools' }
+      ]
+    };
+  },
+  methods: {
+    updateTitle(name) {
+      this.$emit('update-title', name);
     }
-  };
+  }
+};
 </script>
