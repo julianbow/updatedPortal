@@ -1,90 +1,67 @@
 <template>
-    <div id="user-info">
-      <h2>{{ selectedUser.email_address }}</h2>
-      <div class="account-info">
-        <div>
-          <p class="label">User ID:</p>
-          <span class="value">{{ selectedUser.user_id }}</span>
-        </div>
-        <div>
-          <p class="label">Created Date:</p>
-          <span class="value">{{ formatTimestamp(selectedUser.created_date) }}</span>
-        </div>
-        <div>
-          <p class="value">Last Used:</p>
-          <span class="label">{{ formatTimestamp(selectedUser.last_authenticated) }}</span>
-        </div>
+  <div id="user-info">
+    <h2>{{ selectedUser.email_address }}</h2>
+    <div class="account-info">
+      <div>
+        <p class="label">User ID:</p>
+        <span class="value">{{ selectedUser.user_id }}</span>
       </div>
+      <div>
+        <p class="label">Created Date:</p>
+        <span class="value">{{ formatTimestamp(selectedUser.created_date) }}</span>
+      </div>
+      <div>
+        <p class="value">Last Used:</p>
+        <span class="label">{{ formatTimestamp(selectedUser.last_authenticated) }}</span>
+      </div>
+    </div>
 
-      <div id="stations" v-if="stations.length">
-        <h3>Stations</h3>
-        <div
-          v-for="station in stations"
-          :key="station.location_id"
-          class="station"
-          :data-loc-id="station.location_id"
-        >
-          <!-- Station Header -->
-          <div class="station-hdr">
+    <div id="stations" v-if="stations.length">
+      <h3>Stations</h3>
+      <div
+        v-for="(station, index) in stations"
+        :key="station.location_id"
+        class="station"
+        :data-loc-id="station.location_id"
+      >
+        <!-- Station Header -->
+        <div class="station-hdr" @click="toggleStation(station.location_id)">
+          <div class="station-hdr-left">
             <h3>
               <a v-if="station.location_meta.share_with_wf" :href="'https://tempestwx.com/share/' + station.location_id" target="_blank">{{ station.location_name }}</a>
               <span v-else>{{ station.location_name }}</span>
+              <!-- Expandable indicator -->
             </h3>
             <a href="#" :data-station-id="station.location_id">{{ station.location_id }}</a>
-            <!-- <a :href="'https://tempestwx.com/settings/station/' + station.location_id + '/status'" id="location-status"></a> -->
           </div>
+          <span v-if="index > 0" class="down-arrow"></span>
+        </div>
 
-          <!-- Station Info -->
-          <div class="station-hdr-2">
-            <div class="station-last-modified">
-              <p class="label">Modified</p>
-              <span class="value" :data-timestamp="station.last_modified" :title="formatTimestamp(station.last_modified)">
-                {{ formatTimestamp(station.last_modified) }}
-              </span>
-            </div>
-            <div class="station-created">
-              <p class="label">Station Created</p>
-              <span class="value">{{ formatTimestamp(station.created) }}</span>
-            </div>
+        <div class="station-hdr-2">
+          <div class="station-last-modified">
+            <p class="label">Modified</p>
+            <span class="value" :data-timestamp="station.last_modified" :title="formatTimestamp(station.last_modified)">
+              {{ formatTimestamp(station.last_modified) }}
+            </span>
           </div>
+          <div class="station-created">
+            <p class="label">Station Created</p>
+            <span class="value">{{ formatTimestamp(station.created) }}</span>
+          </div>
+        </div>
 
+        <!-- Station Info -->
+        <div v-show="expandedStation === station.location_id || index === 0" class="station-info">
           <div class="station-info-col-1">
-            <div>
-              <p class="label">Serial</p>
-              <span class="value">{{ station.hub_serial || 'N/A' }}</span>
-            </div>
-            <div>
-              <p class="label">Device ID</p>
-              <span class="value">{{ station.hub_device_id || 'N/A' }}</span>
-            </div>
-            <div>
-              <p class="label">Frequency</p>
-              <span class="value">{{ station.hub_frequency || 'N/A' }}</span>
-            </div>
-            <div>
-              <p class="label">FW Platform</p>
-              <span class="value">{{ station.hub_hardware_revision || 'N/A' }}</span>
-            </div>
-            <div>
-              <p class="label">Firmware</p>
-              <span class="value">{{ station.hub_firmware_revision || 'N/A' }}</span>
-            </div>
-            <div>
-              <p class="label">EFR32 Firmware</p>
-              <span class="value">{{ station.efr32_firmware || 'N/A' }}</span>
-            </div>
-            <div>
-              <p class="label">RSSI</p>
-              <span class="value">{{ station.hub_rssi || 'N/A' }}</span>
-            </div>
-            <div>
-              <p class="label">State</p>
-              <a class="value" :href="'https://tempestwx.com/settings/station/' + station.location_id + '/status'" target="_blank"></a>
-            </div>
-            <div>
-              <p class="label">Cellular</p>
-              <a class="value" :data-id="station.hub_device_id"></a>
-            </div>
+            <div><p class="label">Serial</p><span class="value">{{ station.hub_serial || 'N/A' }}</span></div>
+            <div><p class="label">Device ID</p><span class="value">{{ station.hub_device_id || 'N/A' }}</span></div>
+            <div><p class="label">Frequency</p><span class="value">{{ station.hub_frequency || 'N/A' }}</span></div>
+            <div><p class="label">FW Platform</p><span class="value">{{ station.hub_hardware_revision || 'N/A' }}</span></div>
+            <div><p class="label">Firmware</p><span class="value">{{ station.hub_firmware_revision || 'N/A' }}</span></div>
+            <div><p class="label">EFR32 Firmware</p><span class="value">{{ station.efr32_firmware || 'N/A' }}</span></div>
+            <div><p class="label">RSSI</p><span class="value">{{ station.hub_rssi || 'N/A' }}</span></div>
+            <div><p class="label">State</p><a class="value" :href="'https://tempestwx.com/settings/station/' + station.location_id + '/status'" target="_blank"></a></div>
+            <div><p class="label">Cellular</p><a class="value" :data-id="station.hub_device_id"></a></div>
           </div>
 
           <div class="station-info-col-2">
@@ -97,14 +74,8 @@
                 (<a target="_blank" :href="'https://one.weatherflow.com/map#' + station.public_latitude + ',' + station.public_longitude + ',18,1'">T1</a>)
               </span>
             </div>
-            <div>
-              <p class="label">Elevation</p>
-              <span class="value">{{ station.elevation }} m</span>
-            </div>
-            <div>
-              <p class="label">Timezone</p>
-              <span class="value">{{ station.timezone }}</span>
-            </div>
+            <div><p class="label">Elevation</p><span class="value">{{ station.elevation }} m</span></div>
+            <div><p class="label">Timezone</p><span class="value">{{ station.timezone }}</span></div>
             <div>
               <p class="label">Coastal Zone</p>
               <select name="coastal-zone-options" id="coastal-zone-options" class="value" :data-location-id="station.location_id">
@@ -113,31 +84,17 @@
                 </option>
               </select>
             </div>
-            <div>
-              <p class="label">Local Only</p>
-              <span class="value boolean-display">{{ station.is_local_mode }}</span>
-            </div>
-            <div>
-              <p class="label">Share WF</p>
-              <span class="value boolean-display">{{ station.location_meta.share_with_wf }}</span>
-            </div>
-            <div class="hub-uptime">
-              <p class="label">Uptime</p>
-              <span class="value">{{ station.hub_uptime || 'N/A' }}</span>
-            </div>
-            <div class="hub-latest-mqtt-status">
-              <p class="label">Latest MQTT Status</p>
-              <span class="value">{{ station.latest_mqtt_status || 'N/A' }}</span>
-            </div>
-            <div class="latest-cell-state">
-              <p class="label">Latest Cell Status</p>
-              <a class="value" :data-id="station.location_id">{{ station.latest_cell_status || 'N/A' }}</a>
-            </div>
+            <div><p class="label">Local Only</p><span class="value boolean-display">{{ station.is_local_mode }}</span></div>
+            <div><p class="label">Share WF</p><span class="value boolean-display">{{ station.location_meta.share_with_wf }}</span></div>
+            <div class="hub-uptime"><p class="label">Uptime</p><span class="value">{{ station.hub_uptime || 'N/A' }}</span></div>
+            <div class="hub-latest-mqtt-status"><p class="label">Latest MQTT Status</p><span class="value">{{ station.latest_mqtt_status || 'N/A' }}</span></div>
+            <div class="latest-cell-state"><p class="label">Latest Cell Status</p><a class="value" :data-id="station.location_id">{{ station.latest_cell_status || 'N/A' }}</a></div>
           </div>
         </div>
       </div>
     </div>
-  </template>
+  </div>
+</template>
 
 <script>
 import '../../assets/css/users.css';
@@ -148,6 +105,16 @@ export default {
     stations: Array,
     coastalExclusions: Object,
     formatTimestamp: Function,
+  },
+  data() {
+    return {
+      expandedStation: null, // Track the expanded station
+    };
+  },
+  methods: {
+    toggleStation(stationId) {
+      this.expandedStation = this.expandedStation === stationId ? null : stationId;
+    }
   },
 };
 </script>

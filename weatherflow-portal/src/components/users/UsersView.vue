@@ -85,7 +85,6 @@ export default {
           user_id: userId,
         };
         const response = await this.requestor.makePostRequest('report', urlData);
-        console.log('User stations:', response);
         this.stations = response.data || [];
       } catch (error) {
         console.error('Error fetching user stations:', error);
