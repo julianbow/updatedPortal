@@ -1,44 +1,55 @@
 <template>
-    <div id="users-view">
-        <UserSearch @search="handleSearch" :searchError="searchError" />
+  <div id="users-view">
+    <UserSearch @search="handleSearch" :searchError="searchError" />
 
-        <!-- Only show the user list if no user is selected -->
-        <div v-if="searchResults.length && !selectedUser" id="user-list">
-        <table>
-            <thead>
-            <tr>
-                <th>Email Address</th>
-                <th>Created Date</th>
-                <th>Last Authenticated</th>
-            </tr>
-            </thead>
-            <tbody>
-            <tr
-                v-for="user in searchResults"
-                :key="user.user_id"
-                @click="showUser(user.user_id, user)"
-            >
-                <td>{{ user.email_address }}</td>
-                <td>{{ formatTimestamp(user.created_date) }}</td>
-                <td>{{ formatTimestamp(user.last_authenticated) }}</td>
-            </tr>
-            </tbody>
-        </table>
-        </div>
-
-        <!-- Show the selected user's information -->
-        <UserInfo
-            v-if="selectedUser"
-            :selectedUser="selectedUser"
-            :stations="stations"
-            :coastalExclusions="coastalExclusions"
-            :formatTimestamp="formatTimestamp"
-        />
+    <!-- Only show the user list if no user is selected -->
+    <div v-if="searchResults.length && !selectedUser" id="user-list">
+      <table>
+        <thead>
+          <tr>
+            <th @click="sortTable('email_address')">
+              Email Address
+                <span class="sort" :class="{'up' : sortDirection === 'asc' && sortKey === 'email_address'}"></span>
+            </th>
+            <th @click="sortTable('created_date')">
+              Created Date
+              <span class="sort" :class="{'up' : sortDirection === 'asc' && sortKey === 'created_date'}"></span>
+            </th>
+            <th @click="sortTable('last_authenticated')">
+              Last Authenticated
+              <span class="sort" :class="{'up' : sortDirection === 'asc' && sortKey === 'last_authenticated'}"></span>
+            </th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr
+            v-for="user in sortedResults"
+            :key="user.user_id"
+            @click="showUser(user.user_id, user)"
+          >
+            <td>{{ user.email_address }}</td>
+            <td>{{ formatTimestamp(user.created_date) }}</td>
+            <td>{{ formatTimestamp(user.last_authenticated) }}</td>
+          </tr>
+        </tbody>
+      </table>
     </div>
-  </template>
+
+    <!-- Show the selected user's information -->
+    <UserInfo
+      v-if="selectedUser"
+      :selectedUser="selectedUser"
+      :stations="stations"
+      :coastalExclusions="coastalExclusions"
+      :formatTimestamp="formatTimestamp"
+    />
+  </div>
+</template>
+
 
 <script>
 import '../../assets/css/users.css';
+import '../../assets/css/main.css';
 import UserSearch from './UserSearch.vue';
 import UserInfo from './UserInfo.vue';
 import Requestor from '../../helpers/Requestor';
@@ -56,9 +67,31 @@ export default {
       userId: '',
       stations: [],
       searchError: false,
+      sortKey: 'email_address',
+      sortDirection: 'asc',
     };
   },
+  computed: {
+    sortedResults() {
+      return this.searchResults.slice().sort((a, b) => {
+        let modifier = this.sortDirection === 'asc' ? 1 : -1;
+        if (a[this.sortKey] < b[this.sortKey]) return -1 * modifier;
+        if (a[this.sortKey] > b[this.sortKey]) return 1 * modifier;
+        return 0;
+      });
+    }
+  },
   methods: {
+    sortTable(key) {
+      if (this.sortKey === key) {
+        // Toggle sort direction if the same column is clicked
+        this.sortDirection = this.sortDirection === 'asc' ? 'desc' : 'asc';
+      } else {
+        // Set the sort key and reset to ascending direction
+        this.sortKey = key;
+        this.sortDirection = 'asc';
+      }
+    },
     async handleSearch(urlData) {
       try {
         const response = await this.requestor.makePostRequest('report', urlData);

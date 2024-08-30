@@ -75,9 +75,24 @@ html, body {
 	background-size: 100% 100%;
 	background-repeat: no-repeat;
 	background-image: url('../images/downArrow.svg');
-    filter: invert(100%) sepia(0%) saturate(0%) hue-rotate(180deg) brightness(100%) contrast(100%);
+	filter: invert(100%) sepia(0%) saturate(0%) hue-rotate(180deg) brightness(100%) contrast(100%);
 }
 
 .down-arrow.up {
+	transform: rotate(180deg);
+}
+
+.sort {
+	display: inline-block;
+	width: 15px;
+	height: 15px;
+	background-size: 100% 100%;
+	background-repeat: no-repeat;
+	background-image: url('../images/sort.svg');
+	vertical-align: middle;
+    filter: invert(100%) sepia(0%) saturate(0%) hue-rotate(180deg) brightness(100%) contrast(100%);
+}
+
+.sort.up {
 	transform: rotate(180deg);
 }
