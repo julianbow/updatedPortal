@@ -3,37 +3,14 @@
     <UserSearch @search="handleSearch" :searchError="searchError" />
 
     <!-- Only show the user list if no user is selected -->
-    <div v-if="searchResults.length && !selectedUser" id="user-list">
-      <table>
-        <thead>
-          <tr>
-            <th @click="sortTable('email_address')">
-              Email Address
-                <span class="sort" :class="{'up' : sortDirection === 'asc' && sortKey === 'email_address'}"></span>
-            </th>
-            <th @click="sortTable('created_date')">
-              Created Date
-              <span class="sort" :class="{'up' : sortDirection === 'asc' && sortKey === 'created_date'}"></span>
-            </th>
-            <th @click="sortTable('last_authenticated')">
-              Last Authenticated
-              <span class="sort" :class="{'up' : sortDirection === 'asc' && sortKey === 'last_authenticated'}"></span>
-            </th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr
-            v-for="user in sortedResults"
-            :key="user.user_id"
-            @click="showUser(user.user_id, user)"
-          >
-            <td>{{ user.email_address }}</td>
-            <td>{{ formatTimestamp(user.created_date) }}</td>
-            <td>{{ formatTimestamp(user.last_authenticated) }}</td>
-          </tr>
-        </tbody>
-      </table>
-    </div>
+    <UserList
+      v-if="searchResults.length && !selectedUser"
+      :searchResults="searchResults"
+      :sortKey="sortKey"
+      :sortDirection="sortDirection"
+      :selectedUser="selectedUser"
+      @selectUser="showUser"
+    />
 
     <!-- Show the selected user's information -->
     <UserInfo
@@ -51,13 +28,14 @@
 import '../../assets/css/users.css';
 import '../../assets/css/main.css';
 import UserSearch from './UserSearch.vue';
+import UserList from './UsersList.vue';
 import UserInfo from './UserInfo.vue';
 import Requestor from '../../helpers/Requestor';
-import dayjs from 'dayjs';
 
 export default {
   components: {
     UserSearch,
+    UserList,
     UserInfo
   },
   data() {
@@ -71,27 +49,7 @@ export default {
       sortDirection: 'asc',
     };
   },
-  computed: {
-    sortedResults() {
-      return this.searchResults.slice().sort((a, b) => {
-        let modifier = this.sortDirection === 'asc' ? 1 : -1;
-        if (a[this.sortKey] < b[this.sortKey]) return -1 * modifier;
-        if (a[this.sortKey] > b[this.sortKey]) return 1 * modifier;
-        return 0;
-      });
-    }
-  },
   methods: {
-    sortTable(key) {
-      if (this.sortKey === key) {
-        // Toggle sort direction if the same column is clicked
-        this.sortDirection = this.sortDirection === 'asc' ? 'desc' : 'asc';
-      } else {
-        // Set the sort key and reset to ascending direction
-        this.sortKey = key;
-        this.sortDirection = 'asc';
-      }
-    },
     async handleSearch(urlData) {
       try {
         const response = await this.requestor.makePostRequest('report', urlData);
@@ -123,8 +81,10 @@ export default {
         console.error('Error fetching user stations:', error);
       }
     },
-    formatTimestamp(timestamp) {
-      return dayjs(timestamp).format('MM/DD/YY h:mm A');
+    getSortClass(key) {
+      return {
+        up: this.sortDirection === 'asc' && this.sortKey === key,
+      };
     },
   },
   mounted() {
