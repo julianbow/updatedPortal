@@ -50,7 +50,7 @@
           </div>
         </div>
 
-        <!-- Station Info -->
+        <!-- Station Details -->
         <StationDetails
           v-if="expandedStation === station.location_id || index === 0"
           :station="station"

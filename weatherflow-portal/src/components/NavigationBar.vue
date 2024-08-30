@@ -3,7 +3,7 @@
     <ul>
       <li v-for="item in navItems" :key="item.name">
         <a href="#" @click.prevent="updateTitle(item.name)">
-          <span class="icon"></span>
+          <span class="icon" :class="{ filled: activeItem === item.name }"></span>
           <span class="text">{{ item.name }}</span>
         </a>
       </li>
@@ -27,11 +27,13 @@ export default {
         { name: 'System Metrics', url: '/metrics' },
         { name: 'API Monitoring', url: '/apiMonitoring' },
         { name: 'Tools', url: '/tools' }
-      ]
+      ],
+      activeItem: null
     };
   },
   methods: {
     updateTitle(name) {
+      this.activeItem = name;
       this.$emit('update-title', name);
     }
   }

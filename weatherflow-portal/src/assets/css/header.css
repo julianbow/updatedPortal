@@ -101,8 +101,18 @@
     filter: invert(100%) sepia(0%) saturate(0%) hue-rotate(180deg) brightness(100%) contrast(100%);
 }
 
+#main-menu li:nth-child(1) .icon.filled {
+    background-image: url('../images/home-fill.svg');
+    filter: invert(100%) sepia(0%) saturate(0%) hue-rotate(180deg) brightness(100%) contrast(100%);
+}
+
 #main-menu li:nth-child(2) .icon {
     background-image: url('../images/users.svg');
+    filter: invert(100%) sepia(0%) saturate(0%) hue-rotate(180deg) brightness(100%) contrast(100%);
+}
+
+#main-menu li:nth-child(2) .icon.filled {
+    background-image: url('../images/users-fill.svg');
     filter: invert(100%) sepia(0%) saturate(0%) hue-rotate(180deg) brightness(100%) contrast(100%);
 }
 
@@ -111,8 +121,18 @@
     filter: invert(100%) sepia(0%) saturate(0%) hue-rotate(180deg) brightness(100%) contrast(100%);
 }
 
+#main-menu li:nth-child(3) .icon.filled {
+    background-image: url('../images/devices-fill.svg');
+    filter: invert(100%) sepia(0%) saturate(0%) hue-rotate(180deg) brightness(100%) contrast(100%);
+}
+
 #main-menu li:nth-child(4) .icon {
     background-image: url('../images/map.svg');
+    filter: invert(100%) sepia(0%) saturate(0%) hue-rotate(180deg) brightness(100%) contrast(100%);
+}
+
+#main-menu li:nth-child(4) .icon.filled {
+    background-image: url('../images/map-fill.svg');
     filter: invert(100%) sepia(0%) saturate(0%) hue-rotate(180deg) brightness(100%) contrast(100%);
 }
 
@@ -121,8 +141,18 @@
     filter: invert(100%) sepia(0%) saturate(0%) hue-rotate(180deg) brightness(100%) contrast(100%);
 }
 
+#main-menu li:nth-child(5) .icon.filled {
+    background-image: url('../images/apps-fill.svg');
+    filter: invert(100%) sepia(0%) saturate(0%) hue-rotate(180deg) brightness(100%) contrast(100%);
+}
+
 #main-menu li:nth-child(6) .icon {
     background-image: url('../images/metrics.svg');
+    filter: invert(100%) sepia(0%) saturate(0%) hue-rotate(180deg) brightness(100%) contrast(100%);
+}
+
+#main-menu li:nth-child(6) .icon.filled {
+    background-image: url('../images/metrics-fill.svg');
     filter: invert(100%) sepia(0%) saturate(0%) hue-rotate(180deg) brightness(100%) contrast(100%);
 }
 
@@ -131,7 +161,17 @@
     filter: invert(100%) sepia(0%) saturate(0%) hue-rotate(180deg) brightness(100%) contrast(100%);
 }
 
+#main-menu li:nth-child(7) .icon.filled {
+    background-image: url('../images/monitoring-fill.svg');
+    filter: invert(100%) sepia(0%) saturate(0%) hue-rotate(180deg) brightness(100%) contrast(100%);
+}
+
 #main-menu li:nth-child(8) .icon {
     background-image: url('../images/tools.svg');
+    filter: invert(100%) sepia(0%) saturate(0%) hue-rotate(180deg) brightness(100%) contrast(100%);
+}
+
+#main-menu li:nth-child(8) .icon.filled {
+    background-image: url('../images/tools-fill.svg');
     filter: invert(100%) sepia(0%) saturate(0%) hue-rotate(180deg) brightness(100%) contrast(100%);
 }
