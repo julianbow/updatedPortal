@@ -13,8 +13,6 @@
   </template>
 
 <script>
-import '../../assets/css/users.css';
-
 export default {
   name: "UserSearch",
   props: {

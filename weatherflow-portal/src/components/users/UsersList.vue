@@ -34,11 +34,11 @@
   </template>
 
 <script>
-import dayjs from 'dayjs';
 export default {
   props: {
     searchResults: Array,
     selectedUser: Object,
+    formatTimestamp: Function,
     initialSortKey: {
       type: String,
       default: 'email_address',
@@ -65,9 +65,6 @@ export default {
     },
     showUser(userId, user) {
       this.$emit('selectUser', userId, user);
-    },
-    formatTimestamp(timestamp) {
-      return dayjs(timestamp).format('MM/DD/YY h:mm A');
     },
     getSortClass(key) {
       return {

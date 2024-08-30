@@ -9,6 +9,7 @@
       :sortKey="sortKey"
       :sortDirection="sortDirection"
       :selectedUser="selectedUser"
+      :formatTimestamp="formatTimestamp"
       @selectUser="showUser"
     />
 
@@ -31,6 +32,7 @@ import UserSearch from './UserSearch.vue';
 import UserList from './UsersList.vue';
 import UserInfo from './UserInfo.vue';
 import Requestor from '../../helpers/Requestor';
+import dayjs from 'dayjs';
 
 export default {
   components: {
@@ -81,10 +83,8 @@ export default {
         console.error('Error fetching user stations:', error);
       }
     },
-    getSortClass(key) {
-      return {
-        up: this.sortDirection === 'asc' && this.sortKey === key,
-      };
+    formatTimestamp(timestamp) {
+      return dayjs(timestamp).format('MM/DD/YY h:mm A');
     },
   },
   mounted() {
