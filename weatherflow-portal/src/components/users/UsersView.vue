@@ -18,7 +18,6 @@
       v-if="selectedUser"
       :selectedUser="selectedUser"
       :stations="stations"
-      :coastalExclusions="coastalExclusions"
       :formatTimestamp="formatTimestamp"
     />
   </div>

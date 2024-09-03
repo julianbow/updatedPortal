@@ -204,7 +204,7 @@
     font-size: 12px;
 }
 
-.station-info {
+.hub-info, .station-info {
     display: flex;
     flex-direction: row;
 }

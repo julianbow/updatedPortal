@@ -26,8 +26,11 @@
       >
 
         <!-- Station Header -->
-        <div class="station-hdr" @click="toggleStation(station.station_id)">
+        <div class="station-hdr" @click="index > 0 && toggleStation(station.station_id)">
           <div class="station-hdr-left">
+            <h3>
+              <span>{{ station.name }}</span>
+            </h3>
             <a href="#" :data-station-id="station.station_id">{{ station.station_id }}</a>
           </div>
           <span v-if="index > 0" class="down-arrow" :class="{'up' : isStationExpanded(station.station_id)}"></span>
@@ -36,9 +39,8 @@
         <!-- Station Details -->
         <StationDetails
           v-if="isStationExpanded(station.station_id) && stationDetailsMap[station.station_id]"
-          :stationDetails="stationDetailsMap[station.station_id]"
-          :coastalExclusions="coastalExclusions"
-          :expandedStation="expandedStation"
+          :stationDetails="stationDetailsMap[station.station_id].stations[0]"
+          :formatTimestamp="formatTimestamp"
           :index="index"
         />
       </div>
@@ -57,7 +59,6 @@ export default {
   props: {
     selectedUser: Object,
     stations: Array,
-    coastalExclusions: Object,
     formatTimestamp: Function,
   },
   data() {
@@ -89,14 +90,14 @@ export default {
 
         // Fetch station details if not already fetched
         if (!this.stationDetailsMap[stationId]) {
-          this.fetchUserStations(stationId);
+          this.fetchStationDetails(stationId);
         }
       }
     },
     isStationExpanded(stationId) {
       return this.expandedStations.includes(stationId);
     },
-    async fetchUserStations(stationId) {
+    async fetchStationDetails(stationId) {
       try {
         const response = await this.requestor.makeGetRequest(`stations/${stationId}`);
         this.stationDetailsMap[stationId] = response.data; // Cache the station details by ID
@@ -111,17 +112,3 @@ export default {
   },
 };
 </script>
-
-
-        <!-- <div class="station-hdr-2">
-          <div class="station-last-modified">
-            <p class="label">Modified</p>
-            <span class="value" :data-timestamp="station.last_modified" :title="formatTimestamp(station.last_modified)">
-              {{ formatTimestamp(station.last_modified) }}
-            </span>
-          </div>
-          <div class="station-created">
-            <p class="label">Station Created</p>
-            <span class="value">{{ formatTimestamp(station.created) }}</span>
-          </div>
-        </div> -->
