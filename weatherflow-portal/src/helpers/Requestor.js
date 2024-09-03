@@ -1,5 +1,5 @@
 import axios from 'axios';
-import { apiKey, apiKey2 } from '../helpers/config.json'
+import { apiKey, apiKey2 } from '../../config.json'
 class Requestor {
   constructor(settings = {}) {
     const defaultSettings = {

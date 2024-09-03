@@ -29,4 +29,4 @@ coverage
 
 *.tsbuildinfo
 
-weatherflow-portal/src/helpers/config.json
+/config.json
