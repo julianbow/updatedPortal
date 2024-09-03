@@ -1,10 +1,10 @@
 import axios from 'axios';
-
+import { apiKey, apiKey2 } from '../helpers/config.json'
 class Requestor {
   constructor(settings = {}) {
     const defaultSettings = {
-      apiKey: '2bab16fe-18a5-45f5-a8ec-1087420a347e',
-      apiKey2: '216d8adb-9aeb-48a6-8ce7-0d8bf0f82794',
+      apiKey: apiKey,
+      apiKey2: apiKey2,
       baseUrl: 'https://swd.weatherflow.com/swd/rest/',
       baseUrl2: 'http://iot.weatherflow.com/metrics/rest/',
       baseUrl3: 'https://development-swd.weatherflow.com/',
