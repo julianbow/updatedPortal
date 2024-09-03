@@ -64,21 +64,18 @@ export default {
     },
     async showUser(userId, userData = null) {
       this.selectedUser = userData || this.searchResults.find((user) => user.user_id === userId);
+      console.log('Selected user:', this.selectedUser);
 
       if (this.selectedUser) {
         // Display user information
-
         await this.fetchUserStations(userId);
       }
     },
     async fetchUserStations(userId) {
       try {
-        const urlData = {
-          report_name: 'get_user',
-          user_id: userId,
-        };
-        const response = await this.requestor.makePostRequest('report', urlData);
-        this.stations = response.data || [];
+        const response = await this.requestor.makeTempestInternalGetRequest(`tempestinternal/user/${userId}`);
+        console.log('User stations:', response.data);
+        this.stations = response.data.stations || [];
       } catch (error) {
         console.error('Error fetching user stations:', error);
       }

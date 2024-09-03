@@ -20,24 +20,22 @@
       <h3>Stations</h3>
       <div
         v-for="(station, index) in stations"
-        :key="station.location_id"
+        :key="station.station_id"
         class="station"
-        :data-loc-id="station.location_id"
+        :data-loc-id="station.station_id"
       >
         <!-- Station Header -->
-        <div class="station-hdr" @click="toggleStation(station.location_id)">
+        <div class="station-hdr" @click="toggleStation(station.station_id)">
           <div class="station-hdr-left">
             <h3>
-              <a v-if="station.location_meta.share_with_wf" :href="'https://tempestwx.com/share/' + station.location_id" target="_blank">{{ station.location_name }}</a>
-              <span v-else>{{ station.location_name }}</span>
-              <!-- Expandable indicator -->
+              <span>{{ station.name }}</span>
             </h3>
-            <a href="#" :data-station-id="station.location_id">{{ station.location_id }}</a>
+            <a href="#" :data-station-id="station.station_id">{{ station.station_id }}</a>
           </div>
-          <span v-if="index > 0" class="down-arrow" :class="{'up' : expandedStation === station.location_id}"></span>
+          <span v-if="index > 0" class="down-arrow" :class="{'up' : expandedStation === station.station_id}"></span>
         </div>
 
-        <div class="station-hdr-2">
+        <!-- <div class="station-hdr-2">
           <div class="station-last-modified">
             <p class="label">Modified</p>
             <span class="value" :data-timestamp="station.last_modified" :title="formatTimestamp(station.last_modified)">
@@ -48,12 +46,12 @@
             <p class="label">Station Created</p>
             <span class="value">{{ formatTimestamp(station.created) }}</span>
           </div>
-        </div>
+        </div> -->
 
         <!-- Station Details -->
         <StationDetails
-          v-if="expandedStation === station.location_id || index === 0"
-          :station="station"
+          v-if="expandedStation === station.station_id && stationDetailsMap[station.station_id] !== undefined"
+          :stationDetails="stationDetailsMap[station.station_id].stations[0]"
           :coastalExclusions="coastalExclusions"
           :expandedStation="expandedStation"
           :index="index"
@@ -66,6 +64,7 @@
 
 <script>
 import StationDetails from './StationDetails.vue';
+import Requestor from '../../helpers/Requestor';
 export default {
   components: {
     StationDetails,
@@ -79,12 +78,37 @@ export default {
   data() {
     return {
       expandedStation: null,
+      stationDetailsMap: {},
     };
   },
-  methods: {
-    toggleStation(stationId) {
-      this.expandedStation = this.expandedStation === stationId ? null : stationId;
+  watch: {
+    stations() {
+      if (this.stations.length > 0) {
+        this.toggleStation(this.stations[0].station_id);
+      }
     }
+  },
+  methods: {
+    async toggleStation(stationId) {
+      this.expandedStation = this.expandedStation === stationId ? null : stationId;
+
+      // If station details are already fetched, do not fetch again
+      if (this.expandedStation !== null && !this.stationDetailsMap[stationId]) {
+        await this.fetchUserStations(stationId);
+      }
+    },
+    async fetchUserStations(stationId) {
+      try {
+        const response = await this.requestor.makeGetRequest(`stations/${stationId}`);
+        this.stationDetailsMap[stationId] = response.data; // Directly assign the data to the map
+        console.log('Fetched station details:', this.stationDetailsMap[stationId].stations[0]);
+      } catch (error) {
+        console.error('Error fetching user stations:', error);
+      }
+    }
+  },
+  mounted() {
+    this.requestor = new Requestor();
   },
 };
 </script>
