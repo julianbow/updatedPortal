@@ -38,7 +38,8 @@
 
         <!-- Station Details -->
         <StationDetails
-          v-if="isStationExpanded(station.station_id) && stationDetailsMap[station.station_id]"
+          v-if="stationDetailsMap[station.station_id]"
+          v-show="isStationExpanded(station.station_id)"
           :stationDetails="stationDetailsMap[station.station_id].stations[0]"
           :formatTimestamp="formatTimestamp"
           :index="index"

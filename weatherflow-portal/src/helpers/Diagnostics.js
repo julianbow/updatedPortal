@@ -80,7 +80,6 @@ class Diagnostics {
 
   efr32Firmware() {
     var efr32Firmware = null;
-    console.log(this.data)
 
     if (this.data != null && this.data.radio_stats != undefined) {
       if (this.data.radio_stats != null && this.data.radio_stats.length >= 1) {
