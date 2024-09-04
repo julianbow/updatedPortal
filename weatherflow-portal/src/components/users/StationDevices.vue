@@ -1,5 +1,5 @@
 <template>
-    <table>
+    <table class="devices-table">
     <thead>
         <tr>
             <th></th>
@@ -19,7 +19,7 @@
     </thead>
       <tbody v-for="(device, index) in devices" :key="index">
         <!-- Main device row -->
-        <tr @click="toggleDevice(device.device_id)">
+        <tr @click="toggleDevice(device.device_id)" class="device-row">
           <td><a href="#" title="Device Actions" :data-device-id="device.device_id"></a></td>
           <td v-html="device.device_id"></td>
           <td class="device-status" :device-id="device.device_id" :data-device-type="getDeviceTypeFromSerial(device.serial)" :data-device-fw="getValue(device.firmware)"></td>
