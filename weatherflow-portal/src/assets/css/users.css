@@ -231,3 +231,55 @@
     font-size: .9em;
     text-transform: uppercase;
 }
+
+.devices-hdr {
+	position: relative;
+	background-color:#AE9AB3;
+	color: #fff;
+	padding: 5px;
+}
+
+/* Device Table Header */
+.devices-hdr {
+    font-size: 1.2em;
+    font-weight: bold;
+    padding: 8px;
+    background-color: #AE9AB3;
+    color: #fff;
+    border-radius: 4px 4px 0 0;
+}
+
+/* Device Table Styling */
+.devices table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.9em;
+    font-family: 'Arial', sans-serif;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    table-layout: fixed;
+}
+
+.devices th,
+.devices td {
+    padding: 8px;
+    text-align: left;
+    border-bottom: 1px solid #ddd;
+    white-space: nowrap;
+    overflow: hidden;
+}
+
+.devices th {
+    background-color: #512b59;
+    color: white;
+    font-weight: bold;
+    font-size: 0.9em;
+    text-transform: uppercase;
+}
+
+.devices td {
+    background-color: #f9f9f9;
+}
+
+.devices tr:hover {
+    background-color: #f1f1f1;
+}
