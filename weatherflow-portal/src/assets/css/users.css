@@ -335,10 +335,12 @@
 
 .xmark {
     content: url('../images/xBold.svg');
+    filter: invert(16%) sepia(56%) saturate(724%) hue-rotate(244deg) brightness(95%) contrast(88%);
 }
 
 .warning {
     content: url('../images/warning.svg');
+    filter: invert(16%) sepia(56%) saturate(724%) hue-rotate(244deg) brightness(95%) contrast(88%);
 }
 
 /* Optional: Better control for medium-sized screens */

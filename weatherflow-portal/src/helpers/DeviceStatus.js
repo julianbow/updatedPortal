@@ -245,14 +245,25 @@ class DeviceStatus {
 
 // Add static properties to the class
 DeviceStatus.SENSOR_STATUS_FLAGS = {
-  AIR_TEMPERATURE_FAILED: "temp_failed",
-  AIR_RH_FAILED: "rh_failed",
-  AIR_LIGHTNING_FAILED: "lightning_failed",
-  AIR_LIGHTNING_DISTURBER: "lightning_disturber",
-  AIR_LIGHTNING_NOISE: "lightning_noise",
-  SKY_WIND_FAILED: "wind_failed",
-  SKY_PRECIP_FAILED: "precip_failed",
-  SKY_LIGHT_UV_FAIL: "light_uv_fail"
+  "SENSORS_OK": 0x00000000,
+  "AIR_LIGHTNING_FAILED": 0x00000001,
+  "AIR_LIGHTNING_NOISE": 0x00000002,
+  "AIR_LIGHTNING_DISTURBER": 0x00000004,
+  "AIR_PRESSURE_FAILED": 0x00000008,
+  "AIR_TEMPERATURE_FAILED": 0x00000010,
+  "AIR_RH_FAILED": 0x00000020,
+  "SKY_WIND_FAILED": 0x00000040,
+  "SKY_PRECIP_FAIL": 0x00000080,
+  "SKY_LIGHT_UV_FAIL": 0x00000100,
+  "LITR_LIGHT_SENSOR": 0x00020000,
+  "LITR_SENSOR_TYPE": 0x00040000,
+  "ROCKET_DETECTED": 0x00000200,  // Do not display in app
+  "ROCKET_ENABLED": 0x00000400,   // Do not display in app
+  "ROCKET_SHORE_POWER": 0x00010000, // Do not display in app
+  "LOW_POWER_MODE1": 0x00000800,  // Do not display in app
+  "LOW_POWER_MODE2": 0x00001000,  // Do not display in app
+  "LOW_POWER_MODE3": 0x00002000,  // Do not display in app
+  "SERIAL_ENABLED": 0x00004000    // Do not display in app
 };
 
 // Export the class

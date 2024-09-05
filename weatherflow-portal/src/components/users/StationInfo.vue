@@ -44,7 +44,6 @@ export default {
   },
   data() {
     return {
-      selectedCoastalZone: 2, // Default selected value for coastal zone
       coastalExclusionOptions: {
         0: "(0) Pending / WU not Allowed",
         1: "(1) Coastal Zone / WU not Allowed",
