@@ -46,17 +46,24 @@
           :index="index"
         />
       </div>
+      <!-- Arbitrary Locations -->
+      <ArbitraryLocations/>
+      <AccessTokens/>
     </div>
   </div>
 </template>
 
 <script>
 import StationDetails from './StationDetails.vue';
+import ArbitraryLocations from './ArbitraryLocations.vue';
+import AccessTokens from './AccessTokens.vue';
 import Requestor from '../../helpers/Requestor';
 
 export default {
   components: {
     StationDetails,
+    ArbitraryLocations,
+    AccessTokens
   },
   props: {
     selectedUser: Object,
