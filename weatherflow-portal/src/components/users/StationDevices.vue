@@ -2,7 +2,6 @@
     <table class="devices-table">
     <thead>
         <tr>
-            <th></th>
             <th>ID</th>
             <th>Sensors</th>
             <th>Serial #</th>
@@ -20,7 +19,6 @@
       <tbody v-for="(device, index) in devices" :key="index">
         <!-- Main device row -->
         <tr @click="toggleDevice(device.device_id)" class="device-row">
-          <td><a href="#" title="Device Actions" :data-device-id="device.device_id"></a></td>
           <td v-html="device.device_id"></td>
           <td class="device-status" :device-id="device.device_id" v-html="getSensorImage(device.status)"></td>
           <td class="device-log" v-html="device.serial"></td>
@@ -37,14 +35,12 @@
 
         <!-- Action Row - Shown when selectedDeviceId matches -->
         <tr v-show="selectedDeviceId === device.device_id" class="device-action-row">
-          <td colspan="15" class="device-more-row">
-            <ul class="device-more-menu">
-              <li class="hub-device-request-calibration" v-html="device.calibration"></li>
-              <li class="device-data-download">Download Data</li>
-              <li v-if="device.device_type !== 'AR'" class="device-reboot" v-html="device.reboot"></li>
-            </ul>
-          </td>
+            <td colspan="4" class="hub-device-request-calibration" v-html="device.calibration"></td>
+            <td v-if="device.device_type !== 'AR'" colspan="4">Download Data</td>
+            <td v-else colspan="8">Download Data</td>
+            <td v-if="device.device_type !== 'AR'" colspan="4" class="device-reboot" v-html="device.reboot"></td>
         </tr>
+
       </tbody>
     </table>
 </template>

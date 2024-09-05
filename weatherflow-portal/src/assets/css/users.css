@@ -247,6 +247,7 @@
 }
 
 /* Base table styling */
+/* Base table styling */
 .devices-table {
     width: 100%;
     max-width: 100%;
@@ -254,69 +255,77 @@
     font-family: 'Arial', sans-serif;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
     margin-bottom: 20px;
-    table-layout: auto;
+    table-layout: fixed;
 }
 
-/* Table Header Styling */
 .devices-table th {
     background-color: #512b59;
     color: white;
     font-weight: bold;
-    text-align: left;
-    padding: 10px;
+    text-align: center;
+    padding: 8px;
     text-transform: uppercase;
-    font-size: 0.9em;
+    font-size: 0.85em;
+    white-space: wrap;
+    overflow: hidden;
 }
 
-/* Main Device Row Styling */
+.devices-table th:nth-child(1) { width: 5%; }
+.devices-table th:nth-child(2) { width: 8%; }
+.devices-table th:nth-child(3) { width: 10%; }
+.devices-table th:nth-child(4) { width: 5%; }
+.devices-table th:nth-child(5) { width: 5%; }
+
 .devices-table td {
-    background-color: #f9f9f9;
-    padding: 10px;
-    border-bottom: 1px solid #ddd;
-    text-align: left;
+    padding: 8px;
+    font-size: 0.85em;
+    text-align: center;
+}
+
+.devices-table tr {
+    border-bottom: 1px solid #ccc;
 }
 
 .devices-table tr:hover td {
-    background-color: #f1f1f1;
+    background-color: #eeeeee;
 }
 
 /* Action Row Styling */
 .device-action-row {
-    display: table-row;
-    padding: 10px;
-}
-
-.device-more-row {
+    width: 100%;
     padding: 10px;
     background-color: #ffffcc !important;
 }
 
-/* Action Menu Styling */
-.device-more-menu {
-    list-style: none;
-    padding: 0;
-    margin: 0;
-    display: flex;
-    justify-content: space-evenly;
-    gap: 15px;
-}
-
-.device-more-menu li {
-    padding: 5px;
-}
-
-.device-more-menu li a {
-    text-decoration: none;
-    color: #222;
-}
-
-.device-more-menu li a:hover {
-    text-decoration: underline;
+.device-action-row td {
+    padding: 10px;
+    background-color: #ffffcc !important;
+    text-align: center;
 }
 
 .device-status {
     text-align: center !important;
     cursor: pointer;
+}
+
+#coastal-zone select {
+    width: 100%;
+    max-width: 200px;
+    padding: 5px;
+    font-size: 0.9em;
+    text-overflow: ellipsis;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    background-color: #f9f9f9;
+    box-shadow: none;
+}
+
+#coastal-zone {
+    display: inline-block;
+    width: 100%;
+    padding: 0;
+    margin: 0;
+    text-align: left;
 }
 
 .checkmark {

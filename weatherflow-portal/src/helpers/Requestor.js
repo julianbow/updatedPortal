@@ -1,10 +1,11 @@
 import axios from 'axios';
-import { apiKey, apiKey2 } from '../../config.json'
+import { apiKey, apiKey2, apiKey3 } from '../../config.json'
 class Requestor {
   constructor(settings = {}) {
     const defaultSettings = {
       apiKey: apiKey,
       apiKey2: apiKey2,
+      apiKey3: apiKey3,
       baseUrl: 'https://swd.weatherflow.com/swd/rest/',
       baseUrl2: 'http://iot.weatherflow.com/metrics/rest/',
       baseUrl3: 'https://development-swd.weatherflow.com/',
@@ -74,7 +75,7 @@ class Requestor {
   }
 
   makeGetRequestDev(endPoint, urlData, includeSwd = false) {
-    const url = `${this.settings.baseUrl3}${includeSwd ? 'swd/rest/' : ''}${endPoint}?api_key=${this.settings.apiKey2}&${new URLSearchParams(urlData).toString()}`;
+    const url = `${this.settings.baseUrl3}${includeSwd ? 'swd/rest/' : ''}${endPoint}?api_key=${this.settings.apiKey3}&${new URLSearchParams(urlData).toString()}`;
     return axios.get(url);
   }
 
