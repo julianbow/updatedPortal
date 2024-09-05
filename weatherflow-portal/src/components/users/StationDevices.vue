@@ -22,7 +22,7 @@
         <tr @click="toggleDevice(device.device_id)" class="device-row">
           <td><a href="#" title="Device Actions" :data-device-id="device.device_id"></a></td>
           <td v-html="device.device_id"></td>
-          <td class="device-status" :device-id="device.device_id" :data-device-type="getDeviceTypeFromSerial(device.serial)" :data-device-fw="getValue(device.firmware)"></td>
+          <td class="device-status" :device-id="device.device_id" v-html="getSensorImage(device.status)"></td>
           <td class="device-log" v-html="device.serial"></td>
           <td class="device-hardware" v-html="getValue(device.hardware)"></td>
           <td class="device-firmware" v-html="getValue(device.firmware)"></td>
@@ -66,11 +66,28 @@ export default {
       this.selectedDeviceId = this.selectedDeviceId === deviceId ? null : deviceId;
     },
     getValue(value) {
-      return value || 'N/A'; // Simple method for safely getting a value
+      return value || 'N/A';
     },
     getFixedValue(value, precision) {
-      return value ? value.toFixed(precision) : 'N/A'; // Helper for formatted numbers
+      return value ? value.toFixed(precision) : 'N/A';
     },
+    getSensorImage(status) {
+      const checkmark = "<img class='checkmark' width='30' height='30'/>";
+      const xmark = "<img class='xmark' width='30' height='30'/>";
+      const warning = "<img class='warning' width='30' height='30'/>";
+
+      var sensorStatusIcon = "";
+
+      if (status === 'warning') {
+        sensorStatusIcon = warning;
+      } else if (status === 'success') {
+        sensorStatusIcon = checkmark;
+      } else if ((status === 'failure')) {
+        sensorStatusIcon = xmark;
+      }
+
+      return sensorStatusIcon;
+    }
   }
 };
 </script>

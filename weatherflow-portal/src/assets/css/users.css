@@ -55,7 +55,7 @@
 #user-list th,
 #user-list td {
     padding: 15px;
-    text-align: left;
+    text-align: center;
     border-bottom: 1px solid #ddd;
     background-color: #fff;
 }
@@ -282,13 +282,13 @@
 
 /* Action Row Styling */
 .device-action-row {
-    background-color: #ffffcc !important;
     display: table-row;
     padding: 10px;
 }
 
 .device-more-row {
     padding: 10px;
+    background-color: #ffffcc !important;
 }
 
 /* Action Menu Styling */
@@ -297,6 +297,7 @@
     padding: 0;
     margin: 0;
     display: flex;
+    justify-content: space-evenly;
     gap: 15px;
 }
 
@@ -311,4 +312,38 @@
 
 .device-more-menu li a:hover {
     text-decoration: underline;
+}
+
+.device-status {
+    text-align: center !important;
+    cursor: pointer;
+}
+
+.checkmark {
+    content: url('../images/checkBold.svg');
+    filter: invert(16%) sepia(56%) saturate(724%) hue-rotate(244deg) brightness(95%) contrast(88%);
+}
+
+.xmark {
+    content: url('../images/xBold.svg');
+}
+
+.warning {
+    content: url('../images/warning.svg');
+}
+
+/* Optional: Better control for medium-sized screens */
+@media screen and (min-width: 769px) and (max-width: 1060px) {
+    .devices-table {
+        table-layout: fixed;
+    }
+
+    .devices-table td, .devices-table th {
+        padding: 8px;
+        font-size: 0.9em;
+    }
+
+    .device-more-menu {
+        flex-wrap: wrap;
+    }
 }

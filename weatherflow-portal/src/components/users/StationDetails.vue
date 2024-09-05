@@ -47,6 +47,7 @@
 <script>
 import Diagnostics from '@/helpers/Diagnostics';
 import DataDisplay from '@/helpers/DataDisplay';
+import DeviceStatus from '@/helpers/DeviceStatus';
 import StationDevices from './StationDevices.vue';
 import Day from '@/helpers/Day';
 
@@ -120,6 +121,7 @@ export default {
 
       this.deviceLinks = filteredDevices.map(device => {
         const matchingDeviceInfo = filteredDeviceInfo.find(infoDevice => infoDevice.device_id === device.device_id);
+        console.log(matchingDeviceInfo);
 
         return {
           id: DataDisplay.getDeviceIdWithLink(device.device_id),
@@ -133,13 +135,14 @@ export default {
           environment: device.device_meta?.environment || 'N/A',
           agl: device.device_meta?.agl || 0,
           device_type: device.device_type,
-          status: matchingDeviceInfo?.status || 'N/A',
+          status: this.deviceStatus.findStatus(matchingDeviceInfo?.sensor_status, device.device_type),
           rssi: matchingDeviceInfo?.rssi || 'N/A',
           battery: matchingDeviceInfo?.voltage || 'N/A',
           lastMqtt: Day.getFuzzyTimestampWithEpoch(matchingDeviceInfo?.last_mqtt_ob_epoch) || 'N/A',
           lastWs: Day.getFuzzyTimestampWithEpoch(matchingDeviceInfo?.last_ob_epoch) || 'N/A'
         };
       });
+      console.log(this.deviceLinks);
     },
     getDeviceTypeFromSerial(serial) {
       return DataDisplay.getDeviceTypeFromSerial(serial);
@@ -147,6 +150,7 @@ export default {
   },
   mounted() {
     this.initializeDiagnostics();
+    this.deviceStatus = new DeviceStatus();
   }
 };
 </script>
