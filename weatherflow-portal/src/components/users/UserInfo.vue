@@ -105,6 +105,7 @@ export default {
     async fetchStationDetails(stationId) {
       try {
         const response = await this.requestor.makeGetRequest(`stations/${stationId}`);
+        console.log('Station details:', response.data);
         this.stationDetailsMap[stationId] = response.data;
       } catch (error) {
         console.error('Error fetching station details:', error);

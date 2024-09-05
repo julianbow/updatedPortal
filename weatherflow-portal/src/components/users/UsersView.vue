@@ -73,7 +73,6 @@ export default {
     async fetchUserStations(userId) {
       try {
         const response = await this.requestor.makeTempestInternalGetRequest(`tempestinternal/user/${userId}`);
-        console.log('User stations:', response.data);
         this.stations = response.data.stations || [];
       } catch (error) {
         console.error('Error fetching user stations:', error);

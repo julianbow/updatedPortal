@@ -39,11 +39,16 @@
         <!-- Devices section -->
         <div v-if="deviceLinks.length > 0" class="devices">
         <div class="devices-hdr">Devices</div>
-        <!-- Pass the devices array to the DeviceRow component -->
         <StationDevices
             :devices="deviceLinks"
             :getDeviceTypeFromSerial="getDeviceTypeFromSerial"
         />
+        </div>
+        <div>
+            <div class="devices-hdr">Station Info</div>
+            <StationInfo
+                :stationDetails="stationDetails"
+            />
         </div>
   </div>
   </template>
@@ -53,11 +58,13 @@ import Diagnostics from '@/helpers/Diagnostics';
 import DataDisplay from '@/helpers/DataDisplay';
 import DeviceStatus from '@/helpers/DeviceStatus';
 import StationDevices from './StationDevices.vue';
+import StationInfo from './StationInfo.vue';
 import Day from '@/helpers/Day';
 
 export default {
   components: {
-    StationDevices
+    StationDevices,
+    StationInfo
   },
   props: {
     stationDetails: Object,
@@ -112,7 +119,6 @@ export default {
           this.hubHardware.wifi = response.data.hardware.wifi;
           this.hubHardware.device_locked = response.data.is_device_locked;
         }
-        console.log("hubHardware: ", this.hubHardware);
       } catch (error) {
         console.error('Error fetching device_locked_status:', error);
       }
