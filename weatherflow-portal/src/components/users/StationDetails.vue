@@ -21,11 +21,15 @@
           <div><p class="label">FW Platform</p><span class="value">{{ stationHub.hardware_revision || 'N/A' }}</span></div>
           <div><p class="label">Firmware</p><span class="value">{{ stationHub.firmware_revision || 'N/A' }}</span></div>
           <div><p class="label">EFR32 Firmware</p><span class="value">{{ efr32Firmware || 'N/A' }}</span></div>
+          <div><p class="label">Hardware Type</p><span class="value">{{ hubHardware.hardware_type }}</span></div>
+          <div><p class="label">Device Locked</p><span class="value">{{ hubHardware.device_locked }}</span></div>
         </div>
         <div class="station-info-col-2">
           <div><p class="label">RSSI</p><span class="value">{{ hubRssi || 'N/A' }}</span></div>
           <div><p class="label">State</p><span class="value">{{ hubState || 'N/A' }}</span></div>
           <div><p class="label">Cellular</p><span class="value">{{ cellularStatus || 'N/A' }}</span></div>
+          <div><p class="label">Wifi</p><span class="value">{{ hubHardware.wifi || 'N/A' }}</span></div>
+          <div><p class="label">Ethernet</p><span class="value">{{ hubHardware.ethernet }}</span></div>
           <div class="hub-uptime"><p class="label">Uptime</p><span class="value">{{ hubUptime || 'N/A' }}</span></div>
           <div class="hub-latest-mqtt-status"><p class="label">Latest MQTT Status</p><span class="value">{{ lastMqttStatus || 'N/A' }}</span></div>
           <div class="latest-cell-state"><p class="label">Latest Cell Status</p><span class="value">{{ latestCellStatus || 'N/A' }}</span></div>
@@ -58,12 +62,14 @@ export default {
   props: {
     stationDetails: Object,
     formatTimestamp: Function,
+    requestor: Object,
     index: Number,
   },
   data() {
     return {
       diagnostics: null,
       hub: {},
+      hubHardware: {},
       hubFrequency: null,
       efr32Firmware: null,
       hubRssi: null,
@@ -93,7 +99,23 @@ export default {
           }
         }
       }
+
+      this.getHubHardwareInfo(hub.serial_number);
       return hub;
+    },
+    async getHubHardwareInfo(serial) {
+      try {
+        const response = await this.requestor.makeGetRequest("device_locked_status", {serial_number: serial});
+        if (response.status === 200) {
+          this.hubHardware.hardware_type = response.data.hardware.hardware_type;
+          this.hubHardware.ethernet = response.data.hardware.ethernet;
+          this.hubHardware.wifi = response.data.hardware.wifi;
+          this.hubHardware.device_locked = response.data.is_device_locked;
+        }
+        console.log("hubHardware: ", this.hubHardware);
+      } catch (error) {
+        console.error('Error fetching device_locked_status:', error);
+      }
     },
     initializeDiagnostics() {
       this.diagnostics = new Diagnostics({
@@ -121,7 +143,6 @@ export default {
 
       this.deviceLinks = filteredDevices.map(device => {
         const matchingDeviceInfo = filteredDeviceInfo.find(infoDevice => infoDevice.device_id === device.device_id);
-        console.log(matchingDeviceInfo);
 
         return {
           id: DataDisplay.getDeviceIdWithLink(device.device_id),
@@ -142,7 +163,6 @@ export default {
           lastWs: Day.getFuzzyTimestampWithEpoch(matchingDeviceInfo?.last_ob_epoch) || 'N/A'
         };
       });
-      console.log(this.deviceLinks);
     },
     getDeviceTypeFromSerial(serial) {
       return DataDisplay.getDeviceTypeFromSerial(serial);

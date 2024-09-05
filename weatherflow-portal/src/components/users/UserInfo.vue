@@ -42,6 +42,7 @@
           v-show="isStationExpanded(station.station_id)"
           :stationDetails="stationDetailsMap[station.station_id].stations[0]"
           :formatTimestamp="formatTimestamp"
+          :requestor="requestor"
           :index="index"
         />
       </div>
@@ -64,8 +65,9 @@ export default {
   },
   data() {
     return {
-      expandedStations: [], // Store expanded stations by ID
-      stationDetailsMap: {}, // Store details for each station by ID
+      expandedStations: [],
+      stationDetailsMap: {},
+      requestor: null,
     };
   },
   watch: {
@@ -78,12 +80,14 @@ export default {
   methods: {
     expandFirstStation() {
       const firstStation = this.stations[0].station_id;
+
       if (firstStation && !this.isStationExpanded(firstStation)) {
-        this.toggleStation(firstStation); // Ensure the first station is always expanded
+        this.toggleStation(firstStation);
       }
     },
     toggleStation(stationId) {
       const index = this.expandedStations.indexOf(stationId);
+
       if (index !== -1) {
         this.expandedStations.splice(index, 1); // Collapse station if already expanded
       } else {
@@ -101,8 +105,7 @@ export default {
     async fetchStationDetails(stationId) {
       try {
         const response = await this.requestor.makeGetRequest(`stations/${stationId}`);
-        this.stationDetailsMap[stationId] = response.data; // Cache the station details by ID
-        console.log('Fetched station details:', this.stationDetailsMap[stationId]);
+        this.stationDetailsMap[stationId] = response.data;
       } catch (error) {
         console.error('Error fetching station details:', error);
       }

@@ -40,8 +40,7 @@
           <td colspan="15" class="device-more-row">
             <ul class="device-more-menu">
               <li class="hub-device-request-calibration" v-html="device.calibration"></li>
-              <li class="event-log-device" v-html="device.device_id"></li>
-              <li class="device-data-download">Download Data (dummy)</li>
+              <li class="device-data-download">Download Data</li>
               <li v-if="device.device_type !== 'AR'" class="device-reboot" v-html="device.reboot"></li>
             </ul>
           </td>
@@ -53,7 +52,7 @@
 <script>
 export default {
   props: {
-    devices: Array, // Array of devices
+    devices: Array,
     getDeviceTypeFromSerial: Function,
   },
   data() {
