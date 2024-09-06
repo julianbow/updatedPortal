@@ -8,6 +8,10 @@ dayjs.extend(duration);
 dayjs.extend(relativeTime);
 
 class Day {
+  static formatTimestamp(timestamp) {
+    return dayjs(timestamp).format('MM/DD/YY h:mm A');
+  }
+
   static getUTCLongDate(timestamp) {
     if (timestamp !== undefined) {
       const dt = dayjs.utc(timestamp);
@@ -22,6 +26,12 @@ class Day {
       return dt.format("M/D/YY h:mm a");
     }
     return "---";
+  }
+
+  static getUTC(timestamp) {
+    if (timestamp !== undefined && timestamp !== null) {
+      return dayjs(timestamp).utc().valueOf();
+    }
   }
 
   static getHoursBetweenDates(start, end) {

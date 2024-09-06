@@ -31,7 +31,7 @@ import UserSearch from './UserSearch.vue';
 import UserList from './UsersList.vue';
 import UserInfo from './UserInfo.vue';
 import Requestor from '../../helpers/Requestor';
-import dayjs from 'dayjs';
+import Day from '@/helpers/Day';
 
 export default {
   components: {
@@ -63,10 +63,8 @@ export default {
     },
     async showUser(userId, userData = null) {
       this.selectedUser = userData || this.searchResults.find((user) => user.user_id === userId);
-      console.log('Selected user:', this.selectedUser);
 
       if (this.selectedUser) {
-        // Display user information
         await this.fetchUserStations(userId);
       }
     },
@@ -79,7 +77,7 @@ export default {
       }
     },
     formatTimestamp(timestamp) {
-      return dayjs(timestamp).format('MM/DD/YY h:mm A');
+      return Day.formatTimestamp(timestamp);
     },
   },
   mounted() {
