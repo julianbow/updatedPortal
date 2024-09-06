@@ -37,14 +37,30 @@
     margin-bottom: 20px;
 }
 
+.arb-locations, .access-tokens {
+    padding: 10px;
+}
+
 #user-list, #general-list {
     width: 100%;
     max-width: 960px;
     margin: 0 auto;
     border-collapse: collapse;
-    border-radius: 8px;
+    border-radius: 0px 0px 8px 8px;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
     overflow: hidden;
+}
+
+#general-list {
+    height: 200px;
+    overflow-y: auto;
+    scrollbar-width: thin;
+    scrollbar-color: rgba(0, 0, 0, 0.3) transparent;
+}
+
+#general-list table{
+    height: 100px;
+    background-color: #efebf1;
 }
 
 #user-list table, #general-list table {
@@ -52,10 +68,16 @@
     border-spacing: 0;
 }
 
-#user-list th,
-#user-list td,
 #general-list th,
 #general-list td {
+    padding: 8px;
+    font-size: 0.85em;
+    text-align: center;
+    border-bottom: 1px solid #ddd;
+}
+
+#user-list th,
+#user-list td{
     padding: 15px;
     text-align: left;
     border-bottom: 1px solid #ddd;
@@ -239,11 +261,11 @@
 }
 
 /* Device Table Header */
-.devices-hdr {
+.list-hdr {
     font-size: 1.2em;
     font-weight: bold;
     padding: 8px;
-    background-color: #AE9AB3;
+    background-color: #512b59;
     color: #fff;
     border-radius: 4px 4px 0 0;
 }
@@ -260,8 +282,8 @@
     table-layout: fixed;
 }
 
-.devices-table th {
-    background-color: #512b59;
+.devices-table th, #general-list th {
+    background-color: #AE9AB3;
     color: white;
     font-weight: bold;
     text-align: center;

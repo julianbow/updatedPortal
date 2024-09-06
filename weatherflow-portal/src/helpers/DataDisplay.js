@@ -158,39 +158,6 @@ class DataDisplay {
     return "";
   }
 
-  //   static getUTCLongDate(timestamp) {
-  //     if (timestamp !== undefined) {
-  //       const dt = moment.utc(timestamp);
-  //       return dt.format("M/D/YY h:mm:ss a");
-  //     }
-
-  //     return "---";
-  //   }
-
-  //   static getUTCDate(timestamp) {
-  //     if (timestamp !== undefined) {
-  //       const dt = moment.utc(timestamp);
-  //       return dt.format("M/D/YY h:mm a");
-  //     }
-
-  //     return "---";
-  //   }
-
-  //   static getHoursBetweenDates(start, end) {
-  //     start = this.getValue(start);
-  //     end = this.getValue(end);
-
-  //     if (start !== "" && end !== "") {
-  //       const startDT = moment(start);
-  //       const endDT = moment(end);
-  //       const duration = moment.duration(endDT.diff(startDT));
-
-  //       return parseInt(duration.asHours());
-  //     }
-
-  //     return "---";
-  //   }
-
   static getFirmwareRevisionWithUpgradeLink(firmware, serialNumber, deviceType) {
     firmware = this.getValue(firmware);
     serialNumber = this.getValue(serialNumber);

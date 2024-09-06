@@ -38,14 +38,14 @@
 
         <!-- Devices section -->
         <div v-if="deviceLinks.length > 0" class="devices">
-        <div class="devices-hdr">Devices</div>
+        <div class="list-hdr">Devices</div>
         <StationDevices
             :devices="deviceLinks"
             :getDeviceTypeFromSerial="getDeviceTypeFromSerial"
         />
         </div>
         <div>
-            <div class="devices-hdr">Station Info</div>
+            <div class="list-hdr">Station Info</div>
             <StationInfo
                 :stationDetails="stationDetails"
             />
