@@ -12,7 +12,7 @@
 <script>
 import AppHeader from './components/AppHeader.vue';
 import NavigationBar from './components/NavigationBar.vue';
-import HomeView from './components/HomeView.vue';
+import HomeView from './components/home/HomeView.vue';
 import UsersView from './components/users/UsersView.vue';
 
 export default {

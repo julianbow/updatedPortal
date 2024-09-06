@@ -86,7 +86,7 @@
 </template>
 
 <script>
-import Requestor from '../helpers/Requestor';
+import Requestor from '../../helpers/Requestor';
 import PieChart from './PieChart.vue';
 import Day from '@/helpers/Day';
 
