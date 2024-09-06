@@ -47,7 +47,10 @@
         />
       </div>
       <!-- Arbitrary Locations -->
-      <ArbitraryLocations/>
+      <ArbitraryLocations
+        :requestor="requestor"
+        :userId="selectedUser.user_id"
+      />
       <AccessTokens/>
     </div>
   </div>

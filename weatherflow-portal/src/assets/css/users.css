@@ -37,7 +37,7 @@
     margin-bottom: 20px;
 }
 
-#user-list {
+#user-list, #general-list {
     width: 100%;
     max-width: 960px;
     margin: 0 auto;
@@ -47,13 +47,15 @@
     overflow: hidden;
 }
 
-#user-list table {
+#user-list table, #general-list table {
     width: 100%;
     border-spacing: 0;
 }
 
 #user-list th,
-#user-list td {
+#user-list td,
+#general-list th,
+#general-list td {
     padding: 15px;
     text-align: left;
     border-bottom: 1px solid #ddd;
