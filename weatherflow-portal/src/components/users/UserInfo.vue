@@ -1,6 +1,9 @@
 <template>
   <div id="user-info">
-    <h2>{{ selectedUser.email_address }}</h2>
+    <div class="user-email">
+      <h2>{{ selectedUser.email_address }}</h2>
+      <span id="edit-email" @click="showEmailModal"></span>
+    </div>
     <div class="account-info">
       <div>
         <p class="label">User ID:</p>
@@ -57,10 +60,18 @@
         :accessTokens="accessTokens"
       />
     </div>
+
+    <UpdateEmailModal
+      :email="selectedUser.email_address"
+      :requestor="requestor"
+      :userId="selectedUser.user_id"
+      ref="updateEmailModal"
+    />
   </div>
 </template>
 
 <script>
+import UpdateEmailModal from './UpdateEmailModal.vue';
 import StationDetails from './StationDetails.vue';
 import ArbitraryLocations from './ArbitraryLocations.vue';
 import AccessTokens from './AccessTokens.vue';
@@ -68,6 +79,7 @@ import Requestor from '../../helpers/Requestor';
 
 export default {
   components: {
+    UpdateEmailModal,
     StationDetails,
     ArbitraryLocations,
     AccessTokens
@@ -157,6 +169,9 @@ export default {
       } catch (error) {
         console.error("Error fetching access tokens", error);
       }
+    },
+    showEmailModal() {
+      this.$refs.updateEmailModal.openEmailModal();
     }
   },
   mounted() {

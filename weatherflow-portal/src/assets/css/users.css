@@ -37,6 +37,18 @@
     margin-bottom: 20px;
 }
 
+.user-email {
+    display: inline-block;
+}
+
+#edit-email {
+    cursor: pointer;
+    background: transparent url(../images/pencil.svg) no-repeat 50% 50%;
+    background-size: 100% 100%;
+    padding: 10px;
+    filter: invert(16%) sepia(56%) saturate(724%) hue-rotate(244deg) brightness(95%) contrast(88%);
+}
+
 .arb-locations, .access-tokens {
     padding: 10px;
 }
@@ -154,6 +166,7 @@
 
 #user-info h2 {
     font-size: 24px;
+    display: inline-block;
     margin-bottom: 10px;
     color: #333;
 }
