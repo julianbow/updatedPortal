@@ -195,6 +195,27 @@ class DataDisplay {
 
     return "";
   }
+
+  static userWifiSignalDisplay = function (value) {
+    var signal;
+
+    switch (true) {
+    case value <= -99:
+      signal = "Not Connected";
+      break;
+    case value < -80:
+      signal = `Weak (${value})`;
+      break;
+    case value < -70 && value >= -80:
+      signal = `Good (${value})`;
+      break;
+    case value >= -70:
+      signal = `Strong (${value})`;
+      break;
+    }
+
+    return signal;
+  };
 }
 
 export default DataDisplay;

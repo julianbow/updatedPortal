@@ -32,8 +32,8 @@
           <div><p class="label">Device Locked</p><span class="value">{{ hubHardware.device_locked }}</span></div>
         </div>
         <div class="station-info-col-2">
-          <div><p class="label">RSSI</p><span class="value">{{ hubRssi || 'N/A' }}</span></div>
           <div><p class="label">State</p><span class="value">{{ hubState || 'N/A' }}</span></div>
+          <div><p class="label">Wi-Fi Signal Strength</p><span class="value">{{ hubRssi || 'N/A' }}</span></div>
           <div><p class="label">Cellular</p><span class="value">{{ cellularStatus || 'N/A' }}</span></div>
           <div><p class="label">Wifi</p><span class="value">{{ hubHardware.wifi || 'N/A' }}</span></div>
           <div><p class="label">Ethernet</p><span class="value">{{ hubHardware.ethernet }}</span></div>
@@ -142,7 +142,7 @@ export default {
     updateDiagnosticsData() {
       this.hubFrequency = this.diagnostics.freq();
       this.efr32Firmware = this.diagnostics.efr32Firmware();
-      this.hubRssi = this.diagnostics.rssi();
+      this.hubRssi = DataDisplay.userWifiSignalDisplay(this.diagnostics.rssi());
       this.hubState = this.diagnostics.state();
       this.cellularStatus = this.diagnostics.getCellularStatus();
       this.hubUptime = this.diagnostics.getHubUptime();
