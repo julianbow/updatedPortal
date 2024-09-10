@@ -151,14 +151,14 @@ input[type="text"] {
 }
 
 .msg-txt {
-    width: 50%;
+    width: 70%;
     margin: 0;
 }
 
 .msg-time {
     font-size: 15px;
     text-align: right;
-    width: 50%;
+    width: 30%;
 }
 
 .message-meta {
@@ -204,6 +204,7 @@ input[type="text"] {
     padding: 5px 15px;
     display: inline-block;
     cursor: pointer;
+    background-color: #ae9ab3;
 }
 
 .timeButtons.selected {

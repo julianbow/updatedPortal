@@ -1,13 +1,28 @@
 <template>
     <div class="modal-ctn" v-if="isModalVisible">
       <div class="modal-content">
-        <a href="#" class="modal-close" @click="closeDialog"></a>
+        <span class="modal-close" @click="closeDialog"></span>
         <h2 class="station-messages-name">{{ stationName }}</h2>
-        <div class="buttons" :data-station-name="stationName">
+        <div class="buttons">
           <h3 class="viewTimes">Timezone:</h3>
-          <button id="stationButton" class="timeButtons" @click="getTime('station')">Station</button>
-          <button id="browserButton" class="timeButtons" @click="getTime('browser')">Browser</button>
-          <button id="utcButton" class="timeButtons" @click="getTime('utc')">UTC</button>
+          <button
+            id="stationButton"
+            class="timeButtons"
+            :class="{ selected: selectedTimeZone === 'station' }"
+            @click="getTime('station')"
+          >Station</button>
+          <button
+            id="browserButton"
+            class="timeButtons"
+            :class="{ selected: selectedTimeZone === 'browser' }"
+            @click="getTime('browser')"
+          >Browser</button>
+          <button
+            id="utcButton"
+            class="timeButtons"
+            :class="{ selected: selectedTimeZone === 'utc' }"
+            @click="getTime('utc')"
+          >UTC</button>
         </div>
         <div class="station-messages-content">
           <template v-if="notifications && notifications.length">
@@ -15,7 +30,7 @@
               <div v-if="notification.utc" class="day">{{ formatDay(notification.utc) }}</div>
               <div class="message-info">
                 <span class="msg-txt">{{ notification.body }}</span>
-                <span class="msg-time">{{ formatUtc(notification.utc, notification.tz) }}</span>
+                <span class="msg-time">{{ notification.formattedTime }}</span>
               </div>
               <div class="message-meta">
                 <span class="notification-info" :class="getNotificationClass(notification.user_notifications_on)">
@@ -34,7 +49,7 @@
         </div>
       </div>
     </div>
-  </template>
+</template>
 
 <script>
 import Day from '@/helpers/Day';
@@ -49,12 +64,19 @@ export default {
     return {
       isModalVisible: false,
       notifications: [],
-      currentDay: ''
+      selectedTimeZone: 'station', // Default to station timezone
+      messagesFetched: false // Track if messages have been fetched
     };
   },
   methods: {
     openModal() {
-      this.fetchMessages();
+      // Only fetch messages if they haven't been fetched yet
+      if (!this.messagesFetched) {
+        this.fetchMessages();
+      } else {
+        // Apply the previously selected timezone if messages were already fetched
+        this.getTime(this.selectedTimeZone);
+      }
       this.isModalVisible = true;
     },
     closeDialog() {
@@ -65,8 +87,8 @@ export default {
       try {
         const response = await this.requestor.makeGetRequest('notifications', urlData);
         if (response.data.status.status_code === 0) {
-          console.log(response.data.user_notifications);
           this.notifications = this.processNotifications(response.data.user_notifications);
+          this.messagesFetched = true; // Mark messages as fetched
         } else {
           alert("No messages found for this station.");
         }
@@ -75,18 +97,25 @@ export default {
       }
     },
     getTime(type) {
-      console.log(type);
+      this.selectedTimeZone = type; // Update the selected timezone
+      this.notifications = this.notifications.map(notification => {
+        if (type === 'station') {
+          notification.formattedTime = Day.getStationTimeWithTZ(notification.utc);
+        } else if (type === 'browser') {
+          notification.formattedTime = Day.getBrowserTimeWithTZ(notification.utc);
+        } else if (type === 'utc') {
+          notification.formattedTime = Day.getUTCTimeWithTZ(notification.utc);
+        }
+        return notification;
+      });
     },
     formatDay(time) {
       return Day.getFormattedLongDate(time);
     },
-    formatUtc(time, tz) {
-      return Day.getFormattedTimeWithZone(time, tz);
-    },
     processNotifications(notifications) {
       return notifications.reverse().map(notification => {
         if (notification.utc && notification.tz) {
-          notification.formattedTime = notification.utc;
+          notification.formattedTime = Day.getStationTimeWithTZ(notification.utc); // Default to station time
         }
         return notification;
       });

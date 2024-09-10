@@ -86,6 +86,20 @@ class Day {
     return "---";
   }
 
+  static getStationTimeWithTZ(timestamp) {
+    return dayjs.unix(timestamp).format('h:mm a z');
+  }
+
+  // Format timestamp to browser's local timezone
+  static getBrowserTimeWithTZ(timestamp) {
+    return dayjs.unix(timestamp).local().format('h:mm a z');
+  }
+
+  // Format timestamp to UTC timezone
+  static getUTCTimeWithTZ(timestamp) {
+    return dayjs.unix(timestamp).utc().format('h:mm a UTC');
+  }
+
   static getFormattedTimeWithZone(timestamp, timeZone) {
     if (timestamp !== undefined && timestamp !== null) {
       return dayjs.unix(timestamp).tz(timeZone).format('h:mm a z');

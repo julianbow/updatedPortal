@@ -31,7 +31,7 @@
         <!-- Station Header -->
         <div class="station-hdr" @click="index > 0 && toggleStation(station.station_id)">
           <div class="station-hdr-left">
-            <span class="station-messages" @click="showStationMessages(index, station.station_id, station.name)"></span>
+            <span class="station-messages" @click.stop="showStationMessages(index, station.station_id, station.name)"></span>
             <h3>{{ station.name }}</h3>
             <a href="#" :data-station-id="station.station_id">{{ station.station_id }}</a>
           </div>
@@ -51,7 +51,6 @@
           :requestor="requestor"
           :stationId="station.station_id"
           :stationName="station.name"
-          :formatTimestamp="formatTimestamp"
           ref="stationMessages"
         />
       </div>
