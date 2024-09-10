@@ -12,8 +12,8 @@
 <script>
 import AppHeader from './components/AppHeader.vue';
 import NavigationBar from './components/NavigationBar.vue';
-import HomeView from './components/home/HomeView.vue';
-import UsersView from './components/users/UsersView.vue';
+import HomeView from './views/HomeView.vue';
+import UsersView from './views/UsersView.vue';
 
 export default {
   components: {

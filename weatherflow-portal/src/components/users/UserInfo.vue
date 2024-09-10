@@ -55,15 +55,9 @@
         />
       </div>
       <!-- Arbitrary Locations -->
-      <ArbitraryLocations
-        v-if="arbitraryLocations.length"
-        :arbitraryLocations="arbitraryLocations"
-      />
+      <ArbitraryLocations v-if="arbitraryLocations.length" :arbitraryLocations="arbitraryLocations" />
       <!-- Access Tokens -->
-      <AccessTokens
-      v-if="accessTokens.length"
-        :accessTokens="accessTokens"
-      />
+      <AccessTokens v-if="accessTokens.length" :accessTokens="accessTokens" />
     </div>
 
     <UpdateEmailModal

@@ -8,14 +8,14 @@
 </template>
 
 <script>
-    export default {
-        name: 'AppHeader',
-        props: {
-            title: {
-            type: String,
-            required: true,
-            default: 'Home'
-            }
-        }
-    };
+export default {
+  name: 'AppHeader',
+  props: {
+    title: {
+      type: String,
+      required: true,
+      default: 'Home'
+    }
+  }
+};
 </script>

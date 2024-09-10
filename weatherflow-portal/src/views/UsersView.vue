@@ -25,12 +25,12 @@
 
 
 <script>
-import '../../assets/css/users.css';
-import '../../assets/css/main.css';
-import UserSearch from './UserSearch.vue';
-import UserList from './UsersList.vue';
-import UserInfo from './UserInfo.vue';
-import Requestor from '../../helpers/Requestor';
+import '../assets/css/main.css';
+import '../assets/css/users.css';
+import UserSearch from '../components/users/UserSearch.vue';
+import UserList from '../components/users/UsersList.vue';
+import UserInfo from '../components/users/UserInfo.vue';
+import Requestor from '@/helpers/Requestor';
 import Day from '@/helpers/Day';
 
 export default {
