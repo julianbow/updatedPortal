@@ -2,10 +2,14 @@ import dayjs from 'dayjs';
 import utc from 'dayjs/plugin/utc';
 import duration from 'dayjs/plugin/duration';
 import relativeTime from 'dayjs/plugin/relativeTime';
+import timezone from 'dayjs/plugin/timezone';
+import advancedFormat from 'dayjs/plugin/advancedFormat';
 
 dayjs.extend(utc);
 dayjs.extend(duration);
 dayjs.extend(relativeTime);
+dayjs.extend(timezone);
+dayjs.extend(advancedFormat);
 
 class Day {
   static formatTimestamp(timestamp) {
@@ -73,6 +77,20 @@ class Day {
     }
 
     return retval;
+  }
+
+  static getFormattedLongDate(epoch) {
+    if (epoch !== undefined && epoch !== null) {
+      return dayjs.unix(epoch).format('dddd, MMMM Do YYYY');
+    }
+    return "---";
+  }
+
+  static getFormattedTimeWithZone(timestamp, timeZone) {
+    if (timestamp !== undefined && timestamp !== null) {
+      return dayjs.unix(timestamp).tz(timeZone).format('h:mm a z');
+    }
+    return "---";
   }
 
   static getValue(value) {

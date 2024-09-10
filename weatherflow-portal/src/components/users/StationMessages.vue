@@ -4,18 +4,18 @@
         <a href="#" class="modal-close" @click="closeDialog"></a>
         <h2 class="station-messages-name">{{ stationName }}</h2>
         <div class="buttons" :data-station-name="stationName">
-          <h2 class="viewTimes">Timezone:</h2>
-          <button id="stationButton" class="timeButtons" @click="fetchMessages('station')">Station</button>
-          <button id="browserButton" class="timeButtons" @click="fetchMessages('browser')">Browser</button>
-          <button id="utcButton" class="timeButtons" @click="fetchMessages('utc')">UTC</button>
+          <h3 class="viewTimes">Timezone:</h3>
+          <button id="stationButton" class="timeButtons" @click="getTime('station')">Station</button>
+          <button id="browserButton" class="timeButtons" @click="getTime('browser')">Browser</button>
+          <button id="utcButton" class="timeButtons" @click="getTime('utc')">UTC</button>
         </div>
         <div class="station-messages-content">
           <template v-if="notifications && notifications.length">
             <div v-for="(notification, index) in notifications" :key="index" class="message">
-              <div v-if="notification.utc" class="day">{{ notification.utc }}</div>
+              <div v-if="notification.utc" class="day">{{ formatDay(notification.utc) }}</div>
               <div class="message-info">
-                {{ notification.body }}
-                <span class="msg-time">{{ notification.utc }}</span>
+                <span class="msg-txt">{{ notification.body }}</span>
+                <span class="msg-time">{{ formatUtc(notification.utc, notification.tz) }}</span>
               </div>
               <div class="message-meta">
                 <span class="notification-info" :class="getNotificationClass(notification.user_notifications_on)">
@@ -37,12 +37,13 @@
   </template>
 
 <script>
+import Day from '@/helpers/Day';
 
 export default {
   props: {
     requestor: Object,
     stationId: Number,
-    stationName: String
+    stationName: String,
   },
   data() {
     return {
@@ -53,24 +54,34 @@ export default {
   },
   methods: {
     openModal() {
-      this.fetchMessages('station');
+      this.fetchMessages();
       this.isModalVisible = true;
     },
     closeDialog() {
       this.isModalVisible = false;
     },
-    async fetchMessages(type) {
+    async fetchMessages() {
       const urlData = { station_id: this.stationId };
       try {
         const response = await this.requestor.makeGetRequest('notifications', urlData);
         if (response.data.status.status_code === 0) {
-          this.notifications = this.processNotifications(response.data.user_notifications, type);
+          console.log(response.data.user_notifications);
+          this.notifications = this.processNotifications(response.data.user_notifications);
         } else {
           alert("No messages found for this station.");
         }
       } catch (error) {
         console.log(error);
       }
+    },
+    getTime(type) {
+      console.log(type);
+    },
+    formatDay(time) {
+      return Day.getFormattedLongDate(time);
+    },
+    formatUtc(time, tz) {
+      return Day.getFormattedTimeWithZone(time, tz);
     },
     processNotifications(notifications) {
       return notifications.reverse().map(notification => {

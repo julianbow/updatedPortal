@@ -51,6 +51,7 @@
           :requestor="requestor"
           :stationId="station.station_id"
           :stationName="station.name"
+          :formatTimestamp="formatTimestamp"
           ref="stationMessages"
         />
       </div>
