@@ -64,17 +64,15 @@ export default {
     return {
       isModalVisible: false,
       notifications: [],
-      selectedTimeZone: 'station', // Default to station timezone
-      messagesFetched: false // Track if messages have been fetched
+      selectedTimeZone: 'station',
+      messagesFetched: false
     };
   },
   methods: {
     openModal() {
-      // Only fetch messages if they haven't been fetched yet
       if (!this.messagesFetched) {
         this.fetchMessages();
       } else {
-        // Apply the previously selected timezone if messages were already fetched
         this.getTime(this.selectedTimeZone);
       }
       this.isModalVisible = true;
@@ -88,7 +86,7 @@ export default {
         const response = await this.requestor.makeGetRequest('notifications', urlData);
         if (response.data.status.status_code === 0) {
           this.notifications = this.processNotifications(response.data.user_notifications);
-          this.messagesFetched = true; // Mark messages as fetched
+          this.messagesFetched = true;
         } else {
           alert("No messages found for this station.");
         }
@@ -97,7 +95,7 @@ export default {
       }
     },
     getTime(type) {
-      this.selectedTimeZone = type; // Update the selected timezone
+      this.selectedTimeZone = type;
       this.notifications = this.notifications.map(notification => {
         if (type === 'station') {
           notification.formattedTime = Day.getStationTimeWithTZ(notification.utc);
@@ -115,7 +113,7 @@ export default {
     processNotifications(notifications) {
       return notifications.reverse().map(notification => {
         if (notification.utc && notification.tz) {
-          notification.formattedTime = Day.getStationTimeWithTZ(notification.utc); // Default to station time
+          notification.formattedTime = Day.getStationTimeWithTZ(notification.utc);
         }
         return notification;
       });
