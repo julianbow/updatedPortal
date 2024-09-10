@@ -1,7 +1,7 @@
 <template>
     <header id="top-header">
         <div class="logo-container">
-        <img src="../assets/images/tempest.svg" alt="Logo" class="logo" />
+        <img src="../../assets/images/tempest.svg" alt="Logo" class="logo" />
         </div>
         <h1>{{ title }}</h1>
     </header>

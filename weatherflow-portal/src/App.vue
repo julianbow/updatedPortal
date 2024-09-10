@@ -10,8 +10,8 @@
 </template>
 
 <script>
-import AppHeader from './components/AppHeader.vue';
-import NavigationBar from './components/NavigationBar.vue';
+import AppHeader from './components/navigation/AppHeader.vue';
+import NavigationBar from './components/navigation/NavigationBar.vue';
 import HomeView from './views/HomeView.vue';
 import UsersView from './views/UsersView.vue';
 

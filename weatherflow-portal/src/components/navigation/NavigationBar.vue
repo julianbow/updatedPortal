@@ -12,7 +12,7 @@
 </template>
 
 <script>
-import '../assets/css/header.css';
+import '../../assets/css/header.css';
 
 export default {
   name: 'NavigationBar',
