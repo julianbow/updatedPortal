@@ -1,26 +1,32 @@
 <template>
+  <div>
     <table class="devices-table">
-    <thead>
-        <tr>
-            <th>ID</th>
-            <th>Sensors</th>
-            <th>Serial #</th>
-            <th>Hard</th>
-            <th>Firm</th>
-            <th>Name</th>
-            <th>Env</th>
-            <th>AGL</th>
-            <th>RSSI</th>
-            <th>Batt</th>
-            <th>MQTT</th>
-            <th>WS</th>
-        </tr>
-    </thead>
+      <thead>
+          <tr>
+              <th>ID</th>
+              <th>Sensors</th>
+              <th>Serial #</th>
+              <th>Hard</th>
+              <th>Firm</th>
+              <th>Name</th>
+              <th>Env</th>
+              <th>AGL</th>
+              <th>RSSI</th>
+              <th>Batt</th>
+              <th>MQTT</th>
+              <th>WS</th>
+          </tr>
+      </thead>
       <tbody v-for="(device, index) in devices" :key="index">
         <!-- Main device row -->
         <tr @click="toggleDevice(device.device_id)" class="device-row">
           <td v-html="device.device_id"></td>
-          <td class="device-status" :device-id="device.device_id" v-html="getSensorImage(device.status)"></td>
+          <td
+            class="device-status"
+            :device-id="device.device_id"
+            v-html="getSensorImage(device.status)"
+            @click.stop="openDeviceStatusModal(device)"
+          ></td>
           <td class="device-log" v-html="device.serial"></td>
           <td class="device-hardware" v-html="getValue(device.hardware)"></td>
           <td class="device-firmware" v-html="getValue(device.firmware)"></td>
@@ -40,25 +46,39 @@
             <td v-else colspan="8">Download Data</td>
             <td v-if="device.device_type !== 'AR'" colspan="4" class="device-reboot" v-html="device.reboot"></td>
         </tr>
-
       </tbody>
     </table>
+
+    <!-- DeviceStatusModal -->
+    <DeviceStatusModal
+      ref="updateDeviceStatus"
+    />
+  </div>
 </template>
 
 <script>
+import DeviceStatusModal from './DeviceStatusModal.vue';
+
 export default {
+  components: {
+    DeviceStatusModal
+  },
   props: {
     devices: Array,
     getDeviceTypeFromSerial: Function,
   },
   data() {
     return {
-      selectedDeviceId: null
+      selectedDeviceId: null,
+      selectedDevice: null
     };
   },
   methods: {
     toggleDevice(deviceId) {
       this.selectedDeviceId = this.selectedDeviceId === deviceId ? null : deviceId;
+    },
+    openDeviceStatusModal() {
+      this.$refs.updateDeviceStatus.openModal();
     },
     getValue(value) {
       return value || 'N/A';
