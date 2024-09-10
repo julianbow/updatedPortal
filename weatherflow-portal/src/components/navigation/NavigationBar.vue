@@ -2,10 +2,10 @@
   <div id="main-menu">
     <ul>
       <li v-for="item in navItems" :key="item.name">
-        <a href="#" @click.prevent="updateTitle(item.name)">
+        <RouterLink :to="item.url" @click.prevent="updateTitle(item.name)">
           <span class="icon" :class="{ filled: activeItem === item.name }"></span>
           <span class="text">{{ item.name }}</span>
-        </a>
+        </RouterLink>
       </li>
     </ul>
   </div>

@@ -3,8 +3,7 @@
     <AppHeader :title="selectedMenuTitle" />
     <NavigationBar @update-title="setMenuTitle" />
     <div id="content">
-      <HomeView v-if="selectedMenuTitle === 'Home'" />
-      <UsersView v-else-if="selectedMenuTitle === 'Users'" />
+      <RouterView />
     </div>
   <!-- eslint-enable vue/no-multiple-template-root -->
 </template>
@@ -12,15 +11,12 @@
 <script>
 import AppHeader from './components/navigation/AppHeader.vue';
 import NavigationBar from './components/navigation/NavigationBar.vue';
-import HomeView from './views/HomeView.vue';
-import UsersView from './views/UsersView.vue';
+
 
 export default {
   components: {
     AppHeader,
     NavigationBar,
-    HomeView,
-    UsersView,
   },
   data() {
     return {
