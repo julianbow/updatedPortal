@@ -223,8 +223,12 @@
     align-items: center;
 }
 
-.station-hdr-left > *:first-child {
-    margin-right: 15px;
+.station-hdr-left > * {
+    margin-right: 10px;
+}
+
+.station-hdr-left h3 {
+    margin-right: 10px;
 }
 
 .station-hdr-2 {
@@ -239,6 +243,22 @@
 .station-hdr-2 .label, .station-hdr-2 .value {
     margin: 0;
     font-size: 12px;
+}
+
+.station-modified, .station-helpers {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.station-helpers {
+    cursor: pointer;
+    text-decoration: underline;
+}
+
+.station-modified > *:not(:last-child), .station-helpers > *:not(:last-child) {
+    margin-right: 15px;
 }
 
 .hub-info, .station-info {
@@ -378,6 +398,14 @@
 .warning {
     content: url('../images/warning.svg');
     filter: invert(16%) sepia(56%) saturate(724%) hue-rotate(244deg) brightness(95%) contrast(88%);
+}
+
+.station-messages {
+    height: 25px;
+    width: 25px;
+    content: url('../images/notifications.svg');
+    filter: invert(100%) sepia(100%) saturate(0%) hue-rotate(152deg) brightness(103%) contrast(103%);
+    cursor: pointer;
 }
 
 /* Optional: Better control for medium-sized screens */

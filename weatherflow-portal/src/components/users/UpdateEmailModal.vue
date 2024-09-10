@@ -65,7 +65,7 @@ export default {
     };
   },
   methods: {
-    openEmailModal() {
+    openModal() {
       this.isModalVisible = true;
     },
     closeEmailModal() {

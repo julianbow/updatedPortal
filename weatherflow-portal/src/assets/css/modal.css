@@ -110,3 +110,40 @@ input[type="text"] {
 .btn[value="Delete"]:hover {
     background-color: #c82333;
 }
+
+.timeButtons {
+    padding: 10px 20px;
+    background-color: #512b59;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+}
+
+.station-messages-content {
+    margin-top: 20px;
+    max-height: 50vh;
+    overflow-y: auto;
+}
+
+.day {
+    font-weight: bold;
+    margin-top: 20px;
+}
+
+.message {
+    margin-top: 10px;
+}
+
+.notification-info {
+    display: inline-block;
+    margin-right: 10px;
+}
+
+.notification-green {
+    color: green;
+}
+
+.notification-red {
+    color: red;
+}

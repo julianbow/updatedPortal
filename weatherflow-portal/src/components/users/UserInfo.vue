@@ -31,9 +31,8 @@
         <!-- Station Header -->
         <div class="station-hdr" @click="index > 0 && toggleStation(station.station_id)">
           <div class="station-hdr-left">
-            <h3>
-              <span>{{ station.name }}</span>
-            </h3>
+            <span class="station-messages" @click="showStationMessages(index, station.station_id, station.name)"></span>
+            <h3>{{ station.name }}</h3>
             <a href="#" :data-station-id="station.station_id">{{ station.station_id }}</a>
           </div>
           <span v-if="index > 0" class="down-arrow" :class="{'up' : isStationExpanded(station.station_id)}"></span>
@@ -47,6 +46,12 @@
           :formatTimestamp="formatTimestamp"
           :requestor="requestor"
           :index="index"
+        />
+        <StationMessages
+          :requestor="requestor"
+          :stationId="station.station_id"
+          :stationName="station.name"
+          ref="stationMessages"
         />
       </div>
       <!-- Arbitrary Locations -->
@@ -72,6 +77,7 @@
 
 <script>
 import UpdateEmailModal from './UpdateEmailModal.vue';
+import StationMessages from './StationMessages.vue';
 import StationDetails from './StationDetails.vue';
 import ArbitraryLocations from './ArbitraryLocations.vue';
 import AccessTokens from './AccessTokens.vue';
@@ -80,6 +86,7 @@ import Requestor from '../../helpers/Requestor';
 export default {
   components: {
     UpdateEmailModal,
+    StationMessages,
     StationDetails,
     ArbitraryLocations,
     AccessTokens
@@ -134,7 +141,7 @@ export default {
     },
     async fetchStationDetails(stationId) {
       try {
-        const response = await this.requestor.makeGetRequestDev(`stations/${stationId}`,{}, true);
+        const response = await this.requestor.makeGetRequestDev(`stations/${stationId}`, {}, true);
         console.log('Station details:', response.data);
         this.stationDetailsMap[stationId] = response.data;
       } catch (error) {
@@ -143,7 +150,7 @@ export default {
     },
     async fetchArbitraryLocations(userId) {
       try {
-        const response = await this.requestor.makeGetRequest("locations_stats", {user_id: userId});
+        const response = await this.requestor.makeGetRequest("locations_stats", { user_id: userId });
 
         if (response.data.status.status_code === 0) {
           if (response.data.arbitrary_locations.length > 0) {
@@ -171,8 +178,12 @@ export default {
       }
     },
     showEmailModal() {
-      this.$refs.updateEmailModal.openEmailModal();
-    }
+      this.$refs.updateEmailModal.openModal();
+    },
+    showStationMessages(index, stationId, stationName) {
+      // Use the correct instance of StationMessages by index
+      this.$refs.stationMessages[index].openModal(stationId, stationName);
+    },
   },
   mounted() {
     this.requestor = new Requestor();

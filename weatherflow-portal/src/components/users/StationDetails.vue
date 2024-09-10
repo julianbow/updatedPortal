@@ -1,15 +1,22 @@
 <template>
     <div>
       <div class="station-hdr-2">
-        <div class="station-last-modified">
-          <p class="label">Modified</p>
-          <span class="value" :data-timestamp="stationDetails.last_modified" :title="formatTimestamp(stationDetails.last_modified)">
-            {{ formatTimestamp(stationDetails.last_modified) }}
-          </span>
+        <div class="station-modified">
+          <div class="station-created">
+            <p class="label">Station Created</p>
+            <span class="value">{{ formatTimestamp(stationDetails.created) }}</span>
+          </div>
+          <div class="station-last-modified">
+            <p class="label">Modified</p>
+            <span class="value" :data-timestamp="stationDetails.last_modified" :title="formatTimestamp(stationDetails.last_modified)">
+              {{ formatTimestamp(stationDetails.last_modified) }}
+            </span>
+          </div>
         </div>
-        <div class="station-created">
-          <p class="label">Station Created</p>
-          <span class="value">{{ formatTimestamp(stationDetails.created) }}</span>
+        <div class="station-helpers">
+          <a>CL</a>
+          <a>AIS</a>
+          <a>MD</a>
         </div>
       </div>
 
