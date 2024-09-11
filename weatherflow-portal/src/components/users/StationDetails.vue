@@ -15,10 +15,10 @@
         </div>
         <div class="station-helpers">
           {{ console.log(stationDetails) }}
-          <a>CL</a>
-          <a>AIS</a>
-          <a>MD</a>
-          <a target="_blank" :href="generateBFLink">BF</a>
+          <a title="Continuous Learning">CL</a>
+          <a title="Artificial Information Station">AIS</a>
+          <a title="Meta Data">MD</a>
+          <a target="_blank" title="Better Forecast Portal" :href="generateBFLink">BF</a>
         </div>
       </div>
 
@@ -26,7 +26,7 @@
         <div class="station-info-col-1">
           <div><p class="label">Serial</p><span class="value">{{ stationHub.serial_number || 'N/A' }}</span></div>
           <div><p class="label">Device ID</p><span class="value">{{ stationHub.device_id || 'N/A' }}</span></div>
-          <div><p class="label">Frequency</p><span class="value">{{ hubFrequency || 'N/A' }}</span></div>
+          <div><p class="label" title="Radio Frequency">Frequency</p><span class="value">{{ hubFrequency || 'N/A' }}</span></div>
           <div><p class="label">FW Platform</p><span class="value">{{ stationHub.hardware_revision || 'N/A' }}</span></div>
           <div><p class="label">Firmware</p><span class="value">{{ stationHub.firmware_revision || 'N/A' }}</span></div>
           <div><p class="label">EFR32 Firmware</p><span class="value">{{ efr32Firmware || 'N/A' }}</span></div>
@@ -39,8 +39,8 @@
           <div><p class="label">Cellular</p><span class="value">{{ cellularStatus || 'N/A' }}</span></div>
           <div><p class="label">Wifi</p><span class="value">{{ hubHardware.wifi || 'N/A' }}</span></div>
           <div><p class="label">Ethernet</p><span class="value">{{ hubHardware.ethernet }}</span></div>
-          <div class="hub-uptime"><p class="label">Uptime</p><span class="value">{{ hubUptime || 'N/A' }}</span></div>
-          <div class="hub-latest-mqtt-status"><p class="label">Latest MQTT Status</p><span class="value">{{ lastMqttStatus || 'N/A' }}</span></div>
+          <div class="hub-uptime"><p class="label" title="Duration the device has had continuous power">Uptime</p><span class="value">{{ hubUptime || 'N/A' }}</span></div>
+          <div class="hub-latest-mqtt-status"><p class="label" title="Duration the device has communicated with Tempest servers">Latest MQTT Status</p><span class="value">{{ lastMqttStatus || 'N/A' }}</span></div>
           <div class="latest-cell-state"><p class="label">Latest Cell Status</p><span class="value">{{ latestCellStatus || 'N/A' }}</span></div>
         </div>
       </div>

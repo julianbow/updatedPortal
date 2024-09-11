@@ -6,15 +6,15 @@
               <th>ID</th>
               <th>Sensors</th>
               <th>Serial #</th>
-              <th>Hard</th>
-              <th>Firm</th>
+              <th title="Device Hardware">Hard</th>
+              <th title="Device Firmware">Firm</th>
               <th>Name</th>
-              <th>Env</th>
-              <th>AGL</th>
+              <th title="Environment">Env</th>
+              <th title="Above Ground Level (in meters)">AGL</th>
               <th>RSSI</th>
               <th>Batt</th>
               <th>MQTT</th>
-              <th>WS</th>
+              <th title="Last Web Socket Connection">WS</th>
           </tr>
       </thead>
       <tbody v-for="(device, index) in devices" :key="index">
