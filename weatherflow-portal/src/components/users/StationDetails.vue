@@ -49,6 +49,7 @@
         <StationDevices
             :devices="deviceLinks"
             :getDeviceTypeFromSerial="getDeviceTypeFromSerial"
+            :requestor="requestor"
         />
         </div>
         <div>
@@ -169,7 +170,8 @@ export default {
           environment: device.device_meta?.environment || 'N/A',
           agl: device.device_meta?.agl || 0,
           device_type: device.device_type,
-          status: this.deviceStatus.findStatus(matchingDeviceInfo?.sensor_status, device.device_type),
+          statusText: this.deviceStatus.findStatus(matchingDeviceInfo?.sensor_status, device.device_type),
+          status: matchingDeviceInfo.sensor_status,
           rssi: matchingDeviceInfo?.rssi || 'N/A',
           battery: matchingDeviceInfo?.voltage || 'N/A',
           lastMqtt: Day.getFuzzyTimestampWithEpoch(matchingDeviceInfo?.last_mqtt_ob_epoch) || 'N/A',

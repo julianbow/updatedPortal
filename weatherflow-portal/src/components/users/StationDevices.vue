@@ -24,7 +24,7 @@
           <td
             class="device-status"
             :device-id="device.device_id"
-            v-html="getSensorImage(device.status)"
+            v-html="getSensorImage(device.statusText)"
             @click.stop="openDeviceStatusModal(device)"
           ></td>
           <td class="device-log" v-html="device.serial"></td>
@@ -51,6 +51,7 @@
 
     <!-- DeviceStatusModal -->
     <DeviceStatusModal
+      :requestor="requestor"
       ref="updateDeviceStatus"
     />
   </div>
@@ -66,19 +67,19 @@ export default {
   props: {
     devices: Array,
     getDeviceTypeFromSerial: Function,
+    requestor: Object
   },
   data() {
     return {
       selectedDeviceId: null,
-      selectedDevice: null
     };
   },
   methods: {
     toggleDevice(deviceId) {
       this.selectedDeviceId = this.selectedDeviceId === deviceId ? null : deviceId;
     },
-    openDeviceStatusModal() {
-      this.$refs.updateDeviceStatus.openModal();
+    openDeviceStatusModal(device) {
+      this.$refs.updateDeviceStatus.openModal(device);
     },
     getValue(value) {
       return value || 'N/A';

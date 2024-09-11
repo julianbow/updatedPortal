@@ -231,7 +231,49 @@ class DeviceStatus {
     }
   }
 
-  // Static helper method
+  getPowerBoosterStatus = function (sensorFlags) {
+    var externalPower = sensorFlags.includes("External Power");
+    var enabled = sensorFlags.includes("Enabled");
+    var detected = sensorFlags.includes("Detected");
+
+    if (externalPower) {
+      return "External Power";
+    } else if (enabled) {
+      return "Enabled";
+    } else if (detected) {
+      return "Detected";
+    }
+  }
+
+  getBatteryStatus = function (batteryStatus, firmwareVersion) {
+    let retval;
+
+    if (Number(firmwareVersion) >= 174) {
+      if ((batteryStatus & DeviceStatus.SENSOR_STATUS_FLAGS.LOW_POWER_MODE2) != 0 && (batteryStatus & DeviceStatus.SENSOR_STATUS_FLAGS.LOW_POWER_MODE3) != 0) {
+        retval = "Low Power Mode 5 (M2 + M3)";
+      } else if ((batteryStatus & DeviceStatus.SENSOR_STATUS_FLAGS.LOW_POWER_MODE1) != 0 && (batteryStatus & DeviceStatus.SENSOR_STATUS_FLAGS.LOW_POWER_MODE3) != 0) {
+        retval = "Normal Mode (M1 + M3)";
+      } else if (((batteryStatus & DeviceStatus.SENSOR_STATUS_FLAGS.LOW_POWER_MODE2) != 0 || (batteryStatus & DeviceStatus.SENSOR_STATUS_FLAGS.LOW_POWER_MODE3) != 0) && (batteryStatus & DeviceStatus.SENSOR_STATUS_FLAGS.LOW_POWER_MODE1) == 0) {
+        retval = "Low Power Mode 3 (M3)";
+      } else {
+        retval = "Performance Mode (M0)";
+      }
+    } else {
+      if (batteryStatus & DeviceStatus.SENSOR_STATUS_FLAGS.LOW_POWER_MODE1) {
+        retval = "Low Power Mode 1 (M1)";
+      } else if (batteryStatus & DeviceStatus.SENSOR_STATUS_FLAGS.LOW_POWER_MODE2) {
+        retval = "Low Power Mode 2 (M2)";
+      } else if (batteryStatus & DeviceStatus.SENSOR_STATUS_FLAGS.LOW_POWER_MODE3) {
+        retval = "Low Power Mode 3 (M3)";
+      } else {
+        retval = "Normal (M0)";
+      }
+    }
+
+
+    return retval;
+  }
+
   _hasSensorError(status, flag) {
     let retval = false;
 
