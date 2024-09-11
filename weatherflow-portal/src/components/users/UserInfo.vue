@@ -55,9 +55,11 @@
         />
       </div>
       <!-- Arbitrary Locations -->
-      <ArbitraryLocations v-if="arbitraryLocations.length" :arbitraryLocations="arbitraryLocations" />
+      <ArbitraryLocations :requestor="requestor" :userId="selectedUser.user_id" />
       <!-- Access Tokens -->
-      <AccessTokens v-if="accessTokens.length" :accessTokens="accessTokens" />
+      <AccessTokens :requestor="requestor" :userId="selectedUser.user_id" />
+      <!-- Client IDs -->
+      <ClientIds :requestor="requestor" :userId="selectedUser.user_id" />
     </div>
 
     <UpdateEmailModal
@@ -75,6 +77,7 @@ import StationMessages from './StationMessages.vue';
 import StationDetails from './StationDetails.vue';
 import ArbitraryLocations from './ArbitraryLocations.vue';
 import AccessTokens from './AccessTokens.vue';
+import ClientIds from './ClientIds.vue';
 import Requestor from '../../helpers/Requestor';
 
 export default {
@@ -83,7 +86,8 @@ export default {
     StationMessages,
     StationDetails,
     ArbitraryLocations,
-    AccessTokens
+    AccessTokens,
+    ClientIds,
   },
   props: {
     selectedUser: Object,
@@ -95,6 +99,7 @@ export default {
       expandedStations: [],
       stationDetailsMap: {},
       arbitraryLocations: [],
+      clientIds: [],
       accessTokens: [],
       requestor: null,
     };
@@ -125,8 +130,6 @@ export default {
         // Fetch station details if not already fetched
         if (!this.stationDetailsMap[stationId]) {
           this.fetchStationDetails(stationId);
-          this.fetchAccessTokens(this.selectedUser.user_id);
-          this.fetchArbitraryLocations(this.selectedUser.user_id);
         }
       }
     },
@@ -142,40 +145,10 @@ export default {
         console.error('Error fetching station details:', error);
       }
     },
-    async fetchArbitraryLocations(userId) {
-      try {
-        const response = await this.requestor.makeGetRequest("locations_stats", { user_id: userId });
-
-        if (response.data.status.status_code === 0) {
-          if (response.data.arbitrary_locations.length > 0) {
-            this.arbitraryLocations = response.data.arbitrary_locations;
-          }
-        }
-      } catch (error) {
-        console.error("Error fetching arbitrary locations", error);
-      }
-    },
-    async fetchAccessTokens(userId) {
-      try {
-        const urlData = {
-          report_name: "get_user_access_tokens",
-          user_id: userId,
-        };
-
-        const response = await this.requestor.makePostRequest("report", urlData);
-
-        if (response.data.length > 0) {
-          this.accessTokens = response.data;
-        }
-      } catch (error) {
-        console.error("Error fetching access tokens", error);
-      }
-    },
     showEmailModal() {
       this.$refs.updateEmailModal.openModal();
     },
     showStationMessages(index, stationId, stationName) {
-      // Use the correct instance of StationMessages by index
       this.$refs.stationMessages[index].openModal(stationId, stationName);
     },
   },
