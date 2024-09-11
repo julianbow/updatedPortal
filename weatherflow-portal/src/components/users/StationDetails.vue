@@ -116,7 +116,6 @@ export default {
   },
   methods: {
     getFormattedDateForLink() {
-      // For example, returning today's date formatted as YYYY-MM-DD
       const today = new Date();
       return today.toISOString().split('T')[0];
     },
