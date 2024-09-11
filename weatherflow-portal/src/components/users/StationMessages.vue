@@ -119,12 +119,12 @@ export default {
       });
     },
     getNotificationClass(isOn) {
-      return isOn ? 'notification-green' : 'notification-red';
+      return isOn ? 'notification-green' : 'notification-orange';
     },
     getNotificationCountsClass(notification) {
       return notification.fcm_target_success_count === notification.fcm_target_count
         ? 'notification-green'
-        : 'notification-red';
+        : 'notification-orange';
     }
   }
 };

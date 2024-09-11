@@ -127,55 +127,6 @@ export default {
 </script>
 
   <style scoped>
-  .modal-ctn {
-    position: fixed;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    background-color: rgba(0, 0, 0, 0.5);
-    z-index: 999;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-  }
-
-  .modal-content {
-    background: #fff;
-    padding: 40px;
-    border-radius: 15px;
-    width: 100%;
-    max-width: 600px;
-    box-shadow: 0px 4px 20px rgba(0, 0, 0, 0.2);
-    position: relative;
-  }
-
-  .modal-close {
-    position: absolute;
-    top: 15px;
-    right: 15px;
-    background-color: transparent;
-    border: none;
-    font-size: 1.5rem;
-    cursor: pointer;
-    color: #333;
-  }
-
-  .device-status-content {
-    margin-top: 20px;
-  }
-
-  .current-sensors {
-    width: 100%;
-    border-collapse: collapse;
-  }
-
-  .current-sensors th,
-  .current-sensors td {
-    padding: 10px;
-    text-align: left;
-  }
-
   .device-list td span.cl-apply {
     color: green;
   }
