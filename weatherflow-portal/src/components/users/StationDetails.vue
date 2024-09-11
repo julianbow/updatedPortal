@@ -14,9 +14,11 @@
           </div>
         </div>
         <div class="station-helpers">
+          {{ console.log(stationDetails) }}
           <a>CL</a>
           <a>AIS</a>
           <a>MD</a>
+          <a target="_blank" :href="generateBFLink">BF</a>
         </div>
       </div>
 
@@ -101,9 +103,23 @@ export default {
   computed: {
     stationHub() {
       return this.getHubForStation(this.stationDetails.devices);
+    },
+    generateBFLink() {
+      // Generate the BF link dynamically using stationDetails
+      const stationId = this.stationDetails?.station_id || 'default_station_id';
+      const startDate = this.getFormattedDateForLink(); // You can replace this with your desired date logic
+      const startTime = '6'; // Example start time
+      const duration = '36'; // Example duration in hours
+
+      return `https://wfx.weatherflow.com/vv/stns=${stationId}&sources=tempest&sdate=${startDate}&stime=${startTime}&dur=${duration}&ptype=single`;
     }
   },
   methods: {
+    getFormattedDateForLink() {
+      // For example, returning today's date formatted as YYYY-MM-DD
+      const today = new Date();
+      return today.toISOString().split('T')[0];
+    },
     getHubForStation(devices) {
       let hub = null;
       if (devices) {
