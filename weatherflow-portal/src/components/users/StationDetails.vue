@@ -26,11 +26,29 @@
           <div><p class="label">Serial</p><span class="value">{{ stationHub.serial_number || 'N/A' }}</span></div>
           <div><p class="label">Device ID</p><span class="value">{{ stationHub.device_id || 'N/A' }}</span></div>
           <div><p class="label" title="Radio Frequency">Frequency</p><span class="value">{{ hubFrequency || 'N/A' }}</span></div>
-          <div><p class="label" title="Firmware Platform">FW Platform</p><span class="value">{{ stationHub.hardware_revision || 'N/A' }}</span></div>
-          <div><p class="label">Firmware</p><span class="value">{{ stationHub.firmware_revision || 'N/A' }}</span></div>
-          <div><p class="label">EFR32 Firmware</p><span class="value">{{ efr32Firmware || 'N/A' }}</span></div>
-          <div><p class="label">Hardware Type</p><span class="value">{{ hubHardware.hardware_type }}</span></div>
-          <div><p class="label">Device Locked</p><span class="value">{{ hubHardware.device_locked }}</span></div>
+          <div>
+            <p class="label"
+              title="Type of CPU with the version number of the hardware from the point of view of the firmware.">
+              Module
+            </p>
+            <span class="value">{{ getModuleInformation(stationHub.hardware_revision) }}</span>
+          </div>
+          <div>
+            <p class="label"
+              title="Firmware version of wifi radio in the hub. Firmware with Module 2 starts at 300 and goes up from there.">
+              Firmware
+            </p>
+            <span class="value">{{ stationHub.firmware_revision || 'N/A' }}</span>
+          </div>
+          <div>
+            <p class="label"
+              title="Firmware version of sub ghz radio. Versions < 20 aren't fully compatible with Tempest. Modules 0/1 don't support upgrades, but Module 2 integrates and updates EFR32 firmware with the main HUB.">
+                EFR32 Firmware
+              </p>
+            <span class="value">{{ efr32Firmware || 'N/A' }}</span>
+          </div>
+          <div><p class="label" title="Type of Hub">Hardware Type</p><span class="value">{{ getHubIdentifier(hubHardware.hardware_type) }}</span></div>
+          <div><p class="label" title="Is hub allowed to be set up on a different user account?">Device Locked</p><span class="value">{{ hubHardware.device_locked }}</span></div>
         </div>
         <div class="station-info-col-2">
           <div><p class="label">State</p><a target="_blank" :href="`https://tempestwx.com/settings/station/${stationDetails.station_id}/status`" class="value">{{ hubState || 'N/A' }}</a></div>
@@ -39,8 +57,8 @@
           <div><p class="label">Wifi</p><span class="value">{{ hubHardware.wifi || 'N/A' }}</span></div>
           <div><p class="label">Ethernet</p><span class="value">{{ hubHardware.ethernet }}</span></div>
           <div class="hub-uptime"><p class="label" title="Duration the device has had continuous power">Uptime</p><span class="value">{{ hubUptime || 'N/A' }}</span></div>
-          <div class="hub-latest-mqtt-status"><p class="label" title="Duration the device has communicated with Tempest servers">Latest MQTT Status</p><span class="value">{{ lastMqttStatus || 'N/A' }}</span></div>
-          <div class="latest-cell-state"><p class="label">Latest Cell Status</p><span class="value">{{ latestCellStatus || 'N/A' }}</span></div>
+          <div class="hub-latest-mqtt-status"><p class="label" title="The time of the last status message from the hub.">Latest MQTT Status</p><span class="value">{{ lastMqttStatus || 'N/A' }}</span></div>
+          <div class="latest-cell-state"><p class="label" title="The time of the last cellular status message from the hub.">Latest Cell Status</p><span class="value">{{ latestCellStatus || 'N/A' }}</span></div>
         </div>
       </div>
 
@@ -193,6 +211,31 @@ export default {
           lastWs: Day.getFuzzyTimestampWithEpoch(matchingDeviceInfo?.last_ob_epoch) || 'N/A'
         };
       });
+    },
+    getModuleInformation(hardwareRevision) {
+      if (hardwareRevision === '0') {
+        return 'Avnet (0)';
+      } else if (hardwareRevision === '1') {
+        return 'Laird (1)';
+      } else if (hardwareRevision === '2') {
+        return 'Espressif (2)';
+      } else {
+        return hardwareRevision;
+      }
+    },
+    getHubIdentifier(id) {
+      switch(id) {
+      case 0:
+        return 'WF-HUB01 (0)';
+      case 1:
+        return 'WF-HUBP (1)';
+      case 2:
+        return 'TH-HUB-01 (2)';
+      case 3:
+        return 'TH-HUB-01 (3)';
+      case 4:
+        return 'TH-HUBC-01a (4)';
+      }
     },
     getDeviceTypeFromSerial(serial) {
       return DataDisplay.getDeviceTypeFromSerial(serial);
