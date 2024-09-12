@@ -16,6 +16,13 @@ import '../../assets/css/header.css';
 
 export default {
   name: 'NavigationBar',
+  props: {
+    selectedMenuTitle: {
+      type: String,
+      required: false,
+      default: ''
+    }
+  },
   data() {
     return {
       navItems: [
@@ -35,7 +42,20 @@ export default {
     updateTitle(name) {
       this.activeItem = name;
       this.$emit('update-title', name);
+    },
+    setActive(itemName) {
+      this.activeItem = itemName;
     }
+  },
+  watch: {
+    selectedMenuTitle(newTitle) {
+      // Watch for changes in selectedMenuTitle and update activeItem
+      this.setActive(newTitle);
+    }
+  },
+  mounted() {
+    // Set the active item when the component is mounted
+    this.setActive(this.selectedMenuTitle);
   }
 };
 </script>

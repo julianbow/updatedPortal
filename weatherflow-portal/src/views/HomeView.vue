@@ -301,9 +301,13 @@ export default {
     },
     getDisplayDate(timestamp) {
       return Day.getUTCDate(timestamp);
+    },
+    updateTitle() {
+      this.$emit('update-title', "Home");
     }
   },
   mounted() {
+    this.updateTitle();
     this.requestor = new Requestor();
     this.fetchAccountsCreated();
     this.fetchActiveAccounts();

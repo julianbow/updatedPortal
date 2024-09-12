@@ -79,9 +79,13 @@ export default {
     formatTimestamp(timestamp) {
       return Day.formatTimestamp(timestamp);
     },
+    updateTitle() {
+      this.$emit('update-title', "Users");
+    }
   },
   mounted() {
     this.requestor = new Requestor();
+    this.updateTitle();
   },
 };
 </script>

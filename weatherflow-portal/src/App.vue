@@ -1,9 +1,9 @@
 <template>
   <!-- eslint-disable vue/no-multiple-template-root -->
     <AppHeader :title="selectedMenuTitle" />
-    <NavigationBar @update-title="setMenuTitle" />
+    <NavigationBar :selectedMenuTitle="selectedMenuTitle" @update-title="setMenuTitle" />
     <div id="content">
-      <RouterView />
+      <RouterView @update-title="setMenuTitle" />
     </div>
   <!-- eslint-enable vue/no-multiple-template-root -->
 </template>
@@ -20,7 +20,7 @@ export default {
   },
   data() {
     return {
-      selectedMenuTitle: 'Home'
+      selectedMenuTitle: ''
     };
   },
   methods: {
