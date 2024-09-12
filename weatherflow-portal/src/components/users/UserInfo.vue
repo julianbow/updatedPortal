@@ -7,7 +7,22 @@
     <div class="account-info">
       <div>
         <p class="label">User ID:</p>
-        <span class="value">{{ selectedUser.user_id }}</span>
+        <div class="user-id">
+            <a target="_blank"
+              :href="`https://devp.weatherflow.com/swd/rest/stations_audit?&include_all_records=true&user_id_filter=${selectedUser.user_id}&api_key=791da36a-bf09-4025-970b-a9158378ec59`"
+              class="value"
+            >
+            {{ selectedUser.user_id }}
+          </a>
+          <span
+            class="copy"
+            @click="copyToClipboard(selectedUser.user_id)"
+            @mouseover="showTooltip = false"
+          >
+            Copy
+          </span>
+          <span v-if="showTooltip" class="tooltip">Copied!</span>
+        </div>
       </div>
       <div>
         <p class="label">Created Date:</p>
@@ -17,6 +32,7 @@
         <p class="value">Last Used:</p>
         <span class="label">{{ formatTimestamp(selectedUser.last_authenticated) }}</span>
       </div>
+      <span class="user-settings"></span>
     </div>
 
     <div id="stations" v-if="stations.length">
@@ -101,6 +117,7 @@ export default {
       arbitraryLocations: [],
       clientIds: [],
       accessTokens: [],
+      showTooltip: false,
       requestor: null,
     };
   },
@@ -123,15 +140,24 @@ export default {
       const index = this.expandedStations.indexOf(stationId);
 
       if (index !== -1) {
-        this.expandedStations.splice(index, 1); // Collapse station if already expanded
+        this.expandedStations.splice(index, 1);
       } else {
-        this.expandedStations.push(stationId); // Expand station if not expanded
+        this.expandedStations.push(stationId);
 
-        // Fetch station details if not already fetched
         if (!this.stationDetailsMap[stationId]) {
           this.fetchStationDetails(stationId);
         }
       }
+    },
+    copyToClipboard(userId) {
+      navigator.clipboard.writeText(userId).then(() => {
+        this.showTooltip = true;
+        setTimeout(() => {
+          this.showTooltip = false;
+        }, 1500);
+      }).catch(err => {
+        console.error('Error copying to clipboard', err);
+      });
     },
     isStationExpanded(stationId) {
       return this.expandedStations.includes(stationId);
