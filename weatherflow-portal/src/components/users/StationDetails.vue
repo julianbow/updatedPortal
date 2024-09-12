@@ -14,7 +14,6 @@
           </div>
         </div>
         <div class="station-helpers">
-          {{ console.log(stationDetails) }}
           <a title="Continuous Learning">CL</a>
           <a title="Artificial Information Station">AIS</a>
           <a title="Meta Data">MD</a>
@@ -27,14 +26,14 @@
           <div><p class="label">Serial</p><span class="value">{{ stationHub.serial_number || 'N/A' }}</span></div>
           <div><p class="label">Device ID</p><span class="value">{{ stationHub.device_id || 'N/A' }}</span></div>
           <div><p class="label" title="Radio Frequency">Frequency</p><span class="value">{{ hubFrequency || 'N/A' }}</span></div>
-          <div><p class="label">FW Platform</p><span class="value">{{ stationHub.hardware_revision || 'N/A' }}</span></div>
+          <div><p class="label" title="Firmware Platform">FW Platform</p><span class="value">{{ stationHub.hardware_revision || 'N/A' }}</span></div>
           <div><p class="label">Firmware</p><span class="value">{{ stationHub.firmware_revision || 'N/A' }}</span></div>
           <div><p class="label">EFR32 Firmware</p><span class="value">{{ efr32Firmware || 'N/A' }}</span></div>
           <div><p class="label">Hardware Type</p><span class="value">{{ hubHardware.hardware_type }}</span></div>
           <div><p class="label">Device Locked</p><span class="value">{{ hubHardware.device_locked }}</span></div>
         </div>
         <div class="station-info-col-2">
-          <div><p class="label">State</p><span class="value">{{ hubState || 'N/A' }}</span></div>
+          <div><p class="label">State</p><a target="_blank" :href="`https://tempestwx.com/settings/station/${stationDetails.station_id}/status`" class="value">{{ hubState || 'N/A' }}</a></div>
           <div><p class="label">Wi-Fi Signal Strength</p><span class="value">{{ hubRssi || 'N/A' }}</span></div>
           <div><p class="label">Cellular</p><span class="value">{{ cellularStatus || 'N/A' }}</span></div>
           <div><p class="label">Wifi</p><span class="value">{{ hubHardware.wifi || 'N/A' }}</span></div>
@@ -189,6 +188,7 @@ export default {
           status: matchingDeviceInfo.sensor_status,
           rssi: matchingDeviceInfo?.rssi || 'N/A',
           battery: matchingDeviceInfo?.voltage || 'N/A',
+          uptime: DataDisplay.calculateUptimeDay(matchingDeviceInfo?.uptime) || 'N/A',
           lastMqtt: Day.getFuzzyTimestampWithEpoch(matchingDeviceInfo?.last_mqtt_ob_epoch) || 'N/A',
           lastWs: Day.getFuzzyTimestampWithEpoch(matchingDeviceInfo?.last_ob_epoch) || 'N/A'
         };

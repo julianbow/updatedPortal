@@ -96,7 +96,3 @@ html, body {
 .sort.up {
 	transform: rotate(180deg);
 }
-
-.label {
-	cursor: default;
-}

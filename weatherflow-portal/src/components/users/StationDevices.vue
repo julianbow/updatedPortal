@@ -13,6 +13,7 @@
               <th title="Above Ground Level (in meters)">AGL</th>
               <th>RSSI</th>
               <th>Batt</th>
+              <th>Uptime</th>
               <th>MQTT</th>
               <th title="Last Web Socket Connection">WS</th>
           </tr>
@@ -35,6 +36,7 @@
           <td v-html="getFixedValue(device.agl, 1)"></td>
           <td class="device-rssi" v-html="device.rssi"></td>
           <td class="device-battery" v-html="device.battery"></td>
+          <td class="device-uptime" v-html="device.uptime"></td>
           <td class="device-last-mqtt" v-html="device.lastMqtt"></td>
           <td class="device-last-ws" v-html="device.lastWs"></td>
         </tr>
@@ -44,7 +46,7 @@
             <td colspan="4" class="hub-device-request-calibration">Hub Device Settings (Reset)</td>
             <td v-if="device.device_type !== 'AR'" colspan="4">Download Data</td>
             <td v-else colspan="8">Download Data</td>
-            <td v-if="device.device_type !== 'AR'" colspan="4" class="device-reboot" v-html="device.reboot"></td>
+            <td v-if="device.device_type !== 'AR'" colspan="5" class="device-reboot" v-html="device.reboot"></td>
         </tr>
       </tbody>
     </table>

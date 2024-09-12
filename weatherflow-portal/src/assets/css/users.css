@@ -67,7 +67,7 @@
     max-height: 200px;
     overflow-y: auto;
     scrollbar-width: thin;
-    scrollbar-color: rgba(0, 0, 0, 0.3) transparent;
+    scrollbar-color: #512b59 transparent;
 }
 
 #general-list table{

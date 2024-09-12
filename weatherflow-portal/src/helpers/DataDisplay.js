@@ -216,6 +216,16 @@ class DataDisplay {
 
     return signal;
   };
+
+  static calculateUptimeDay = function (value) {
+    if (value) {
+      const SECONDS_PER_DAY = 86400;
+      const days = Math.floor(value / SECONDS_PER_DAY);
+
+      return `${days}d`;
+    }
+    return null;
+  }
 }
 
 export default DataDisplay;

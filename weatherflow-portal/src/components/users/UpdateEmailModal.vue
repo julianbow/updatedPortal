@@ -84,7 +84,7 @@ export default {
 
         try {
           const response = await this.requestor.makePutRequest('account_management/update_user_email', urlData);
-          console.log(response)
+
           if (response.data.status_code === 0 && response.data.status_message === '0 SUCCESS') {
             alert('Email successfully updated!');
 
