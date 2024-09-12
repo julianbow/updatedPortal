@@ -49,7 +49,7 @@
     filter: invert(16%) sepia(56%) saturate(724%) hue-rotate(244deg) brightness(95%) contrast(88%);
 }
 
-.arb-locations, .access-tokens, .client-ids {
+.arb-locations, .access-tokens, .client-ids, .user-settings-modal {
     padding: 10px;
 }
 
@@ -426,6 +426,7 @@
 .copy {
     height: 20px;
     width: 20px;
+    padding-left: 5px;
     content: url('../images/copy.svg');
     filter: invert(16%) sepia(8%) saturate(7041%) hue-rotate(253deg) brightness(98%) contrast(85%);
     cursor: pointer;

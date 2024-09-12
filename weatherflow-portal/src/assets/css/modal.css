@@ -230,6 +230,15 @@ input[type="text"] {
     font-size: 20px;
 }
 
+.settings-obj {
+    white-space: pre;
+    margin: 0;
+    font-family: monospace;
+    font-size: 15px;
+    max-height: 500px;
+    overflow: scroll;
+}
+
 .notification-info {
     display: inline-block;
     padding: 0 6px;

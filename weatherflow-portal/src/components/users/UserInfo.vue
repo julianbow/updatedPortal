@@ -21,7 +21,7 @@
           >
             Copy
           </span>
-          <span v-if="showTooltip" class="tooltip">Copied!</span>
+          <span v-show="showTooltip" class="tooltip">Copied!</span>
         </div>
       </div>
       <div>
@@ -32,7 +32,7 @@
         <p class="value">Last Used:</p>
         <span class="label">{{ formatTimestamp(selectedUser.last_authenticated) }}</span>
       </div>
-      <span class="user-settings"></span>
+      <span class="user-settings" @click="openUserSettings"></span>
     </div>
 
     <div id="stations" v-if="stations.length">
@@ -84,26 +84,34 @@
       :userId="selectedUser.user_id"
       ref="updateEmailModal"
     />
+
+    <UserSettings
+      :userId="selectedUser.user_id"
+      :requestor="requestor"
+      ref="userSettings"
+    />
   </div>
 </template>
 
 <script>
-import UpdateEmailModal from './UpdateEmailModal.vue';
 import StationMessages from './StationMessages.vue';
 import StationDetails from './StationDetails.vue';
 import ArbitraryLocations from './ArbitraryLocations.vue';
 import AccessTokens from './AccessTokens.vue';
 import ClientIds from './ClientIds.vue';
+import UpdateEmailModal from './UpdateEmailModal.vue';
+import UserSettings from './UserSettings.vue';
 import Requestor from '../../helpers/Requestor';
 
 export default {
   components: {
-    UpdateEmailModal,
     StationMessages,
     StationDetails,
     ArbitraryLocations,
     AccessTokens,
     ClientIds,
+    UpdateEmailModal,
+    UserSettings
   },
   props: {
     selectedUser: Object,
@@ -176,6 +184,9 @@ export default {
     showStationMessages(index, stationId, stationName) {
       this.$refs.stationMessages[index].openModal(stationId, stationName);
     },
+    openUserSettings() {
+      this.$refs.userSettings.openModal();
+    }
   },
   mounted() {
     this.requestor = new Requestor();
