@@ -15,4 +15,10 @@ module.exports = {
     'vue/no-multiple-template-root': 'off',
     'indent': ['error', 2],
   },
+  compilerOptions: {
+    "typeRoots": [
+      "./node_modules/@types",
+      "./types"
+    ]
+  }
 };

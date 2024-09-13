@@ -1,0 +1,6 @@
+{
+  "projects": {
+    "default": "weatherflow-portal",
+    "dev": "dev-weatherflow-portal"
+  }
+}

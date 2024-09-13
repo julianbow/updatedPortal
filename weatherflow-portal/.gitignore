@@ -30,3 +30,5 @@ coverage
 *.tsbuildinfo
 
 /config.json
+
+/firebase.js
