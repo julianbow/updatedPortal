@@ -122,6 +122,7 @@ export default {
       devices: null,
       deviceLinks: [],
       hardwareType: null,
+      isTempestOne: false,
       selectedDeviceId: null
     };
   },
@@ -153,18 +154,28 @@ export default {
       }
 
       this.getHubHardwareInfo(hub.serial_number);
+      this.isTempestOneHub(hub.serial_number);
+
       return hub;
     },
     async getHubHardwareInfo(serial) {
       try {
         const response = await this.requestor.makeGetRequest("device_locked_status", {serial_number: serial});
-        console.log(response)
+
         if (response.status === 200) {
           this.hubHardware.hardware_type = response.data.hardware.hardware_type;
           this.hubHardware.ethernet = response.data.hardware.ethernet;
           this.hubHardware.wifi = response.data.hardware.wifi;
           this.hubHardware.device_locked = response.data.is_device_locked;
         }
+      } catch (error) {
+        console.error('Error fetching device_locked_status:', error);
+      }
+    },
+    async isTempestOneHub(serial) {
+      try {
+        const response = await this.requestor.makeTempestOneGetRequest("device_locked_status", {serial_number: serial});
+        console.log(response)
       } catch (error) {
         console.error('Error fetching device_locked_status:', error);
       }

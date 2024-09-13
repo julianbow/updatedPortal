@@ -53,7 +53,6 @@ export default {
     async handleSearch(urlData) {
       try {
         const response = await this.requestor.makePostRequest('report', urlData);
-        console.log('Search results:', response.data);
         this.searchResults = response.data;
         this.searchError = this.searchResults.length === 0;
         this.selectedUser = null;
@@ -63,7 +62,6 @@ export default {
     },
     async showUser(userId) {
       this.selectedUser = this.searchResults.find((user) => user.user_id === userId);
-      console.log('Selected user:', this.selectedUser);
 
       if (this.selectedUser) {
         this.$router.push({ path: `/users/${userId}` });

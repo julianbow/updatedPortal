@@ -1,11 +1,12 @@
 import axios from 'axios';
-import { apiKey, apiKey2, apiKey3 } from '../../config.json'
+import { apiKey, apiKey2, apiKey3, apiKeyT1 } from '../../config.json'
 class Requestor {
   constructor(settings = {}) {
     const defaultSettings = {
       apiKey: apiKey,
       apiKey2: apiKey2,
       apiKey3: apiKey3,
+      apiKeyT1: apiKeyT1,
       baseUrl: 'https://swd.weatherflow.com/swd/rest/',
       baseUrl2: 'http://iot.weatherflow.com/metrics/rest/',
       baseUrl3: 'https://development-swd.weatherflow.com/',
@@ -82,6 +83,11 @@ class Requestor {
   makeGetRequestWithNoAPIKey(endPoint, urlData) {
     const url = `${this.settings.baseUrl}${endPoint}`;
     return axios.get(url, { params: urlData });
+  }
+
+  makeTempestOneGetRequest(endPoint, urlData) {
+    const url = `${this.settings.baseUrl}${endPoint}?api_key=${this.settings.apiKeyT1}&${new URLSearchParams(urlData).toString()}`;
+    return axios.get(url);
   }
 }
 
