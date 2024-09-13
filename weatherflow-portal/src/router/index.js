@@ -19,7 +19,12 @@ const router = createRouter({
       path: '/users',
       name: 'users',
       component: UsersView
-    }
+    },
+    {
+      path: '/users/:userId', // Dynamic route for user ID
+      name: 'UserInfo',
+      component: UsersView,
+    },
   ]
 });
 

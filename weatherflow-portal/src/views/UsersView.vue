@@ -53,6 +53,7 @@ export default {
     async handleSearch(urlData) {
       try {
         const response = await this.requestor.makePostRequest('report', urlData);
+        console.log('Search results:', response.data);
         this.searchResults = response.data;
         this.searchError = this.searchResults.length === 0;
         this.selectedUser = null;
@@ -60,10 +61,12 @@ export default {
         this.searchError = true;
       }
     },
-    async showUser(userId, userData = null) {
-      this.selectedUser = userData || this.searchResults.find((user) => user.user_id === userId);
+    async showUser(userId) {
+      this.selectedUser = this.searchResults.find((user) => user.user_id === userId);
+      console.log('Selected user:', this.selectedUser);
 
       if (this.selectedUser) {
+        this.$router.push({ path: `/users/${userId}` });
         await this.fetchUserStations(userId);
       }
     },
@@ -82,9 +85,23 @@ export default {
       this.$emit('update-title', "Users");
     }
   },
+  watch: {
+    '$route.params.userId'(newUserId) {
+      if (newUserId) {
+        this.showUser(newUserId);
+      }
+    }
+  },
   mounted() {
     this.requestor = new Requestor();
     this.updateTitle();
+
+    // Check if a userId is already in the route when the component mounts
+    const userIdFromRoute = this.$route.params.userId;
+    if (userIdFromRoute) {
+      console.log('userIdFromRoute:', userIdFromRoute);
+      this.showUser(userIdFromRoute);
+    }
   },
 };
 </script>
