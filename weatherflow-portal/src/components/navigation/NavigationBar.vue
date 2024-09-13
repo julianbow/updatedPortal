@@ -49,12 +49,10 @@ export default {
   },
   watch: {
     selectedMenuTitle(newTitle) {
-      // Watch for changes in selectedMenuTitle and update activeItem
       this.setActive(newTitle);
     }
   },
   mounted() {
-    // Set the active item when the component is mounted
     this.setActive(this.selectedMenuTitle);
   }
 };

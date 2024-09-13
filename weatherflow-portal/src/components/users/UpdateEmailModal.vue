@@ -2,7 +2,7 @@
     <div class="modal-ctn" v-if="isModalVisible">
       <div class="modal-content">
         <h2 class="email-name">{{ email }}</h2>
-        <a href="#" class="modal-close" @click="closeEmailModal"></a>
+        <a class="modal-close" @click="closeEmailModal"></a>
         <!-- Tab Bar -->
         <div class="tab-bar">
           <a

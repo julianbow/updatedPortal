@@ -56,7 +56,7 @@ class Day {
   static getFuzzyTimestampWithEpoch(epoch) {
     let retval = "N/A";
 
-    if (epoch !== undefined) {
+    if (epoch !== undefined && epoch !== null) {
       const dt = dayjs(epoch * 1000);
       const now = dayjs();
       const diffInSeconds = now.diff(dt, 'second');
@@ -66,7 +66,7 @@ class Day {
       } else if (diffInSeconds >= 2592000) {
         retval = `${Math.floor(diffInSeconds / 2592000)}M ago`;
       } else if (diffInSeconds >= 86400) {
-        retval = `${Math.floor(diffInSeconds / 86400)}D ago`;
+        retval = `${Math.floor(diffInSeconds / 86400)}d ago`;
       } else if (diffInSeconds >= 3600) {
         retval = `${Math.floor(diffInSeconds / 3600)}h ago`;
       } else if (diffInSeconds >= 60) {

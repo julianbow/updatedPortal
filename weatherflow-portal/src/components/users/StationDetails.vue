@@ -47,7 +47,7 @@
               </p>
             <span class="value">{{ efr32Firmware || 'N/A' }}</span>
           </div>
-          <div><p class="label" title="Type of Hub">Hardware Type</p><span class="value">{{ getHubIdentifier(hubHardware.hardware_type) }}</span></div>
+            <div><p class="label" title="Type of Hub">Hardware Type</p><span class="value" @click="showHardwareImage" style="cursor: pointer; text-decoration: underline;">{{ getHubIdentifier(hubHardware.hardware_type) }}</span></div>
           <div><p class="label" title="Is hub allowed to be set up on a different user account?">Device Locked</p><span class="value">{{ hubHardware.device_locked }}</span></div>
         </div>
         <div class="station-info-col-2">
@@ -77,6 +77,11 @@
                 :stationDetails="stationDetails"
             />
         </div>
+        <HardwareModal
+          :hardwareType="hubHardware.hardware_type"
+          :hardwareName ="this.hardwareType"
+          ref="showHardwareModal"
+        />
   </div>
   </template>
 
@@ -86,12 +91,14 @@ import DataDisplay from '@/helpers/DataDisplay';
 import DeviceStatus from '@/helpers/DeviceStatus';
 import StationDevices from './StationDevices.vue';
 import StationInfo from './StationInfo.vue';
+import HardwareModal from './HardwareModal.vue';
 import Day from '@/helpers/Day';
 
 export default {
   components: {
     StationDevices,
-    StationInfo
+    StationInfo,
+    HardwareModal: HardwareModal
   },
   props: {
     stationDetails: Object,
@@ -114,6 +121,7 @@ export default {
       latestCellStatus: null,
       devices: null,
       deviceLinks: [],
+      hardwareType: null,
       selectedDeviceId: null
     };
   },
@@ -122,13 +130,10 @@ export default {
       return this.getHubForStation(this.stationDetails.devices);
     },
     generateBFLink() {
-      // Generate the BF link dynamically using stationDetails
       const stationId = this.stationDetails?.station_id || 'default_station_id';
-      const startDate = this.getFormattedDateForLink(); // You can replace this with your desired date logic
-      const startTime = '6'; // Example start time
-      const duration = '36'; // Example duration in hours
+      const startDate = this.getFormattedDateForLink();
 
-      return `https://wfx.weatherflow.com/vv/stns=${stationId}&sources=tempest&sdate=${startDate}&stime=${startTime}&dur=${duration}&ptype=single`;
+      return `https://wfx.weatherflow.com/vv/stns=${stationId}&sources=tempest&sdate=${startDate}&stime=6&dur=36&ptype=single`;
     }
   },
   methods: {
@@ -153,6 +158,7 @@ export default {
     async getHubHardwareInfo(serial) {
       try {
         const response = await this.requestor.makeGetRequest("device_locked_status", {serial_number: serial});
+        console.log(response)
         if (response.status === 200) {
           this.hubHardware.hardware_type = response.data.hardware.hardware_type;
           this.hubHardware.ethernet = response.data.hardware.ethernet;
@@ -180,7 +186,7 @@ export default {
       this.cellularStatus = this.diagnostics.getCellularStatus();
       this.hubUptime = this.diagnostics.getHubUptime();
       this.lastMqttStatus = Day.getFuzzyTimestampWithEpoch(this.diagnostics.getLastMQTTStatus());
-      this.latestCellStatus = this.diagnostics.getCellularTimestamp();
+      this.latestCellStatus = Day.getFuzzyTimestampWithEpoch(this.diagnostics.getCellularTimestamp());
       this.devices = this.diagnostics.getDevices();
     },
     updateDeviceData() {
@@ -226,20 +232,31 @@ export default {
     getHubIdentifier(id) {
       switch(id) {
       case 0:
-        return 'WF-HUB01 (0)';
+        this.hardwareType = 'WF-HUB01 (0)';
+        return this.hardwareType;
       case 1:
-        return 'WF-HUBP (1)';
+        this.hardwareType = 'WF-HUBP (1)';
+        return this.hardwareType;
       case 2:
-        return 'TH-HUB-01 (2)';
+        this.hardwareType = 'TH-HUB-01 (2)';
+        return this.hardwareType;
       case 3:
-        return 'TH-HUB-01 (3)';
+        this.hardwareType = 'T1-HUB-01 (3)';
+        return this.hardwareType;
       case 4:
-        return 'TH-HUBC-01a (4)';
+        this.hardwareType = 'T1-HUBC-01a (4)';
+        return this.hardwareType;
+      case 5:
+        this.hardwareType = 'T1-HUBC-01b (5)';
+        return this.hardwareType;
       }
     },
     getDeviceTypeFromSerial(serial) {
       return DataDisplay.getDeviceTypeFromSerial(serial);
-    }
+    },
+    showHardwareImage() {
+      this.$refs.showHardwareModal.showModal();
+    },
   },
   mounted() {
     this.initializeDiagnostics();

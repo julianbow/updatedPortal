@@ -441,7 +441,43 @@
     transform: translate(-70%, -100%);
     white-space: nowrap;
     z-index: 1000;
-  }
+}
+
+.hardware-type {
+    text-align: center;
+}
+
+/* Device Images */
+
+.T1-HUB-01 {
+    height: 40%;
+    width: 40%;
+    content: url('../images/T1-HUB-01.png');
+}
+
+.TH-HUB-01 {
+    height: 40%;
+    width: 40%;
+    content: url('../images/TH-HUB-01.png');
+}
+
+.WF-HUBP {
+    height: 40%;
+    width: 40%;
+    content: url('../images/WF-HUBP.png');
+}
+
+.WF-HUB01 {
+    height: 40%;
+    width: 40%;
+    content: url('../images/WF-HUB01.png');
+}
+
+.T1-HUBC {
+    height: 40%;
+    width: 40%;
+    content: url('../images/T1-HUBC.png');
+}
 
 /* Optional: Better control for medium-sized screens */
 @media screen and (min-width: 769px) and (max-width: 1060px) {

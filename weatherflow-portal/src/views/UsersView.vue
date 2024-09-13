@@ -23,7 +23,6 @@
   </div>
 </template>
 
-
 <script>
 import '../assets/css/main.css';
 import '../assets/css/users.css';
