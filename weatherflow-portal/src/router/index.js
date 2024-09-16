@@ -6,7 +6,7 @@ import { getAuth, onAuthStateChanged } from 'firebase/auth';
 
 const auth = getAuth();
 
-// Helper function to get the current user with a promise
+// Helper function to get the current user from Firebase with a promise
 function getCurrentUser() {
   return new Promise((resolve, reject) => {
     const unsubscribe = onAuthStateChanged(
@@ -18,6 +18,12 @@ function getCurrentUser() {
       reject
     );
   });
+}
+
+// Helper function to get the stored user from localStorage
+function getStoredUser() {
+  const user = localStorage.getItem('user');
+  return user ? JSON.parse(user) : null;
 }
 
 const router = createRouter({
@@ -58,8 +64,20 @@ const router = createRouter({
 // Navigation guard to check for authenticated users
 router.beforeEach(async (to, from, next) => {
   const requiresAuth = to.matched.some((record) => record.meta.requiresAuth);
-  const currentUser = await getCurrentUser();
 
+  let currentUser = getStoredUser();
+
+  // If no user is found in localStorage, check Firebase Auth
+  if (!currentUser) {
+    currentUser = await getCurrentUser();
+
+    // If we get a user from Firebase, store it in localStorage
+    if (currentUser) {
+      localStorage.setItem('user', JSON.stringify(currentUser));
+    }
+  }
+
+  // Redirect logic based on authentication
   if (requiresAuth && !currentUser) {
     next('/login');
   } else if (to.path === '/login' && currentUser) {
