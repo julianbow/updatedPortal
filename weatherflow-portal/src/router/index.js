@@ -60,10 +60,16 @@ router.beforeEach(async (to, from, next) => {
   const requiresAuth = to.matched.some((record) => record.meta.requiresAuth);
   const currentUser = await getCurrentUser();
 
+  console.log('requiresAuth:', requiresAuth);
+  console.log('currentUser:', currentUser);
+  console.log('to.path:', to.path);
+
   if (requiresAuth && !currentUser) {
     next('/login');
   } else if (to.path === '/login' && currentUser) {
     next('/');
+  } else if (to.path === "/" && !currentUser) {
+    next('/login');
   } else {
     next();
   }

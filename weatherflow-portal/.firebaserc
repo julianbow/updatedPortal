@@ -2,5 +2,14 @@
   "projects": {
     "default": "weatherflow-portal",
     "dev": "dev-weatherflow-portal"
+  },
+  "targets": {
+    "weatherflow-portal": {
+      "hosting": {
+        "dev-weatherflow-portal": [
+          "dev-weatherflow-portal"
+        ]
+      }
+    }
   }
 }
