@@ -52,6 +52,7 @@ h2 {
 }
 
 #show-hide-password {
+    background-image: url(../images/eye.svg);
     background-repeat: no-repeat;
     background-position: center;
     background-size: cover;

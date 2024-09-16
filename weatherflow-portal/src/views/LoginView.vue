@@ -65,9 +65,9 @@ export default {
       password: '',
       error: '',
       showRegistration: false,
-      passwordVisible: false, // To toggle password visibility
-      eyeIcon, // Add the imported eye icon to the data
-      eyeSlashIcon // Add the imported eye-slash icon to the data
+      passwordVisible: false,
+      eyeIcon,
+      eyeSlashIcon
     };
   },
   methods: {
