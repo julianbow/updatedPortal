@@ -18,7 +18,7 @@
       </div>
 
       <!-- Render the router view -->
-      <div id="content">
+      <div id="content" :class="{ login: isAuthenticated === false }">
         <RouterView @update-title="setMenuTitle" />
       </div>
     </div>

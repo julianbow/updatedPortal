@@ -47,8 +47,12 @@
 }
 
 #content {
-    transition: margin-left 0.3s ease; /* Smooth transition for content shift */
-    margin-left: 75px; /* Initial margin when menu is collapsed */
+    transition: margin-left 0.3s ease;
+    margin-left: 75px;
+}
+
+#content.login {
+    margin: 0;
 }
 
 #main-menu:hover~#content {
