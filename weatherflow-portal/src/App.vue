@@ -1,12 +1,23 @@
 <template>
   <div>
-    <!-- Show the login page if the user is not authenticated -->
-    <LoginView v-if="!isAuthenticated" />
+    <!-- Wait until auth check is complete -->
+    <div v-if="!isAuthChecked">
+      <!-- Optional: Include a loading spinner or message here -->
+    </div>
 
-    <!-- Show the main app if the user is authenticated -->
+    <!-- Render content after auth check -->
     <div v-else>
-      <AppHeader :title="selectedMenuTitle" />
-      <NavigationBar :selectedMenuTitle="selectedMenuTitle" @update-title="setMenuTitle" />
+      <!-- Show header and navigation if authenticated -->
+      <div v-if="isAuthenticated">
+        <AppHeader :title="selectedMenuTitle" />
+        <NavigationBar
+          :selectedMenuTitle="selectedMenuTitle"
+          @update-title="setMenuTitle"
+          @log-out="logout"
+        />
+      </div>
+
+      <!-- Render the router view -->
       <div id="content">
         <RouterView @update-title="setMenuTitle" />
       </div>
@@ -15,11 +26,11 @@
 </template>
 
 <script>
-import { onAuthStateChanged, signOut } from "firebase/auth"; // Firebase auth functions
-import { auth } from '../firebase.js'; // Firebase auth instance
+import { onAuthStateChanged, signOut } from "firebase/auth";
+import { auth } from '../firebase.js';
 import AppHeader from './components/navigation/AppHeader.vue';
 import NavigationBar from './components/navigation/NavigationBar.vue';
-import LoginView from './views/LoginView.vue'; // Your login component
+import LoginView from './views/LoginView.vue';
 
 export default {
   components: {
@@ -30,9 +41,10 @@ export default {
   data() {
     return {
       selectedMenuTitle: '',
-      isAuthenticated: false, // Authentication state
+      isAuthenticated: false,
+      isAuthChecked: false,
     };
-  },
+},
   methods: {
     setMenuTitle(title) {
       this.selectedMenuTitle = title;
@@ -46,10 +58,11 @@ export default {
     }
   },
   mounted() {
-    // Listen for changes to authentication state
     onAuthStateChanged(auth, (user) => {
       this.isAuthenticated = !!user;
+      this.isAuthChecked = true;
     });
-  }
+},
+
 };
 </script>

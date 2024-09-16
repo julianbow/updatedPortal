@@ -42,7 +42,8 @@
 
   <script>
   import { ref } from 'vue';
-  import { auth } from '../../firebase.js'; // Firebase auth instance
+  import { auth } from '../../firebase.js';
+  import { useRouter } from 'vue-router'; // Import useRouter
   import { signInWithEmailAndPassword, createUserWithEmailAndPassword } from 'firebase/auth';
 
   export default {
@@ -51,12 +52,13 @@
       const password = ref('');
       const error = ref('');
       const showRegistration = ref(false);
+      const router = useRouter(); // Use the router
 
       const login = async () => {
         try {
           await signInWithEmailAndPassword(auth, email.value, password.value);
           error.value = '';
-          // Handle successful login
+          router.push('/home'); // Redirect to home after login
         } catch (err) {
           error.value = 'Failed to log in. Please check your credentials.';
           console.error(err);

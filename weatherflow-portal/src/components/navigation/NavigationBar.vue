@@ -8,6 +8,7 @@
         </RouterLink>
       </li>
     </ul>
+    <span @click.prevent="logOut()">Log Out</span>
   </div>
 </template>
 
@@ -45,6 +46,9 @@ export default {
     },
     setActive(itemName) {
       this.activeItem = itemName;
+    },
+    logOut() {
+      this.$emit('log-out');
     }
   },
   watch: {
