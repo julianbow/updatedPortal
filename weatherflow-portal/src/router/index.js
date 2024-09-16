@@ -36,6 +36,11 @@ const router = createRouter({
     },
     {
       path: '/',
+      name: 'root',
+      redirect: '/home',  // Redirect base URL to /home
+    },
+    {
+      path: '/',
       name: 'home',
       component: HomeView,
       meta: { requiresAuth: true },
