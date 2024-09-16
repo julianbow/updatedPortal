@@ -21,11 +21,11 @@
         <div v-if="activeTab === 'update'" class="tab-content">
           <div class="form-row">
             <label for="newEmail">New Email: </label>
-            <input type="text" v-model="newEmail" size="25">
+            <input class="email-input" type="text" v-model="newEmail" size="25">
           </div>
           <div class="form-row">
             <label for="confirmEmail">Confirm New Email: </label>
-            <input type="text" v-model="confirmEmail" size="25">
+            <input class="email-input" type="text" v-model="confirmEmail" size="25">
           </div>
           <div class="form-align-right">
             <input type="button" class="btn" @click="submitNewEmail" value="Update">
@@ -37,7 +37,7 @@
           <p><strong>Deleting an account removes all stations and data associated with this account.<br> This action cannot be undone.</strong></p>
           <div class="form-row">
             <label for="confirmEmail">Type Email Address to Delete: </label>
-            <input type="text" v-model="deleteEmail" size="25">
+            <input class="email-input" type="text" v-model="deleteEmail" size="25">
           </div>
           <div class="form-align-right">
             <input type="button" class="btn" @click="submitDeleteAccount" value="Delete">

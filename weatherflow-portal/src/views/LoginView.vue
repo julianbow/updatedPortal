@@ -15,8 +15,8 @@
           <input :type="passwordVisible ? 'text' : 'password'" v-model="password" required class="input-field" />
           <span
             id="show-hide-password"
-            :style="{ backgroundImage: `url(${passwordVisible ? eyeSlashIcon : eyeIcon})` }"
-            @click.prevent="showPassword()"
+            :class="passwordVisible ? 'eye-slash-icon' : 'eye-icon'"
+            @click.prevent="showPassword"
           ></span>
         </div>
         <button type="submit" class="btn">Login</button>
@@ -36,8 +36,8 @@
           <input :type="passwordVisible ? 'text' : 'password'" v-model="password" required class="input-field" />
           <span
             id="show-hide-password"
-            :style="{ backgroundImage: `url(${passwordVisible ? eyeSlashIcon : eyeIcon})` }"
-            @click.prevent="showPassword()"
+            :class="passwordVisible ? 'eye-slash-icon' : 'eye-icon'"
+            @click.prevent="showPassword"
           ></span>
         </div>
         <button type="submit" class="btn">Register</button>
@@ -55,8 +55,6 @@
 import "@/assets/css/login.css";
 import { auth } from '../../firebase.js';
 import { signInWithEmailAndPassword, createUserWithEmailAndPassword } from 'firebase/auth';
-import eyeIcon from '@/assets/images/eye.svg'; // Import the eye icon
-import eyeSlashIcon from '@/assets/images/eye-slash.svg'; // Import the eye-slash icon
 
 export default {
   data() {
@@ -65,9 +63,7 @@ export default {
       password: '',
       error: '',
       showRegistration: false,
-      passwordVisible: false,
-      eyeIcon,
-      eyeSlashIcon
+      passwordVisible: false
     };
   },
   methods: {

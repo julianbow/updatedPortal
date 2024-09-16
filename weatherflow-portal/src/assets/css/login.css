@@ -52,19 +52,36 @@ h2 {
 }
 
 #show-hide-password {
-    background-image: url(../images/eye.svg);
-    background-repeat: no-repeat;
-    background-position: center;
-    background-size: cover;
     position: absolute;
     right: 0;
     top: 67%;
     transform: translateY(-50%);
     width: 25px;
     height: 25px;
-    opacity: 0.7;
-    cursor: pointer;
 }
+
+.eye-icon {
+    background-image: url('@/assets/images/eye.svg');
+    background-repeat: no-repeat;
+    background-position: center;
+    background-size: contain;
+    width: 25px;
+    height: 25px;
+    cursor: pointer;
+    display: inline-block;
+  }
+
+  .eye-slash-icon {
+    background-image: url('@/assets/images/eye-slash.svg');
+    background-repeat: no-repeat;
+    background-position: center;
+    background-size: contain;
+    width: 25px;
+    height: 25px;
+    cursor: pointer;
+    display: inline-block;
+  }
+
 
 .btn {
     background-color: #007bff;
