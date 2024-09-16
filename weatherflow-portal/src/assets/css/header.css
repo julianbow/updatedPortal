@@ -27,7 +27,11 @@
 }
 
 #main-menu {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
     position: fixed;
+    text-align: center;
     top: 0;
     left: 0;
     width: 75px;
@@ -98,6 +102,12 @@
     max-width: 0;
     white-space: nowrap;
     vertical-align: middle;
+}
+
+.logout-btn {
+    color: white;
+    padding-bottom: 10px;
+    cursor: pointer;
 }
 
 #main-menu li:nth-child(1) .icon {

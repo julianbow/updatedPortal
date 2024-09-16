@@ -8,7 +8,7 @@
         </RouterLink>
       </li>
     </ul>
-    <span @click.prevent="logOut()">Log Out</span>
+    <span @click.prevent="logOut()" class="logout-btn">Log Out</span>
   </div>
 </template>
 

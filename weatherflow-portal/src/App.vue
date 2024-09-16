@@ -52,6 +52,7 @@ export default {
     logout() {
       signOut(auth).then(() => {
         this.isAuthenticated = false;
+        this.$router.push('/login');
       }).catch((error) => {
         console.error("Error during logout:", error);
       });
