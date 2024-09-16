@@ -12,7 +12,12 @@
         </div>
         <div class="form-group">
           <label for="password">Password:</label>
-          <input type="password" v-model="password" required class="input-field" />
+          <input :type="passwordVisible ? 'text' : 'password'" v-model="password" required class="input-field" />
+          <span
+            id="show-hide-password"
+            :style="{ backgroundImage: `url(${passwordVisible ? eyeSlashIcon : eyeIcon})` }"
+            @click.prevent="showPassword()"
+          ></span>
         </div>
         <button type="submit" class="btn">Login</button>
         <p class="toggle-text">
@@ -28,7 +33,12 @@
         </div>
         <div class="form-group">
           <label for="password">Password:</label>
-          <input type="password" v-model="password" required class="input-field" />
+          <input :type="passwordVisible ? 'text' : 'password'" v-model="password" required class="input-field" />
+          <span
+            id="show-hide-password"
+            :style="{ backgroundImage: `url(${passwordVisible ? eyeSlashIcon : eyeIcon})` }"
+            @click.prevent="showPassword()"
+          ></span>
         </div>
         <button type="submit" class="btn">Register</button>
         <p class="toggle-text">
@@ -45,6 +55,8 @@
 import "@/assets/css/login.css";
 import { auth } from '../../firebase.js';
 import { signInWithEmailAndPassword, createUserWithEmailAndPassword } from 'firebase/auth';
+import eyeIcon from '@/assets/images/eye.svg'; // Import the eye icon
+import eyeSlashIcon from '@/assets/images/eye-slash.svg'; // Import the eye-slash icon
 
 export default {
   data() {
@@ -52,7 +64,10 @@ export default {
       email: '',
       password: '',
       error: '',
-      showRegistration: false
+      showRegistration: false,
+      passwordVisible: false, // To toggle password visibility
+      eyeIcon, // Add the imported eye icon to the data
+      eyeSlashIcon // Add the imported eye-slash icon to the data
     };
   },
   methods: {
@@ -75,6 +90,9 @@ export default {
         this.error = 'Failed to register. Please try again.';
         console.error(err);
       }
+    },
+    showPassword() {
+      this.passwordVisible = !this.passwordVisible;
     },
     toggleForm() {
       this.showRegistration = !this.showRegistration;
