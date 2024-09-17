@@ -1,7 +1,8 @@
 <template>
     <div>
-      <div class="station-hdr-2">
+      <div class="station-hdr-2" :class="{'t1': isTempestOne}">
         <div class="station-modified">
+            <span :class="{'type-tempest': !isTempestOne, 'type-tempestOne': isTempestOne}"></span>
           <div class="station-created">
             <p class="label">Station Created</p>
             <span class="value">{{ formatTimestamp(stationDetails.created) }}</span>
@@ -24,7 +25,6 @@
       <div class="hub-info">
         <div class="station-info-col-1">
           <div><p class="label">Serial</p><span class="value">{{ stationHub.serial_number || 'N/A' }}</span></div>
-          <div><p class="label">Device ID</p><span class="value">{{ stationHub.device_id || 'N/A' }}</span></div>
           <div><p class="label" title="Radio Frequency">Frequency</p><span class="value">{{ hubFrequency || 'N/A' }}</span></div>
           <div>
             <p class="label"
@@ -52,10 +52,12 @@
         </div>
         <div class="station-info-col-2">
           <div><p class="label">State</p><a target="_blank" :href="`https://tempestwx.com/settings/station/${stationDetails.station_id}/status`" class="value">{{ hubState || 'N/A' }}</a></div>
+          <div><p class="label">Device ID</p><span class="value">{{ stationHub.device_id || 'N/A' }}</span></div>
           <div><p class="label">Wi-Fi Signal Strength</p><span class="value">{{ hubRssi || 'N/A' }}</span></div>
-          <div><p class="label">Cellular</p><span class="value">{{ cellularStatus || 'N/A' }}</span></div>
+          <!-- <div><p class="label">Cellular</p><span class="value">{{ cellularStatus || 'N/A' }}</span></div>
           <div><p class="label">Wifi</p><span class="value">{{ hubHardware.wifi || 'N/A' }}</span></div>
-          <div><p class="label">Ethernet</p><span class="value">{{ hubHardware.ethernet }}</span></div>
+          <div><p class="label">Ethernet</p><span class="value">{{ hubHardware.ethernet }}</span></div> -->
+          <div><p class="label">Connectivity</p><span class="value">{{ hubHardware.connectivity }}</span></div>
           <div class="hub-uptime"><p class="label" title="Duration the device has had continuous power">Uptime</p><span class="value">{{ hubUptime || 'N/A' }}</span></div>
           <div class="hub-latest-mqtt-status"><p class="label" title="The time of the last status message from the hub.">Latest MQTT Status</p><span class="value">{{ lastMqttStatus || 'N/A' }}</span></div>
           <div class="latest-cell-state"><p class="label" title="The time of the last cellular status message from the hub.">Latest Cell Status</p><span class="value">{{ latestCellStatus || 'N/A' }}</span></div>
@@ -167,7 +169,19 @@ export default {
           this.hubHardware.ethernet = response.data.hardware.ethernet;
           this.hubHardware.wifi = response.data.hardware.wifi;
           this.hubHardware.device_locked = response.data.is_device_locked;
+
+          const cellularStatus = this.cellularStatus;
+
+          const connectivity = [];
+          if (this.hubHardware.wifi) connectivity.push('Wifi');
+          if (this.hubHardware.ethernet) connectivity.push('Ethernet');
+          if (cellularStatus !== null) {
+            connectivity.push(`Cellular (${cellularStatus})`);
+          }
+
+          this.hubHardware.connectivity = connectivity.length > 0 ? connectivity.join(' / ') : 'no connection';
         }
+
       } catch (error) {
         console.error('Error fetching device_locked_status:', error);
       }
@@ -175,7 +189,11 @@ export default {
     async isTempestOneHub(serial) {
       try {
         const response = await this.requestor.makeTempestOneGetRequest("device_locked_status", {serial_number: serial});
-        console.log(response)
+        if (response.data.status.status_code === 0) {
+          if (response.data.is_tempest_one_hub) {
+            this.isTempestOne = true;
+          }
+        }
       } catch (error) {
         console.error('Error fetching device_locked_status:', error);
       }
@@ -186,6 +204,8 @@ export default {
         ready: () => {
           this.updateDiagnosticsData();
           this.updateDeviceData();
+          // After diagnostics are initialized and cellular status is updated
+          this.getHubHardwareInfo(this.stationHub.serial_number);
         },
       });
     },
@@ -194,8 +214,8 @@ export default {
       this.efr32Firmware = this.diagnostics.efr32Firmware();
       this.hubRssi = DataDisplay.userWifiSignalDisplay(this.diagnostics.rssi());
       this.hubState = this.diagnostics.state();
-      this.cellularStatus = this.diagnostics.getCellularStatus();
       this.hubUptime = this.diagnostics.getHubUptime();
+      this.cellularStatus = this.diagnostics.getCellularStatus();
       this.lastMqttStatus = Day.getFuzzyTimestampWithEpoch(this.diagnostics.getLastMQTTStatus());
       this.latestCellStatus = Day.getFuzzyTimestampWithEpoch(this.diagnostics.getCellularTimestamp());
       this.devices = this.diagnostics.getDevices();

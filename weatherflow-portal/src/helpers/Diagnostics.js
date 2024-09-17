@@ -105,8 +105,6 @@ class Diagnostics {
       const cellStatus = this.data.cellular_status;
 
       switch (cellStatus) {
-      case -1:
-        return 'Not present';
       case 0:
         return 'Ready';
       case 1:

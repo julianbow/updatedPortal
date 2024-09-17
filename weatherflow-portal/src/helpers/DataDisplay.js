@@ -200,6 +200,9 @@ class DataDisplay {
     var signal;
 
     switch (true) {
+    case value === null:
+      signal = "Not Connected";
+      break;
     case value <= -99:
       signal = "Not Connected";
       break;
