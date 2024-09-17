@@ -81,7 +81,7 @@ export default {
       try {
         await createUserWithEmailAndPassword(auth, this.email, this.password);
         this.error = '';
-        // Handle successful registration
+        this.$router.push('/home'); // Redirect to home after login
       } catch (err) {
         this.error = 'Failed to register. Please try again.';
         console.error(err);
