@@ -416,6 +416,30 @@
     text-align: left;
 }
 
+.state {
+    display: flex;
+    flex-direction: row;
+    border-bottom: none !important;
+}
+
+.hub-state {
+    content: "";
+    background-image: url('../images/online-offline.svg');
+    height: 18px;
+    width: 18px;
+    background-size: 100%;
+    background-repeat: no-repeat;
+    margin-right: 5px;
+}
+
+.hub-state.online {
+    filter: invert(25%) sepia(95%) saturate(6372%) hue-rotate(119deg) brightness(96%) contrast(106%);
+}
+
+.hub-state.offline {
+    filter: invert(33%) sepia(100%) saturate(7449%) hue-rotate(357deg) brightness(104%) contrast(118%);
+}
+
 .checkmark {
     content: url('../images/checkBold.svg');
     filter: invert(16%) sepia(56%) saturate(724%) hue-rotate(244deg) brightness(95%) contrast(88%);

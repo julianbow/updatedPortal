@@ -51,13 +51,24 @@
           <div><p class="label" title="Is hub allowed to be set up on a different user account?">Device Locked</p><span class="value">{{ hubHardware.device_locked }}</span></div>
         </div>
         <div class="station-info-col-2">
-          <div><p class="label">State</p><a target="_blank" :href="`https://tempestwx.com/settings/station/${stationDetails.station_id}/status`" class="value">{{ hubState || 'N/A' }}</a></div>
+          <div><p class="label">State</p>
+            <div class="state">
+              {{ console.log(hubState) }}
+              <span class="hub-state" :class="{ 'online': hubState === 'online', 'offline': hubState !== 'online' }"></span>
+              <a
+              target="_blank"
+              :href="`https://tempestwx.com/settings/station/${stationDetails.station_id}/status`"
+              class="value">
+              {{ hubState || 'N/A' }}</a>
+            </div>
+
+            </div>
           <div><p class="label">Device ID</p><span class="value">{{ stationHub.device_id || 'N/A' }}</span></div>
           <div><p class="label">Wi-Fi Signal Strength</p><span class="value">{{ hubRssi || 'N/A' }}</span></div>
           <!-- <div><p class="label">Cellular</p><span class="value">{{ cellularStatus || 'N/A' }}</span></div>
           <div><p class="label">Wifi</p><span class="value">{{ hubHardware.wifi || 'N/A' }}</span></div>
           <div><p class="label">Ethernet</p><span class="value">{{ hubHardware.ethernet }}</span></div> -->
-          <div><p class="label">Connectivity</p><span class="value">{{ hubHardware.connectivity }}</span></div>
+          <div><p class="label" title="What the hub is connected to.">Connectivity</p><span class="value">{{ hubHardware.connectivity }}</span></div>
           <div class="hub-uptime"><p class="label" title="Duration the device has had continuous power">Uptime</p><span class="value">{{ hubUptime || 'N/A' }}</span></div>
           <div class="hub-latest-mqtt-status"><p class="label" title="The time of the last status message from the hub.">Latest MQTT Status</p><span class="value">{{ lastMqttStatus || 'N/A' }}</span></div>
           <div class="latest-cell-state"><p class="label" title="The time of the last cellular status message from the hub.">Latest Cell Status</p><span class="value">{{ latestCellStatus || 'N/A' }}</span></div>
