@@ -13,8 +13,8 @@
         <tr>
           <td>{{ stationDetails.timezone }}</td>
           <td>
-            <a>{{ getFixedValue(stationDetails.latitude, 2) }}, {{ getFixedValue(stationDetails.longitude, 2) }}</a>
-            <a target="_blank" :href="getMapLink(stationDetails.latitude, stationDetails.longitude)">(T1)</a>
+            <a target="_blank" :href="getMapLink(getFixedValue(stationDetails.latitude, 2), getFixedValue(stationDetails.longitude, 2))">{{ getFixedValue(stationDetails.latitude, 2) }}, {{ getFixedValue(stationDetails.longitude, 2) }}</a>
+            <a target="_blank" :href="getMapLinkT1(stationDetails.latitude, stationDetails.longitude)">(T1)</a>
           </td>
           <td>{{ getFixedValue(stationDetails.station_meta.elevation, 2) }}m</td>
           <td>{{ stationDetails.is_local_mode }}</td>
@@ -60,8 +60,11 @@ export default {
     getFixedValue(value, precision) {
       return value ? value.toFixed(precision) : "N/A";
     },
-    getMapLink(lat, lon) {
+    getMapLinkT1(lat, lon) {
       return `https://one.weatherflow.com/map#${lat},${lon},18,1`;
+    },
+    getMapLink(lat, lon) {
+      return `https://tempestwx.com/map/${this.stationDetails.station_id}/${lat}/${lon}/15`;
     }
   }
 };
