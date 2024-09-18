@@ -49,7 +49,7 @@
           </div>
             <div><p class="label" title="Type of Hub">Hardware Type</p><span class="value" @click="showHardwareImage" style="cursor: pointer; text-decoration: underline;">{{ getHubIdentifier(hubHardware.hardware_type) }}</span></div>
             <div>
-            <p class="label" title="Is hub allowed to be set up on a different user account?">Device Locked</p>
+            <p class="label" title="Is hub allowed to be set up on a different user account?">Hub Locked</p>
             <span class="value" :class="{'lock': hubHardware.device_locked, 'unlock': !hubHardware.device_locked}" :title="hubHardware.device_locked ? 'Locked' : 'Unlocked'">
               {{ hubHardware.device_locked ? 'Locked' : 'Unlocked' }}
             </span>
@@ -93,6 +93,7 @@
             <div class="list-hdr">Station Info</div>
             <StationInfo
                 :stationDetails="stationDetails"
+                :requestor="requestor"
             />
         </div>
         <HardwareModal
