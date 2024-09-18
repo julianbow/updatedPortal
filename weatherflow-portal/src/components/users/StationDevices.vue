@@ -45,7 +45,7 @@
         <tr v-show="selectedDeviceId === device.device_id" class="device-action-row">
             <td colspan="4" class="hub-device-request-calibration">Hub Device Settings (Reset)</td>
             <td v-if="device.device_type !== 'AR'" colspan="4">Download Data</td>
-            <td v-else colspan="8">Download Data</td>
+            <td v-else colspan="9">Download Data</td>
             <td v-if="device.device_type !== 'AR'" colspan="5" class="device-reboot" v-html="device.reboot"></td>
         </tr>
       </tbody>

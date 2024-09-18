@@ -48,12 +48,16 @@
             <span class="value">{{ efr32Firmware || 'N/A' }}</span>
           </div>
             <div><p class="label" title="Type of Hub">Hardware Type</p><span class="value" @click="showHardwareImage" style="cursor: pointer; text-decoration: underline;">{{ getHubIdentifier(hubHardware.hardware_type) }}</span></div>
-          <div><p class="label" title="Is hub allowed to be set up on a different user account?">Device Locked</p><span class="value">{{ hubHardware.device_locked }}</span></div>
+            <div>
+            <p class="label" title="Is hub allowed to be set up on a different user account?">Device Locked</p>
+            <span class="value" :class="{'lock': hubHardware.device_locked, 'unlock': !hubHardware.device_locked}">
+              {{ hubHardware.device_locked ? 'Locked' : 'Unlocked' }}
+            </span>
+            </div>
         </div>
         <div class="station-info-col-2">
           <div><p class="label">State</p>
             <div class="state">
-              {{ console.log(hubState) }}
               <span class="hub-state" :class="{ 'online': hubState === 'online', 'offline': hubState !== 'online' }"></span>
               <a
               target="_blank"

@@ -439,6 +439,20 @@
     background-color: #f44336;
 }
 
+.lock {
+    content: url('../images/lock.svg');
+    width: 25px;
+    height: 25px;
+    filter: invert(16%) sepia(56%) saturate(724%) hue-rotate(244deg) brightness(95%) contrast(88%);
+}
+
+.unlock {
+    content: url('../images/lock-open.svg');
+    width: 25px;
+    height: 25px;
+    filter: invert(16%) sepia(56%) saturate(724%) hue-rotate(244deg) brightness(95%) contrast(88%);
+}
+
 .checkmark {
     content: url('../images/checkBold.svg');
     filter: invert(16%) sepia(56%) saturate(724%) hue-rotate(244deg) brightness(95%) contrast(88%);
