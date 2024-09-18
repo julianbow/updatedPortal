@@ -423,21 +423,20 @@
 }
 
 .hub-state {
-    content: "";
-    background-image: url('../images/online-offline.svg');
-    height: 18px;
-    width: 18px;
-    background-size: 100%;
-    background-repeat: no-repeat;
-    margin-right: 5px;
+    display: inline-block;
+    height: 15px;
+    width: 15px;
+    border-radius: 50%;
+    margin-right: 8px;
 }
 
 .hub-state.online {
-    filter: invert(25%) sepia(95%) saturate(6372%) hue-rotate(119deg) brightness(96%) contrast(106%);
+    background-color: #4caf50;
+    animation: pulse 2s infinite;
 }
 
 .hub-state.offline {
-    filter: invert(33%) sepia(100%) saturate(7449%) hue-rotate(357deg) brightness(104%) contrast(118%);
+    background-color: #f44336;
 }
 
 .checkmark {
@@ -525,6 +524,21 @@
     height: 40%;
     width: 40%;
     content: url('../images/T1-HUBC.png');
+}
+
+@keyframes pulse {
+    0% {
+        transform: scale(1);
+        box-shadow: 0 0 0 0 rgba(76, 175, 80, 0.7); /* Green shadow */
+    }
+    70% {
+        transform: scale(1.1);
+        box-shadow: 0 0 10px 10px rgba(76, 175, 80, 0);
+    }
+    100% {
+        transform: scale(1);
+        box-shadow: 0 0 0 0 rgba(76, 175, 80, 0);
+    }
 }
 
 /* Optional: Better control for medium-sized screens */
