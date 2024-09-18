@@ -35,7 +35,7 @@
           <td v-html="getValue(device.environment)"></td>
           <td v-html="getFixedValue(device.agl, 1)"></td>
           <td class="device-rssi" v-html="device.rssi"></td>
-          <td class="device-battery" v-html="device.battery"></td>
+          <td class="device-battery" v-html="getBatteryLink(stationId, device)"></td>
           <td class="device-uptime" v-html="device.uptime"></td>
           <td class="device-last-mqtt" v-html="device.lastMqtt"></td>
           <td class="device-last-ws" v-html="device.lastWs"></td>
@@ -69,6 +69,7 @@ export default {
   props: {
     devices: Array,
     getDeviceTypeFromSerial: Function,
+    stationId: Number,
     requestor: Object
   },
   data() {
@@ -88,6 +89,13 @@ export default {
     },
     getFixedValue(value, precision) {
       return value ? value.toFixed(precision) : 'N/A';
+    },
+    getBatteryLink (stationId, device) {
+      if (stationId, device) {
+        return "<a href='https://tempestwx.com/station/" + stationId + "/graph/" + device.device_id + "/battery/2' target='_blank'>" + device.battery + "</a>";
+      } else {
+        return device.battery;
+      }
     },
     getSensorImage(status) {
       const checkmark = "<img class='checkmark' width='30' height='30'/>";

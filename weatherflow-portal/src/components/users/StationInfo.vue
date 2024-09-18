@@ -14,7 +14,7 @@
           <td>{{ stationDetails.timezone }}</td>
           <td>
             <a>{{ getFixedValue(stationDetails.latitude, 2) }}, {{ getFixedValue(stationDetails.longitude, 2) }}</a>
-            <a target="_blank" :href="getMapLink(stationDetails.latitude, stationDetails.longitude)">T1</a>
+            <a target="_blank" :href="getMapLink(stationDetails.latitude, stationDetails.longitude)">(T1)</a>
           </td>
           <td>{{ getFixedValue(stationDetails.station_meta.elevation, 2) }}m</td>
           <td>{{ stationDetails.is_local_mode }}</td>

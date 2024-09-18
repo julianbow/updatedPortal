@@ -50,7 +50,7 @@
             <div><p class="label" title="Type of Hub">Hardware Type</p><span class="value" @click="showHardwareImage" style="cursor: pointer; text-decoration: underline;">{{ getHubIdentifier(hubHardware.hardware_type) }}</span></div>
             <div>
             <p class="label" title="Is hub allowed to be set up on a different user account?">Device Locked</p>
-            <span class="value" :class="{'lock': hubHardware.device_locked, 'unlock': !hubHardware.device_locked}">
+            <span class="value" :class="{'lock': hubHardware.device_locked, 'unlock': !hubHardware.device_locked}" :title="hubHardware.device_locked ? 'Locked' : 'Unlocked'">
               {{ hubHardware.device_locked ? 'Locked' : 'Unlocked' }}
             </span>
             </div>
@@ -85,6 +85,7 @@
         <StationDevices
             :devices="deviceLinks"
             :getDeviceTypeFromSerial="getDeviceTypeFromSerial"
+            :stationId="stationDetails.station_id"
             :requestor="requestor"
         />
         </div>
