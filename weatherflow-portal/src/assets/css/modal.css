@@ -17,8 +17,15 @@
     border-radius: 15px;
     width: 100%;
     max-width: 650px;
+    max-height: 500px;
+    overflow: scroll;
     box-shadow: 0px 4px 20px rgba(0, 0, 0, 0.2);
     position: relative;
+}
+
+.modal-content {
+    scrollbar-width: thin;
+    scrollbar-color: #512b59 transparent;
 }
 
 .modal-close {
@@ -228,6 +235,36 @@ label {
 
 .device-status-content {
     font-size: 20px;
+}
+
+.firmware-upgrade-choices {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.firmware-upgrade-choices tr {
+    border-bottom: 1px solid #ddd;
+}
+
+.firmware-upgrade-choices td:not(:first-child) {
+    padding: 5px;
+}
+
+.progress-bar-ctn {
+    margin-top: 20px;
+    background-color: #e2d8e4;
+}
+
+.progress-bar {
+    height: 20px;
+    background-color: #512b59;
+    border-radius: 10px;
+    transition: width 0.3s ease;
+}
+
+
+.firmware-upgrade-choices td button {
+    margin: 0;
 }
 
 .settings-obj {

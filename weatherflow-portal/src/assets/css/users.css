@@ -439,6 +439,19 @@
     background-color: #f44336;
 }
 
+.download::before {
+    content: "";
+    display: inline-block;
+    background-image: url('../images/download.svg');
+    width: 20px;
+    height: 20px;
+    background-size: 100%;
+    filter: invert(16%) sepia(56%) saturate(724%) hue-rotate(244deg) brightness(95%) contrast(88%);
+    vertical-align: text-bottom;
+    margin-right: 8px;
+    cursor: pointer;
+}
+
 .lock {
     content: url('../images/lock.svg');
     width: 25px;

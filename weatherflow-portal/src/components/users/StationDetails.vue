@@ -38,7 +38,7 @@
               title="Firmware version of wifi radio in the hub. Firmware with Module 2 starts at 300 and goes up from there.">
               Firmware
             </p>
-            <span class="value">{{ stationHub.firmware_revision || 'N/A' }}</span>
+            <span class="value download" @click="getFirmwareRevision">{{ stationHub.firmware_revision || 'N/A' }}</span>
           </div>
           <div>
             <p class="label"
@@ -69,9 +69,6 @@
             </div>
           <div><p class="label">Device ID</p><span class="value">{{ stationHub.device_id || 'N/A' }}</span></div>
           <div><p class="label">Wi-Fi Signal Strength</p><span class="value">{{ hubRssi || 'N/A' }}</span></div>
-          <!-- <div><p class="label">Cellular</p><span class="value">{{ cellularStatus || 'N/A' }}</span></div>
-          <div><p class="label">Wifi</p><span class="value">{{ hubHardware.wifi || 'N/A' }}</span></div>
-          <div><p class="label">Ethernet</p><span class="value">{{ hubHardware.ethernet }}</span></div> -->
           <div><p class="label" title="What the hub is connected to.">Connectivity</p><span class="value">{{ hubHardware.connectivity }}</span></div>
           <div class="hub-uptime"><p class="label" title="Duration the device has had continuous power">Uptime</p><span class="value">{{ hubUptime || 'N/A' }}</span></div>
           <div class="hub-latest-mqtt-status"><p class="label" title="The time of the last status message from the hub.">Latest MQTT Status</p><span class="value">{{ lastMqttStatus || 'N/A' }}</span></div>
@@ -96,6 +93,10 @@
                 :requestor="requestor"
             />
         </div>
+        <FirmwareUpgrade
+          :requestor="requestor"
+          ref="showFirmwareUpgrade"
+        />
         <HardwareModal
           :hardwareType="hubHardware.hardware_type"
           :hardwareName ="this.hardwareType"
@@ -111,13 +112,15 @@ import DeviceStatus from '@/helpers/DeviceStatus';
 import StationDevices from './StationDevices.vue';
 import StationInfo from './StationInfo.vue';
 import HardwareModal from './HardwareModal.vue';
+import FirmwareUpgrade from './FirmwareUpgrade.vue';
 import Day from '@/helpers/Day';
 
 export default {
   components: {
     StationDevices,
     StationInfo,
-    HardwareModal: HardwareModal
+    HardwareModal,
+    FirmwareUpgrade
   },
   props: {
     stationDetails: Object,
@@ -305,6 +308,9 @@ export default {
     showHardwareImage() {
       this.$refs.showHardwareModal.showModal();
     },
+    getFirmwareRevision() {
+      this.$refs.showFirmwareUpgrade.openDialog(this.stationHub.serial_number, this.stationHub.firmware_revision);
+    }
   },
   mounted() {
     this.initializeDiagnostics();
