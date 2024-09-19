@@ -439,6 +439,11 @@
     background-color: #f44336;
 }
 
+.hub-device-request-calibration {
+    text-decoration: underline;
+    cursor: pointer;
+}
+
 .download::before {
     content: "";
     display: inline-block;

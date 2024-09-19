@@ -43,13 +43,19 @@
 
         <!-- Action Row - Shown when selectedDeviceId matches -->
         <tr v-show="selectedDeviceId === device.device_id" class="device-action-row">
-            <td colspan="4" class="hub-device-request-calibration">Hub Device Settings (Reset)</td>
+            <td colspan="4" class="hub-device-request-calibration" @click="openDeviceCalibrationModal(device.device_id)">Hub Device Settings (Reset)</td>
             <td v-if="device.device_type !== 'AR'" colspan="4">Download Data</td>
             <td v-else colspan="9">Download Data</td>
             <td v-if="device.device_type !== 'AR'" colspan="5" class="device-reboot" v-html="device.reboot"></td>
         </tr>
       </tbody>
     </table>
+
+    <!-- DeviceCalibration -->
+    <DeviceCalibration
+      ref="deviceCalibration"
+      :requestor="requestor"
+    />
 
     <!-- DeviceStatusModal -->
     <DeviceStatusModal
@@ -61,10 +67,12 @@
 
 <script>
 import DeviceStatusModal from './DeviceStatusModal.vue';
+import DeviceCalibration from './DeviceCalibration.vue';
 
 export default {
   components: {
-    DeviceStatusModal
+    DeviceStatusModal,
+    DeviceCalibration
   },
   props: {
     devices: Array,
@@ -80,9 +88,6 @@ export default {
   methods: {
     toggleDevice(deviceId) {
       this.selectedDeviceId = this.selectedDeviceId === deviceId ? null : deviceId;
-    },
-    openDeviceStatusModal(device) {
-      this.$refs.updateDeviceStatus.openModal(device);
     },
     getValue(value) {
       return value || 'N/A';
@@ -113,7 +118,13 @@ export default {
       }
 
       return sensorStatusIcon;
-    }
+    },
+    openDeviceStatusModal(device) {
+      this.$refs.updateDeviceStatus.openModal(device);
+    },
+    openDeviceCalibrationModal(deviceId) {
+      this.$refs.deviceCalibration.openModal(deviceId);
+    },
   }
 };
 </script>

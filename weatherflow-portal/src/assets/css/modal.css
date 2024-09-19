@@ -267,6 +267,67 @@ label {
     margin: 0;
 }
 
+#hub-reported {
+    display: flex;
+    justify-content: center;
+    padding: 5px;
+    background-color: #efebf1;
+}
+
+#hub-device-calibration-confirmation {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+    text-transform: uppercase;
+    font-size: .75em;
+    text-align: center;
+}
+
+#hub-device-calibration-confirmation p {
+    margin: 0;
+}
+
+#hub-device-calibration-confirmation.confirmed {
+    color: #458400;
+    background-color: rgba(69,132,0,.1);
+    padding: 4px 0;
+    border: 1px solid #458400;
+}
+
+#hub-device-calibration-confirmation.unconfirmed {
+    color: #ff2100;
+    background-color: rgba(255,33,0,.1);
+    padding: 4px 0;
+    border: 1px solid #ff2100;
+}
+
+#hub-device-calibration-confirmation.confirmed::before {
+    content: "";
+    display: inline-block;
+    background-image: url("../images/checkBold.svg");
+    background-repeat: no-repeat;
+    background-size: 100%;
+    filter: invert(46%) sepia(72%) saturate(4798%) hue-rotate(63deg) brightness(91%) contrast(101%);
+    width: 20px;
+    height: 20px;
+    margin-right: 8px;
+    vertical-align: middle;
+}
+
+#hub-device-calibration-confirmation.unconfirmed::before {
+    content: "";
+    display: inline-block;
+    background-image: url("../images/xBold.svg");
+    background-repeat: no-repeat;
+    background-size: 100%;
+    filter: invert(18%) sepia(60%) saturate(6063%) hue-rotate(6deg) brightness(104%) contrast(105%);
+    width: 20px;
+    height: 20px;
+    margin-right: 8px;
+    vertical-align: middle;
+}
+
 .settings-obj {
     white-space: pre;
     margin: 0;

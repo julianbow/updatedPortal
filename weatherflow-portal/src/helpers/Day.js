@@ -100,6 +100,10 @@ class Day {
     return dayjs.unix(timestamp).utc().format('h:mm a UTC');
   }
 
+  static getUTCTimeDateWithTZ(timestamp) {
+    return dayjs.unix(timestamp).utc().format('M/D/YY h:mm a UTC');
+  }
+
   static getFormattedTimeWithZone(timestamp, timeZone) {
     if (timestamp !== undefined && timestamp !== null) {
       return dayjs.unix(timestamp).tz(timeZone).format('h:mm a z');
