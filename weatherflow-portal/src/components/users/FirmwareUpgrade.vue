@@ -59,15 +59,12 @@
     },
     methods: {
       openDialog(serialNumber, currentFirmware) {
-        console.log('openDialog', serialNumber, currentFirmware);
         this.serialNumber = serialNumber;
         this.getFirmwareRevisions(serialNumber, currentFirmware);
         this.showDialog = true;
-        document.body.classList.add("modal-open");
       },
       closeDialog() {
         this.showDialog = false;
-        document.body.classList.remove("modal-open");
       },
       async getFirmwareRevisions(serialNumber, currentFirmware) {
         const urlData = { serial_number: serialNumber };
@@ -75,7 +72,6 @@
         const response = await this.requestor.makeGetRequest("firmware_set_safe_for_device", urlData);
 
         try {
-            console.log("response", response);
             if (response.data.status.status_code === 0 && response.data.firmware) {
                 this.firmwareList = response.data.firmware.filter(
                     (firm) => firm.firmware_revision >= currentFirmware
