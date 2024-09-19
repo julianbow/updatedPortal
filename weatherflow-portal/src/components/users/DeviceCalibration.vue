@@ -4,10 +4,11 @@
         <a href="#" class="modal-close" @click="hideModal"></a>
         <div class="list-hdr">{{ currentCalibration.serial_number }}</div>
         <div class="hub-device-calibration-content">
-        <div id="hub-device-calibration-confirmation" :class="{ confirmed: confirmed ? 'confirmed' : 'unconfirmed' }">
+            <div id="hub-device-calibration-confirmation" :class="{ confirmed: confirmed, unconfirmed: !confirmed }">
             <span></span>
             <p>{{ confirmed ? "Settings confirmed" : "Settings unconfirmed" }}</p>
         </div>
+
         <div id="hub-reported">
             <span>Hub Reported: {{ hubReported ? hubReported : "N/A" }}</span>
         </div>
@@ -102,7 +103,6 @@
                         ? this.getHubCalibrationValueForKey(hubCalibration, key)
                         : "---";
 
-                    console.log(hubValue);
                     const title = this.calibrationKeys[key]?.title || key;
 
                     // Handle boolean display values

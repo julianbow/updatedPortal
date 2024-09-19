@@ -1,6 +1,6 @@
 <template>
     <div class="modal-ctn" v-if="isModalVisible">
-      <div class="modal-content">
+      <div class="modal-content messages">
         <span class="modal-close" @click="closeDialog"></span>
         <h2 class="station-messages-name">{{ stationName }}</h2>
         <div class="buttons">
