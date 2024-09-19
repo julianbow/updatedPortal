@@ -21,7 +21,7 @@
       <tbody v-for="(device, index) in devices" :key="index">
         <!-- Main device row -->
         <tr @click="toggleDevice(device.device_id)" class="device-row">
-          <td v-html="device.device_id"></td>
+          <td v-html="device.id"></td>
           <td
             class="device-status"
             :device-id="device.device_id"

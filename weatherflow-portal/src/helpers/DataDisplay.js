@@ -52,23 +52,11 @@ class DataDisplay {
     return email;
   }
 
-  static getLocationWithLink(locationName, locationId, shareWithWF) {
-    locationName = this.getValue(locationName);
-    locationId = this.getValue(locationId);
-    shareWithWF = this.getValue(shareWithWF);
-
-    if (shareWithWF && locationId !== "") {
-      return `<a href='https://tempestwx.com/share/${locationId}'>${locationName}</a>`;
-    }
-
-    return locationName;
-  }
-
   static getSerialWithLogLink(serialNumber) {
     serialNumber = this.getValue(serialNumber);
 
     if (serialNumber !== "") {
-      return `<a href='#' class='device-log' data-serial-number='${serialNumber}'></a><a href='http://portal.weatherflow.com/sw/factory-tests/${serialNumber}'>${serialNumber}</a>`;
+      return `<a href='http://portal.weatherflow.com/sw/factory-tests/${serialNumber}'>${serialNumber}</a>`;
     }
 
     return "";
@@ -82,38 +70,6 @@ class DataDisplay {
     }
 
     return str;
-  }
-
-  static getHubDeviceCalibrationRequestLink(deviceId, deviceSerialNumber, hubSerialNumber) {
-    deviceId = this.getValue(deviceId);
-    deviceSerialNumber = this.getValue(deviceSerialNumber);
-    hubSerialNumber = this.getValue(hubSerialNumber);
-
-    if (deviceId !== "") {
-      let retval = `<a href='#' title='View hub device calibration' data-device-id='${deviceId}''>Hub Device Settings</a>`;
-
-      if (deviceSerialNumber !== "" && hubSerialNumber !== "") {
-        const deviceSerialWithoutType = this.getSerialWithoutDeviceType(deviceSerialNumber);
-        const deviceType = this.getDeviceTypeFromSerial(deviceSerialNumber);
-
-        retval += `<span class='reset-device-settings-ctn'> (<a href='#' class='reset-hub-device-settings' title='Reset Hub Device Settings' data-device-id='${deviceId}' data-hub-serial='${hubSerialNumber}' data-device-serial='${deviceSerialWithoutType}' data-device-type='${deviceType}'>Reset</a>)</span>`;
-      }
-
-      return retval;
-    }
-
-    return "";
-  }
-
-  static getCalibrationRequestLink(hubSerialNumber, deviceSerialNumber) {
-    hubSerialNumber = this.getValue(hubSerialNumber);
-    deviceSerialNumber = this.getValue(deviceSerialNumber);
-
-    if (hubSerialNumber !== "" && deviceSerialNumber !== "") {
-      return `<a href='#' title='View device calibration' data-serial-number='${deviceSerialNumber}' data-hub-serial-number='${hubSerialNumber}'>Device Calibration</a>`;
-    }
-
-    return "";
   }
 
   static getDeviceDataDownloadLink(deviceId, stationTimeZone) {
