@@ -61,16 +61,13 @@ export default {
       }
     },
     async showUser(userId) {
-      this.selectedUser = this.searchResults.find((user) => user.user_id === userId);
-
-      if (this.selectedUser) {
-        this.$router.push({ path: `/users/${userId}` });
-        await this.fetchUserStations(userId);
-      }
+      this.$router.push({ path: `/users/${userId}` });
+      await this.fetchUserStations(userId);
     },
     async fetchUserStations(userId) {
       try {
         const response = await this.requestor.makeTempestInternalGetRequest(`tempestinternal/user/${userId}`);
+        this.selectedUser = response.data.user;
         this.stations = response.data.user.stations || [];
       } catch (error) {
         console.error('Error fetching user stations:', error);
@@ -94,10 +91,8 @@ export default {
     this.requestor = new Requestor();
     this.updateTitle();
 
-    // Check if a userId is already in the route when the component mounts
     const userIdFromRoute = this.$route.params.userId;
     if (userIdFromRoute) {
-      console.log('userIdFromRoute:', userIdFromRoute);
       this.showUser(userIdFromRoute);
     }
   },

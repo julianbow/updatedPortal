@@ -190,6 +190,7 @@ export default {
   },
   mounted() {
     this.requestor = new Requestor();
+    this.expandFirstStation()
   },
 };
 </script>
