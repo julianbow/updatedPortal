@@ -160,6 +160,16 @@ export default {
       return `https://wfx.weatherflow.com/vv/stns=${stationId}&sources=tempest&sdate=${startDate}&stime=6&dur=36&ptype=single`;
     }
   },
+  watch: {
+  'stationHub.serial_number': {
+    handler(newSerial) {
+      if (newSerial) {
+        this.isTempestOneHub(newSerial);
+      }
+    },
+    immediate: true
+  }
+},
   methods: {
     getFormattedDateForLink() {
       const today = new Date();
