@@ -422,6 +422,12 @@
     border-bottom: none !important;
 }
 
+.hub-reboot {
+    font-size: 12px;
+    text-decoration: underline;
+    cursor: pointer;
+}
+
 .hub-state {
     display: inline-block;
     height: 15px;

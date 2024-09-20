@@ -24,7 +24,7 @@
 
       <div class="hub-info">
         <div class="station-info-col-1">
-          <div><p class="label">Serial</p><span class="value">{{ stationHub.serial_number || 'N/A' }}</span></div>
+          <div><p class="label">Serial</p><span class="value">{{ stationHub.serial_number || 'N/A' }} <span class="hub-reboot" @click="rebootHub(stationHub.serial_number)">(Reboot)</span></span></div>
           <div><p class="label" title="Radio Frequency">Frequency</p><span class="value">{{ hubFrequency || 'N/A' }}</span></div>
           <div>
             <p class="label"
@@ -216,6 +216,26 @@ export default {
         }
       } catch (error) {
         console.error('Error fetching device_locked_status:', error);
+      }
+    },
+    async rebootHub(serial) {
+      const confirmReboot = confirm("Are you sure you want to reboot hub " + serial + "?");
+
+      if (confirmReboot) {
+        try {
+          let urlData = {
+            serial_number: serial,
+            message: "REBOOT"
+          };
+
+          const response = await this.requestor.makeGetRequest("send_message_to_hub", urlData);
+
+          if (response.data.status_code === 0) {
+            alert("Reboot command sent to hub.");
+          }
+        } catch (error) {
+          alert("Error sending reboot command to hub.");
+        }
       }
     },
     initializeDiagnostics() {
