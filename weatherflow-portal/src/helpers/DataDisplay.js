@@ -83,17 +83,6 @@ class DataDisplay {
     return "";
   }
 
-  static getDeviceRebootLink(hubSerialNumber, deviceSerialNumber) {
-    hubSerialNumber = this.getValue(hubSerialNumber);
-    deviceSerialNumber = this.getValue(deviceSerialNumber);
-
-    if (deviceSerialNumber !== "" && hubSerialNumber !== "") {
-      return `<a href='#' class='reboot-device' title='Reboot Device' data-device-serial-number='${deviceSerialNumber}' data-hub-serial-number='${hubSerialNumber}'>Reboot Device</a>`;
-    }
-
-    return "";
-  }
-
   static getDeviceIdWithLink(deviceId) {
     deviceId = this.getValue(deviceId);
 

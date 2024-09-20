@@ -391,6 +391,11 @@
     text-align: center;
 }
 
+.device-reboot {
+    cursor: pointer;
+    text-decoration: underline;
+}
+
 .device-status {
     text-align: center !important;
     cursor: pointer;

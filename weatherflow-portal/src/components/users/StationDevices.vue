@@ -47,7 +47,7 @@
               <span @click="openDeviceCalibrationModal(device.device_id)">Hub Device Settings </span>
               <span @click="resetDeviceSettings(device.serial, device.device_type, device.device_id)">(Reset)</span>
             </td>
-            <td v-if="device.device_type !== 'AR'" colspan="7" class="device-reboot" v-html="device.reboot"></td>
+            <td v-if="device.device_type !== 'AR'" colspan="7" class="device-reboot" @click="rebootDevice(hubSerial, device.serial)">Reboot Device</td>
         </tr>
       </tbody>
     </table>
@@ -166,6 +166,25 @@ export default {
         }
       } catch (error) {
         console.error("Error resetting device settings:", error);
+      }
+    },
+    async rebootDevice(hubSerial, deviceSerial) {
+      const confirmReboot = confirm(`Do you want to reboot ${deviceSerial}?`);
+      if (confirmReboot) {
+        const rebootParams = {
+          serial_number: hubSerial,
+          message: "REBOOT|" + deviceSerial
+        };
+
+        const repsonse = await this.requestor.makeGetRequest("send_message_to_hub/", rebootParams);
+
+        try {
+          if (repsonse.data.status_code === 0) {
+            alert("Reboot command sent to device.");
+          }
+        } catch (error) {
+          alert("Error sending reboot command to device.");
+        }
       }
     },
     openDeviceStatusModal(device) {

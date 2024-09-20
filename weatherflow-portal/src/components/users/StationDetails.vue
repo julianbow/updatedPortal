@@ -273,7 +273,6 @@ export default {
           device_id: device.device_id,
           serial: device.serial_number,
           serialLink: DataDisplay.getSerialWithLogLink(device.serial_number),
-          reboot: DataDisplay.getDeviceRebootLink(this.stationHub.serial_number, device.serial_number),
           firmware: device.firmware_revision,
           hardware: device.hardware_revision,
           name: device.device_meta?.name || 'N/A',
