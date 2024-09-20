@@ -16,7 +16,7 @@
         </div>
         <div class="station-helpers">
           <a title="Continuous Learning">CL</a>
-          <a title="Artificial Information Station">AIS</a>
+          <!-- <a title="Artificial Information Station">AIS</a> -->
           <a title="Meta Data">MD</a>
           <a target="_blank" title="Better Forecast Portal" :href="generateBFLink">BF</a>
         </div>

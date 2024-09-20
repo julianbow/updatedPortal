@@ -43,13 +43,11 @@
 
         <!-- Action Row - Shown when selectedDeviceId matches -->
         <tr v-show="selectedDeviceId === device.device_id" class="device-action-row">
-            <td colspan="4" class="hub-device-request-calibration">
+            <td :colspan="device.device_type === 'AR' ? 13 : 6" class="hub-device-request-calibration">
               <span @click="openDeviceCalibrationModal(device.device_id)">Hub Device Settings </span>
               <span @click="resetDeviceSettings(device.serial, device.device_type, device.device_id)">(Reset)</span>
             </td>
-            <td v-if="device.device_type !== 'AR'" colspan="4">Download Data</td>
-            <td v-else colspan="9">Download Data</td>
-            <td v-if="device.device_type !== 'AR'" colspan="5" class="device-reboot" v-html="device.reboot"></td>
+            <td v-if="device.device_type !== 'AR'" colspan="7" class="device-reboot" v-html="device.reboot"></td>
         </tr>
       </tbody>
     </table>
