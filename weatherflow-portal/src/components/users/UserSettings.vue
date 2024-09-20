@@ -2,7 +2,7 @@
     <div class="modal-ctn" v-if="isModalVisible">
         <div class="modal-content">
             <h2 class='settings-name'>User Settings</h2>
-            <a href="#" class="modal-close" @click="closeEmailModal"></a>
+            <a class="modal-close" @click="closeEmailModal"></a>
             <div v-if="userSettings.length > 0" class="user-settings-modal">
                <p class="settings-obj">{{ this.userSettings }}</p>
             </div>

@@ -81,6 +81,7 @@
         <div class="list-hdr">Devices</div>
         <StationDevices
             :devices="deviceLinks"
+            :hubSerial="stationHub.serial_number"
             :getDeviceTypeFromSerial="getDeviceTypeFromSerial"
             :stationId="stationDetails.station_id"
             :requestor="requestor"
@@ -270,7 +271,8 @@ export default {
         return {
           id: DataDisplay.getDeviceIdWithLink(device.device_id),
           device_id: device.device_id,
-          serial: DataDisplay.getSerialWithLogLink(device.serial_number),
+          serial: device.serial_number,
+          serialLink: DataDisplay.getSerialWithLogLink(device.serial_number),
           reboot: DataDisplay.getDeviceRebootLink(this.stationHub.serial_number, device.serial_number),
           firmware: device.firmware_revision,
           hardware: device.hardware_revision,

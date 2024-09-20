@@ -1,7 +1,7 @@
 <template>
     <div v-if="isModalVisible" class="modal-ctn">
       <div class="modal-content">
-        <a href="#" class="modal-close" @click="hideModal"></a>
+        <a class="modal-close" @click="hideModal"></a>
         <div class="list-hdr">{{ currentCalibration.serial_number }}</div>
         <div class="hub-device-calibration-content">
             <div id="hub-device-calibration-confirmation" :class="{ confirmed: confirmed, unconfirmed: !confirmed }">

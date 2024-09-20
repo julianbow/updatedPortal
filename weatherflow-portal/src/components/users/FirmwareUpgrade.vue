@@ -1,7 +1,7 @@
 <template>
     <div v-if="showDialog" class="modal-ctn">
       <div class="modal-content">
-        <a href="#" class="modal-close" @click="closeDialog"></a>
+        <a class="modal-close" @click="closeDialog"></a>
         <h2 class="firmware-upgrade-name">{{ serialNumber }}</h2>
         <div class="firmware-upgrade-content">
           <div class="firmware-upgrade-choices-ctn" v-if="showChoices">
