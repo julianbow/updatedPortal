@@ -37,7 +37,8 @@ const router = createRouter({
     {
       path: '/',
       name: 'root',
-      redirect: '/home',  // Redirect base URL to /home
+      redirect: '/home',
+      meta: { requiresAuth: true }
     },
     {
       path: '/',
@@ -60,6 +61,12 @@ const router = createRouter({
     {
       path: '/users/:userId',
       name: 'UserInfo',
+      component: UsersView,
+      meta: { requiresAuth: true },
+    },
+    {
+      path: '/users/search/:term',
+      name: 'searchResults',
       component: UsersView,
       meta: { requiresAuth: true },
     },

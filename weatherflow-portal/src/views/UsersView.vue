@@ -50,8 +50,14 @@ export default {
     };
   },
   methods: {
-    async handleSearch(urlData) {
+    async handleSearch(searchTerm) {
+      this.$router.push({ path: `/users/search/${searchTerm}` });
+
       try {
+        const urlData = {
+          report_name: 'get_user_by_email',
+          email_address: searchTerm
+        };
         const response = await this.requestor.makePostRequest('report', urlData);
         this.searchResults = response.data;
         this.searchError = this.searchResults.length === 0;
@@ -85,6 +91,11 @@ export default {
       if (newUserId) {
         this.showUser(newUserId);
       }
+    },
+    '$route.params.term'(newSearchTerm) {
+      if (newSearchTerm) {
+        this.handleSearch(newSearchTerm);
+      }
     }
   },
   mounted() {
@@ -94,6 +105,11 @@ export default {
     const userIdFromRoute = this.$route.params.userId;
     if (userIdFromRoute) {
       this.showUser(userIdFromRoute);
+    }
+
+    const searchTermFromRoute = this.$route.params.term;
+    if (searchTermFromRoute) {
+      this.handleSearch(searchTermFromRoute);
     }
   },
 };

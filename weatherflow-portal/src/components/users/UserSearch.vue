@@ -36,11 +36,7 @@ export default {
     searchUsers() {
       this.localSearchError = false;
       try {
-        const urlData = {
-          report_name: 'get_user_by_email',
-          email_address: this.searchTerm,
-        };
-        this.$emit('search', urlData);
+        this.$emit('search', this.searchTerm);
       } catch (error) {
         this.localSearchError = true;
       }
