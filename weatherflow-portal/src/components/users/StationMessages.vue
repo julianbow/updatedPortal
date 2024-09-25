@@ -98,7 +98,7 @@ export default {
       this.selectedTimeZone = type;
       this.notifications = this.notifications.map(notification => {
         if (type === 'station') {
-          notification.formattedTime = Day.getStationTimeWithTZ(notification.utc);
+          notification.formattedTime = Day.getFormattedTimeWithZone(notification.utc, notification.tz);
         } else if (type === 'browser') {
           notification.formattedTime = Day.getBrowserTimeWithTZ(notification.utc);
         } else if (type === 'utc') {
@@ -113,7 +113,7 @@ export default {
     processNotifications(notifications) {
       return notifications.reverse().map(notification => {
         if (notification.utc && notification.tz) {
-          notification.formattedTime = Day.getStationTimeWithTZ(notification.utc);
+          notification.formattedTime = Day.getFormattedTimeWithZone(notification.utc, notification.tz);
         }
         return notification;
       });
