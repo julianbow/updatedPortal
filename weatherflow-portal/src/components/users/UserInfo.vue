@@ -45,13 +45,13 @@
       >
 
         <!-- Station Header -->
-        <div class="station-hdr" @click="index > 0 && toggleStation(station.station_id)">
+        <div class="station-hdr" @click="toggleStation(station.station_id)">
           <div class="station-hdr-left">
             <span class="station-messages" @click.stop="showStationMessages(index, station.station_id, station.name)"></span>
             <h3>{{ station.name }}</h3>
             <a target="_blank" :href="`https://tempestwx.com/station/${station.station_id}`" :data-station-id="station.station_id">{{ station.station_id }}</a>
           </div>
-          <span v-if="index > 0" class="down-arrow" :class="{'up' : isStationExpanded(station.station_id)}"></span>
+          <span class="down-arrow" :class="{'up' : isStationExpanded(station.station_id)}"></span>
         </div>
 
         <!-- Station Details -->
