@@ -131,7 +131,10 @@
 }
 
 #main-menu li:nth-child(3) .icon {
-    background-image: url('../images/devices.svg');
+    background-image: url('../images/tempestDevice.svg');
+    width: 35px;
+    height: 35px;
+    margin-left: 5px;
     filter: invert(100%) sepia(0%) saturate(0%) hue-rotate(180deg) brightness(100%) contrast(100%);
 }
 
