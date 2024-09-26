@@ -36,17 +36,17 @@
         <table id="search-list">
           <thead>
             <tr>
-              <th>Device Id</th>
-              <th>Serial</th>
-              <th>Device</th>
-              <th>Env</th>
-              <th>Firm</th>
-              <th>Location</th>
-              <th>User</th>
+              <th @click="sortTable('device_id')">Device Id</th>
+              <th @click="sortTable('serial')">Serial</th>
+              <th @click="sortTable('device_name')">Device</th>
+              <th @click="sortTable('env')">Env</th>
+              <th @click="sortTable('firmware')">Firm</th>
+              <th @click="sortTable('location')">Location</th>
+              <th @click="sortTable('user')">User</th>
             </tr>
           </thead>
           <tbody>
-            <tr v-for="device in searchResults" :key="device.device_id">
+            <tr v-for="device in sortedResults" :key="device.device_id">
                 <td v-html="device.device_id"></td>
                 <td v-html="device.serial"></td>
                 <td v-html="device.device"></td>
@@ -71,6 +71,10 @@
         selectedFilter: 'search',
         noResults: false,
         searchResults: [],
+        initialSortKey: 'device_id',
+        initialSortDirection: 'asc',
+        sortKey: this.initialSortKey,
+        sortDirection: this.initialSortDirection,
         filters: [
           { id: 'all', label: 'All', value: 'search' },
           { id: 'station_name', label: 'Station Name', value: 'station_name' },
@@ -121,32 +125,49 @@
                 }
             }
         },
-
+        sortTable(key) {
+            if (this.sortKey === key) {
+                this.sortDirection = this.sortDirection === 'asc' ? 'desc' : 'asc';
+            } else {
+                this.sortKey = key;
+                this.sortDirection = 'asc';
+            }
+        },
         getValue(value) {
             return value ? value : '---';
         },
-
         getDeviceIdWithLink(deviceId) {
             return `<a href="/device/${deviceId}">${deviceId}</a>`;
         },
-
         getSerialWithLogLink(serial) {
             return serial ? `<a href="/serial/${serial}">${serial}</a>` : '---';
         },
-
         getLocationWithLink(locationName, locationId, shareWithWf) {
             console.log()
             return locationName
-            ? `<a href="/location/${locationId}">${locationName}</a>`
+            ? `<a href="https://tempestwx.com/station/${locationId}">${locationName}</a>`
             : '---';
         },
-
         getEmailWithLink(email, userId) {
-            return email ? `<a href="/user/${userId}">${email}</a>` : '---';
+            return email ? `<a href="/users/${userId}">${email}</a>` : '---';
+        },
+        updateTitle() {
+            this.$emit('update-title', "Devices");
+        }
+    },
+    computed: {
+        sortedResults() {
+        return this.searchResults.slice().sort((a, b) => {
+            let modifier = this.sortDirection === 'asc' ? 1 : -1;
+            if (a[this.sortKey] < b[this.sortKey]) return -1 * modifier;
+            if (a[this.sortKey] > b[this.sortKey]) return 1 * modifier;
+            return 0;
+        });
         }
     },
     mounted() {
-      this.requestor = new Requestor();
+        this.requestor = new Requestor();
+        this.updateTitle();
     }
   };
   </script>
