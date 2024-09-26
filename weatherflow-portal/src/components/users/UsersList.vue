@@ -1,5 +1,5 @@
 <template>
-    <div id="user-list">
+    <div id="search-list">
       <table>
         <thead>
           <tr>
