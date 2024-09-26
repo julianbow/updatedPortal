@@ -32,7 +32,7 @@
       <p v-if="noResults" class="err-msg">No search results found</p>
 
       <div id="search-results" v-if="searchResults.length">
-        <p id="search-results-count">{{ searchResults.length }} results found</p>
+        <p id="search-results-count" style="text-align: center;">{{ searchResults.length }} results found</p>
         <table id="search-list">
           <thead>
             <tr>
