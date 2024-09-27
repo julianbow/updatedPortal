@@ -1,8 +1,9 @@
 import { createRouter, createWebHistory } from 'vue-router';
+import LoginView from '@/views/LoginView.vue';
 import HomeView from '@/views/HomeView.vue';
 import UsersView from '@/views/UsersView.vue';
 import DevicesView from '@/views/DevicesView.vue';
-import LoginView from '@/views/LoginView.vue';
+import MapView from '@/views/MapView.vue';
 import { getAuth, onAuthStateChanged } from 'firebase/auth';
 
 const auth = getAuth();
@@ -83,6 +84,12 @@ const router = createRouter({
       component: DevicesView,
       meta: { requiresAuth: true },
     },
+    {
+      path: '/map',
+      name: 'map',
+      component: MapView,
+      meta: { requiresAuth: true },
+    }
   ],
 });
 
