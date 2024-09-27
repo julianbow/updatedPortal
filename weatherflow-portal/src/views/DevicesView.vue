@@ -87,6 +87,8 @@
     methods: {
         async searchDevices() {
             if (this.searchTerm) {
+                this.$router.push({ path: `/devices/search/${this.searchTerm}` });
+
                 try {
                     const urlData = {
                         report_name: "devices_by_search",
@@ -165,9 +167,23 @@
         });
         }
     },
+    watch: {
+        '$route.params.term'(newSearchTerm) {
+            if (newSearchTerm) {
+                this.searchTerm = newSearchTerm;
+                this.searchDevices();
+            }
+        }
+    },
     mounted() {
         this.requestor = new Requestor();
         this.updateTitle();
+
+        const searchTermFromRoute = this.$route.params.term;
+        if (searchTermFromRoute) {
+            this.searchTerm = searchTermFromRoute;
+            this.searchDevices();
+        }
     }
   };
   </script>

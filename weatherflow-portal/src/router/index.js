@@ -76,7 +76,13 @@ const router = createRouter({
       name: 'devices',
       component: DevicesView,
       meta: { requiresAuth: true },
-    }
+    },
+    {
+      path: '/devices/search/:term',
+      name: 'searchResults',
+      component: DevicesView,
+      meta: { requiresAuth: true },
+    },
   ],
 });
 
@@ -86,17 +92,14 @@ router.beforeEach(async (to, from, next) => {
 
   let currentUser = getStoredUser();
 
-  // If no user is found in localStorage, check Firebase Auth
   if (!currentUser) {
     currentUser = await getCurrentUser();
 
-    // If we get a user from Firebase, store it in localStorage
     if (currentUser) {
       localStorage.setItem('user', JSON.stringify(currentUser));
     }
   }
 
-  // Redirect logic based on authentication
   if (requiresAuth && !currentUser) {
     next('/login');
   } else if (to.path === '/login' && currentUser) {
