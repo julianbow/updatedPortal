@@ -3,6 +3,7 @@
 </template>
 
 <script>
+import { apiKeyGoogle } from '../../config.json';
 export default {
   data() {
     return {
@@ -17,7 +18,7 @@ export default {
           resolve();
         } else {
           const script = document.createElement('script');
-          script.src = `https://maps.googleapis.com/maps/api/js?key=AIzaSyC9qipmnEx1OufwMtCs6wpTzRBBurnZARc`;
+          script.src = `https://maps.googleapis.com/maps/api/js?key=${apiKeyGoogle}`;
           script.async = true;
           script.defer = true;
           script.onload = resolve;
