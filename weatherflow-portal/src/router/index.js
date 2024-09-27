@@ -78,7 +78,7 @@ const router = createRouter({
       meta: { requiresAuth: true },
     },
     {
-      path: '/devices/search/:term',
+      path: '/devices/:filter/:term',
       name: 'searchResults',
       component: DevicesView,
       meta: { requiresAuth: true },

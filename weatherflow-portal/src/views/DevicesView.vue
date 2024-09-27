@@ -47,13 +47,13 @@
           </thead>
           <tbody>
             <tr v-for="device in sortedResults" :key="device.device_id">
-                <td v-html="device.device_id"></td>
-                <td v-html="device.serial"></td>
-                <td v-html="device.device"></td>
-                <td v-html="device.env"></td>
-                <td v-html="device.firm"></td>
-                <td v-html="device.location"></td>
-                <td v-html="device.user"></td>
+              <td v-html="device.device_id"></td>
+              <td v-html="device.serial"></td>
+              <td v-html="device.device"></td>
+              <td v-html="device.env"></td>
+              <td v-html="device.firm"></td>
+              <td v-html="device.location"></td>
+              <td v-html="device.user"></td>
             </tr>
           </tbody>
         </table>
@@ -62,7 +62,6 @@
   </template>
 
   <script>
-  import '../assets/css/main.css';
   import Requestor from '../helpers/Requestor';
   export default {
     data() {
@@ -71,10 +70,8 @@
         selectedFilter: 'search',
         noResults: false,
         searchResults: [],
-        initialSortKey: 'device_id',
-        initialSortDirection: 'asc',
-        sortKey: this.initialSortKey,
-        sortDirection: this.initialSortDirection,
+        sortKey: 'device_id',
+        sortDirection: 'asc',
         filters: [
           { id: 'all', label: 'All', value: 'search' },
           { id: 'station_name', label: 'Station Name', value: 'station_name' },
@@ -85,106 +82,113 @@
       };
     },
     methods: {
-        async searchDevices() {
-            if (this.searchTerm) {
-                this.$router.push({ path: `/devices/search/${this.searchTerm}` });
+      async searchDevices() {
+        if (this.searchTerm) {
+          this.$router.push({ path: `/devices/${this.selectedFilter}/${this.searchTerm}` });
 
-                try {
-                    const urlData = {
-                        report_name: "devices_by_search",
-                        [this.selectedFilter]: this.searchTerm
-                    };
+          try {
+            const urlData = {
+              report_name: 'devices_by_search',
+              [this.selectedFilter]: this.searchTerm,
+            };
 
-                    const response = await this.requestor.makePostRequest('report', urlData);
+            const response = await this.requestor.makePostRequest('report', urlData);
 
-                    if (response.data && response.data.length > 0) {
-                        this.searchResults = response.data.map((row) => {
-                            const deviceIdDisplay = row.serial_number != null && !row.serial_number.startsWith("HB-")
-                            ? this.getDeviceIdWithLink(row.device_id)
-                            : this.getValue(row.device_id);
+            if (response.data && response.data.length > 0) {
+              this.searchResults = response.data.map((row) => {
+                const deviceIdDisplay = row.serial_number != null && !row.serial_number.startsWith('HB-')
+                  ? this.getDeviceIdWithLink(row.device_id)
+                  : this.getValue(row.device_id);
 
-                            return {
-                            device_id: deviceIdDisplay,
-                            serial: this.getSerialWithLogLink(row.serial_number),
-                            device: this.getValue(row.device_meta?.name),
-                            env: this.getValue(row.device_meta?.environment),
-                            firm: this.getValue(row.firmware_revision),
-                            location: this.getLocationWithLink(row.location_name, row.location_id, row.location_meta?.share_with_wf),
-                            user: this.getEmailWithLink(row.email_address, row.user_id)
-                            };
-                        });
-
-                        this.noResults = false;
-                    } else {
-                        this.noResults = true;
-                        this.searchResults = [];
-                    }
-
-                } catch (error) {
-                    console.error('Error fetching search results:', error);
-                    this.noResults = true;
-                    this.searchResults = [];
-                }
-            }
-        },
-        sortTable(key) {
-            if (this.sortKey === key) {
-                this.sortDirection = this.sortDirection === 'asc' ? 'desc' : 'asc';
+                return {
+                  device_id: deviceIdDisplay,
+                  serial: this.getSerialWithLogLink(row.serial_number),
+                  device: this.getValue(row.device_meta?.name),
+                  env: this.getValue(row.device_meta?.environment),
+                  firm: this.getValue(row.firmware_revision),
+                  location: this.getLocationWithLink(row.location_name, row.location_id, row.location_meta?.share_with_wf),
+                  user: this.getEmailWithLink(row.email_address, row.user_id),
+                };
+              });
+              this.noResults = false;
             } else {
-                this.sortKey = key;
-                this.sortDirection = 'asc';
+              this.noResults = true;
+              this.searchResults = [];
             }
-        },
-        getValue(value) {
-            return value ? value : '---';
-        },
-        getDeviceIdWithLink(deviceId) {
-            return `<a href="/device/${deviceId}">${deviceId}</a>`;
-        },
-        getSerialWithLogLink(serial) {
-            return serial ? `<a href="/serial/${serial}">${serial}</a>` : '---';
-        },
-        getLocationWithLink(locationName, locationId, shareWithWf) {
-            console.log()
-            return locationName
-            ? `<a href="https://tempestwx.com/station/${locationId}">${locationName}</a>`
-            : '---';
-        },
-        getEmailWithLink(email, userId) {
-            return email ? `<a href="/users/${userId}">${email}</a>` : '---';
-        },
-        updateTitle() {
-            this.$emit('update-title', "Devices");
+          } catch (error) {
+            console.error('Error fetching search results:', error);
+            this.noResults = true;
+            this.searchResults = [];
+          }
         }
+      },
+      sortTable(key) {
+        if (this.sortKey === key) {
+          this.sortDirection = this.sortDirection === 'asc' ? 'desc' : 'asc';
+        } else {
+          this.sortKey = key;
+          this.sortDirection = 'asc';
+        }
+      },
+      getValue(value) {
+        return value ? value : '---';
+      },
+      getDeviceIdWithLink(deviceId) {
+        return `<a href="/device/${deviceId}">${deviceId}</a>`;
+      },
+      getSerialWithLogLink(serial) {
+        return serial ? `<a href="/serial/${serial}">${serial}</a>` : '---';
+      },
+      getLocationWithLink(locationName, locationId, shareWithWf) {
+        return locationName ? `<a href="https://tempestwx.com/station/${locationId}">${locationName}</a>` : '---';
+      },
+      getEmailWithLink(email, userId) {
+        return email ? `<a href="/users/${userId}">${email}</a>` : '---';
+      },
+      updateTitle() {
+        this.$emit('update-title', 'Devices');
+      },
     },
     computed: {
-        sortedResults() {
+      sortedResults() {
         return this.searchResults.slice().sort((a, b) => {
-            let modifier = this.sortDirection === 'asc' ? 1 : -1;
-            if (a[this.sortKey] < b[this.sortKey]) return -1 * modifier;
-            if (a[this.sortKey] > b[this.sortKey]) return 1 * modifier;
-            return 0;
+          let modifier = this.sortDirection === 'asc' ? 1 : -1;
+          if (a[this.sortKey] < b[this.sortKey]) return -1 * modifier;
+          if (a[this.sortKey] > b[this.sortKey]) return 1 * modifier;
+          return 0;
         });
-        }
+      },
     },
     watch: {
-        '$route.params.term'(newSearchTerm) {
+        '$route.params': {
+            handler(newParams) {
+            const newSearchTerm = newParams.term;
+            const newFilter = newParams.filter;
+
             if (newSearchTerm) {
                 this.searchTerm = newSearchTerm;
-                this.searchDevices();
+            }
+            if (newFilter) {
+                this.selectedFilter = newFilter;
+            }
+
+            this.searchDevices();
             }
         }
     },
     mounted() {
-        this.requestor = new Requestor();
-        this.updateTitle();
+      this.requestor = new Requestor();
+      this.updateTitle();
 
-        const searchTermFromRoute = this.$route.params.term;
-        if (searchTermFromRoute) {
-            this.searchTerm = searchTermFromRoute;
-            this.searchDevices();
-        }
-    }
+      const searchTermFromRoute = this.$route.params.term;
+      const filterFromRoute = this.$route.params.filter || 'search';
+
+      if (searchTermFromRoute) {
+        this.searchTerm = searchTermFromRoute;
+      }
+
+      this.selectedFilter = filterFromRoute;
+      this.searchDevices();
+    },
   };
   </script>
-
