@@ -63,6 +63,7 @@
 
   <script>
   import Requestor from '../helpers/Requestor';
+  import DataDisplay from '@/helpers/DataDisplay';
   export default {
     data() {
       return {
@@ -134,7 +135,7 @@
         return value ? value : '---';
       },
       getDeviceIdWithLink(deviceId) {
-        return `<a href="/device/${deviceId}">${deviceId}</a>`;
+        return DataDisplay.getDeviceIdWithLink(deviceId);
       },
       getSerialWithLogLink(serial) {
         return serial ? `<a href="/serial/${serial}">${serial}</a>` : '---';
