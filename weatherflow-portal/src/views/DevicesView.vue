@@ -162,7 +162,7 @@
     watch: {
         '$route.params': {
             handler(newParams) {
-            const newSearchTerm = newParams.term;
+            const newSearchTerm = newParams.deviceTerm;
             const newFilter = newParams.filter;
 
             if (newSearchTerm) {
@@ -180,7 +180,7 @@
       this.requestor = new Requestor();
       this.updateTitle();
 
-      const searchTermFromRoute = this.$route.params.term;
+      const searchTermFromRoute = this.$route.params.deviceTerm;
       const filterFromRoute = this.$route.params.filter || 'search';
 
       if (searchTermFromRoute) {

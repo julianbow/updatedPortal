@@ -66,8 +66,8 @@ const router = createRouter({
       meta: { requiresAuth: true },
     },
     {
-      path: '/users/search/:term',
-      name: 'searchResults',
+      path: '/users/search/:userTerm',
+      name: 'userSearchResults',
       component: UsersView,
       meta: { requiresAuth: true },
     },
@@ -78,8 +78,8 @@ const router = createRouter({
       meta: { requiresAuth: true },
     },
     {
-      path: '/devices/:filter/:term',
-      name: 'searchResults',
+      path: '/devices/:filter/:deviceTerm',
+      name: 'devicesSearchResults',
       component: DevicesView,
       meta: { requiresAuth: true },
     },

@@ -92,7 +92,7 @@ export default {
         this.showUser(newUserId);
       }
     },
-    '$route.params.term'(newSearchTerm) {
+    '$route.params.userTerm'(newSearchTerm) {
       if (newSearchTerm) {
         this.handleSearch(newSearchTerm);
       }
@@ -107,7 +107,7 @@ export default {
       this.showUser(userIdFromRoute);
     }
 
-    const searchTermFromRoute = this.$route.params.term;
+    const searchTermFromRoute = this.$route.params.userTerm;
     if (searchTermFromRoute) {
       this.handleSearch(searchTermFromRoute);
     }
