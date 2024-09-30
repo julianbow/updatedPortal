@@ -89,6 +89,12 @@ const router = createRouter({
       name: 'map',
       component: MapView,
       meta: { requiresAuth: true },
+    },
+    {
+      path: '/map/:lat?/:lon?/:zoom?',
+      name: 'MapView',
+      component: MapView,
+      meta: { requiresAuth: true },
     }
   ],
 });
