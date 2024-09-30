@@ -31,7 +31,7 @@ export default {
         { name: 'Users', url: '/users' },
         { name: 'Devices', url: '/devices' },
         { name: 'Station Map', url: '/map' },
-        { name: 'Applications', url: '/integrations' },
+        { name: 'Applications', url: '/applications' },
         { name: 'System Metrics', url: '/metrics' },
         { name: 'API Monitoring', url: '/apiMonitoring' },
         { name: 'Tools', url: '/tools' }
