@@ -6,6 +6,7 @@ import DevicesView from '@/views/DevicesView.vue';
 import MapView from '@/views/MapView.vue';
 import ApplicationsView from '@/views/ApplicationsView.vue';
 import MetricsView from '@/views/MetricsView.vue';
+import ApiMonitorView from '@/views/ApiMonitorView.vue';
 import { getAuth, onAuthStateChanged } from 'firebase/auth';
 
 const auth = getAuth();
@@ -108,6 +109,12 @@ const router = createRouter({
       path: '/metrics',
       name: 'metrics',
       component: MetricsView,
+      meta: { requiresAuth: true },
+    },
+    {
+      path: "/monitoring",
+      name: "monitoring",
+      component: ApiMonitorView,
       meta: { requiresAuth: true },
     }
   ],
