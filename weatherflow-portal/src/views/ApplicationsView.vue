@@ -21,8 +21,8 @@
             <!-- Show this table when a row is clicked -->
             <tr v-show="selectedApp === app.client_id" id="application-details">
               <td colspan="1"><span :class="getScopeClass(app.scopes)"></span></td>
-              <td colspan="1" v-html="getArrayValue(app.scopes)"></td>
-              <td colspan="2" v-html="getApiKey(app.api_keys)"></td>
+              <td colspan="1"><p v-if="getArrayValue(app.scopes)">Permissions</p><span class="permissions" v-html="getArrayValue(app.scopes)"></span></td>
+              <td colspan="2"><p v-if="getApiKey(app.api_keys)">Keys</p><span class="keys" v-html="getApiKey(app.api_keys)"></span></td>
             </tr>
           </tbody>
         </table>
@@ -38,29 +38,29 @@
     data() {
       return {
         applicationData: null,
-        selectedApp: null, // Track the currently selected application
+        selectedApp: null,
         loading: true,
       };
     },
     methods: {
-      async getData() {
-        const urlData = {
-          include_all_applications: true,
-          include_all_tokens: true,
-          include_all_api_keys: true,
-        };
+        async getData() {
+            const urlData = {
+                include_all_applications: true,
+                include_all_tokens: true,
+                include_all_api_keys: true,
+            };
 
-        const response = await this.requestor.makeGetRequest("application", urlData);
-        try {
-          if (response.data.status.status_code === 0) {
-            this.applicationData = response.data.applications;
-          } else {
-            this.loading = false;
-          }
-        } catch (error) {
-          this.loading = false;
-        }
-      },
+            const response = await this.requestor.makeGetRequest("application", urlData);
+            try {
+                if (response.data.status.status_code === 0) {
+                    this.applicationData = response.data.applications.sort((a, b) => b.access_tokens.length - a.access_tokens.length);
+                } else {
+                    this.loading = false;
+                }
+            } catch (error) {
+                this.loading = false;
+            }
+        },
       getArrayValue(value) {
         if (value) {
           return value.map(scope => `<span>${scope}</span>`).join("");
@@ -80,9 +80,13 @@
         console.log("Toggled details for ID:", id);
         this.selectedApp = this.selectedApp === id ? null : id;
       },
+      updateTitle() {
+        this.$emit('update-title', "Applications");
+      }
     },
     mounted() {
       this.requestor = new Requestor();
+      this.updateTitle();
       this.getData();
     },
   };

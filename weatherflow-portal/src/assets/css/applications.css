@@ -14,7 +14,7 @@
 }
 
 #applications-list tbody tr:hover > td{
-    background-color: #f1f1f1;
+    background-color: #efebf1;
 }
 
 #applications-list table {
@@ -27,8 +27,8 @@
 #applications-list td {
     padding: 15px;
     text-align: left;
-    border-bottom: 1px solid #ddd;
-    background-color: #fff;
+    border-bottom: 1px solid #ccc;
+    background-color: #e2d8e4;
     word-wrap: break-word;
 }
 
@@ -55,34 +55,68 @@
     text-overflow: ellipsis;
 }
 
-  /* Style for the details section */
-  #application-details {
+#application-details {
     margin-top: 20px;
     border: 1px solid #ddd;
     padding: 20px;
     border-radius: 8px;
-  }
+}
 
-  #application-details table {
+#application-details table {
     width: 100%;
     border-collapse: collapse;
     border-spacing: 0;
-  }
+}
 
-  #application-details th, #application-details td {
-    padding: 10px;
+#application-details th, #application-details td {
     border-bottom: 1px solid #ddd;
-  }
+}
 
-  #application-details th {
+#application-details th {
     background-color: #512b59;
     color: white;
-  }
+}
 
-  #application-details td {
-    background-color: #fff;
-  }
+#application-details td {
+    white-space: wrap;
+}
+
+#application-details td {
+    background-color: #efebf1;
+}
+
+#application-details td p {
+    margin-top: 0;
+}
 
 .app-row {
     cursor: pointer;
+}
+
+.permissions span {
+    display: inline-block;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    padding: 2px 4px;
+    margin: 0 4px;
+    font-family: monospace;
+    font-size: 12px;
+}
+
+.keys span {
+    display: inline-block;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    padding: 2px 4px;
+    margin: 0 4px;
+    font-family: monospace;
+    font-size: 12px;
+}
+
+.public-obs {
+    background: transparent url(../images/users-fill.svg) no-repeat 50% 50%;
+    display: inline-block;
+    height: 30px;
+    width: 30px;
+    filter: invert(19%) sepia(36%) saturate(984%) hue-rotate(243deg) brightness(91%) contrast(91%);
 }
