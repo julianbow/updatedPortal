@@ -33,7 +33,7 @@
 
   <script>
   import Requestor from "../helpers/Requestor";
-  import Loader from "./Loader.vue";
+  import Loader from "../components/Loader.vue";
   import "@/assets/css/applications.css";
 
   export default {

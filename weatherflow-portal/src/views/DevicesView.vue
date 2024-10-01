@@ -65,7 +65,7 @@
   <script>
   import Requestor from '../helpers/Requestor';
   import DataDisplay from '@/helpers/DataDisplay';
-  import Loader from './Loader.vue';
+  import Loader from '../components/Loader.vue';
   export default {
     components: {
       Loader,
