@@ -1,6 +1,7 @@
 <template>
     <div id="applications-view">
-      <div id="applications-list">
+      <Loader :isLoading="isLoading"/>
+      <div id="applications-list" v-if="!isLoading">
         <table>
           <thead>
             <tr>
@@ -32,18 +33,24 @@
 
   <script>
   import Requestor from "../helpers/Requestor";
+  import Loader from "./Loader.vue";
   import "@/assets/css/applications.css";
 
   export default {
+    components: {
+      Loader,
+    },
     data() {
       return {
         applicationData: null,
         selectedApp: null,
-        loading: true,
+        isLoading: false,
       };
     },
     methods: {
         async getData() {
+          this.isLoading = true;
+
             const urlData = {
                 include_all_applications: true,
                 include_all_tokens: true,
@@ -55,10 +62,12 @@
                 if (response.data.status.status_code === 0) {
                     this.applicationData = response.data.applications.sort((a, b) => b.access_tokens.length - a.access_tokens.length);
                 } else {
-                    this.loading = false;
+                    this.isLoading = false;
                 }
             } catch (error) {
-                this.loading = false;
+                this.isLoading = false;
+            } finally {
+              this.isLoading = false;
             }
         },
       getArrayValue(value) {
