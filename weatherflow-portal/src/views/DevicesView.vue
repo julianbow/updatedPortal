@@ -31,7 +31,8 @@
 
       <p v-if="noResults" class="err-msg">No search results found</p>
 
-      <div id="search-results" v-if="searchResults.length">
+      <Loader :isLoading="isLoading"/>
+      <div id="search-results" v-if="searchResults.length && !isLoading">
         <p id="search-results-count" style="text-align: center;">{{ searchResults.length }} results found</p>
         <table id="search-list">
           <thead>
@@ -64,7 +65,11 @@
   <script>
   import Requestor from '../helpers/Requestor';
   import DataDisplay from '@/helpers/DataDisplay';
+  import Loader from './Loader.vue';
   export default {
+    components: {
+      Loader,
+    },
     data() {
       return {
         searchTerm: '',
@@ -73,6 +78,7 @@
         searchResults: [],
         sortKey: 'device_id',
         sortDirection: 'asc',
+        isLoading: false,
         filters: [
           { id: 'all', label: 'All', value: 'search' },
           { id: 'station_name', label: 'Station Name', value: 'station_name' },
@@ -86,6 +92,7 @@
       async searchDevices() {
         if (this.searchTerm) {
           this.$router.push({ path: `/devices/${this.selectedFilter}/${this.searchTerm}` });
+          this.isLoading = true;
 
           try {
             const urlData = {
@@ -113,6 +120,7 @@
               });
               this.noResults = false;
             } else {
+              this.isLoading = false;
               this.noResults = true;
               this.searchResults = [];
             }
@@ -120,6 +128,8 @@
             console.error('Error fetching search results:', error);
             this.noResults = true;
             this.searchResults = [];
+          } finally {
+            this.isLoading = false;
           }
         }
       },

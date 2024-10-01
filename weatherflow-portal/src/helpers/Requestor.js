@@ -89,6 +89,11 @@ class Requestor {
     const url = `${this.settings.baseUrl}${endPoint}?api_key=${this.settings.apiKeyT1}&${new URLSearchParams(urlData).toString()}`;
     return axios.get(url);
   }
+
+  makeMetricsRequest() {
+    const url = "https://metrics.weatherflow.com/metrics/rest/get_latest_metrics";
+    return axios.get(url);
+  }
 }
 
 export default Requestor;
