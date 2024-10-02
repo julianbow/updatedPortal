@@ -65,8 +65,8 @@
                 this.selectedMetric = newMetric;
                 this.showMetricsData(newMetric);
             } else {
-                // When navigating back to /metrics, clear the selectedMetric
                 this.selectedMetric = null;
+                this.displayApplicationMenuGetData();
             }
         },
     },
