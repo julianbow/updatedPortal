@@ -1,15 +1,15 @@
 <template>
     <div id="metrics" class="grid-list">
         <Loader :isLoading="isLoading"/>
-        <ul v-if="metrics && !isLoading && !selectecMetric">
+        <ul v-if="metrics && !isLoading && !selectedMetric">
             <li v-for="(metric, index) in metrics" :key="index" class="metric-item" @click="showMetricsData(metric)">
             {{ metric }}
             </li>
         </ul>
         <MetricsDetails
-            v-if="selectecMetric"
+            v-if="selectedMetric"
             :requestor="requestor"
-            :metric="selectecMetric"
+            :metric="selectedMetric"
         />
     </div>
   </template>
@@ -29,7 +29,7 @@
       return {
         requestor: new Requestor(),
         metrics: null,
-        selectecMetric: null,
+        selectedMetric: null,
         isLoading: false,
       };
     },
@@ -52,15 +52,33 @@
         }
       },
       async showMetricsData(metric) {
-        this.selectecMetric = metric;
+        this.$router.push({ path: `/metrics/${metric}` });
+        this.selectedMetric = metric;
       },
       updateTitle() {
         this.$emit('update-title', 'System Metrics');
       }
     },
+    watch: {
+        '$route.params.metric'(newMetric) {
+            if (newMetric) {
+                this.selectedMetric = newMetric;
+                this.showMetricsData(newMetric);
+            } else {
+                // When navigating back to /metrics, clear the selectedMetric
+                this.selectedMetric = null;
+            }
+        },
+    },
     mounted() {
-      this.updateTitle();
-      this.displayApplicationMenuGetData();
+        this.updateTitle();
+
+        const metricFromRoute = this.$route.params.metric;
+        if (metricFromRoute) {
+            this.showMetricsData(metricFromRoute);
+        } else {
+            this.displayApplicationMenuGetData();
+        }
     },
   }
   </script>

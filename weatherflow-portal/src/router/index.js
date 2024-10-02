@@ -112,6 +112,12 @@ const router = createRouter({
       meta: { requiresAuth: true },
     },
     {
+      path: '/metrics/:metric',
+      name: "MetricsDetails",
+      component: MetricsView,
+      meta: { requiresAuth: true },
+    },
+    {
       path: "/monitoring",
       name: "monitoring",
       component: ApiMonitorView,
