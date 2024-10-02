@@ -43,6 +43,10 @@
                 </tbody>
             </table>
         </div>
+        <!-- <MetricsChart
+            :metricsData="metricsData"
+            :requestor="requestor"
+        /> -->
     </div>
 </template>
 
@@ -50,10 +54,12 @@
 <script>
 import Loader from '../Loader.vue';
 import Day from "@/helpers/Day";
+import MetricsChart from './MetricsChart.vue';
 
 export default {
     components: {
         Loader,
+        MetricsChart
     },
     props: {
         metric: String,

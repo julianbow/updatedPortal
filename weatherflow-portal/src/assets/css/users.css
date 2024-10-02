@@ -81,6 +81,12 @@
     border-spacing: 0;
 }
 
+#general-list table th {
+    position: sticky;
+    top: 0;
+    z-index: 1;
+}
+
 #general-list th,
 #general-list td {
     padding: 8px;
