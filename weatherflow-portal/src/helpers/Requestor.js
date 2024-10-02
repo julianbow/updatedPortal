@@ -91,7 +91,12 @@ class Requestor {
   }
 
   makeMetricsRequest() {
-    const url = "https://metrics.weatherflow.com/metrics/rest/get_latest_metrics";
+    const url = "https://metrics.weatherflow.com/metrics/rest/get_metric_names";
+    return axios.get(url);
+  }
+
+  makeMetricsDataRequest(metric) {
+    const url = `https://metrics.weatherflow.com/metrics/rest/get_latest_metrics?metric_name_filter=${metric}`;
     return axios.get(url);
   }
 }
