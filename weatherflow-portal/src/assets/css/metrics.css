@@ -1,5 +1,63 @@
 #metrics {
+    display: block;
+    width: 100%;
     max-width: 960px;
     margin: 100px auto;
+    padding: 20px;
+    background-color: #f9f9f9;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+#metrics-list {
+    width: 100%;
+}
+
+#metrics-list h1 {
+    color: #512b59;
+}
+
+#metrics-list tbody tr:hover > td{
+    background-color: #efebf1;
+}
+
+#metrics-list table {
+    width: 100%;
+    border-spacing: 0;
+    table-layout: fixed;
+}
+
+#metrics-list th,
+#metrics-list td {
+    padding: 15px;
     text-align: center;
+    border-bottom: 1px solid #ccc;
+    background-color: #e2d8e4;
+    word-wrap: break-word;
+}
+
+#metrics-list th {
+    background-color: #512b59;
+    color: #fff;
+    font-weight: bold;
+    cursor: pointer;
+    position: relative;
+}
+
+#metrics-list th,
+#metrics-list td {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+#metrics-list td:nth-child(4),
+#metrics-list th:nth-child(4),
+#metrics-list td:nth-child(2),
+#metrics-list th:nth-child(2) {
+    width: 80px;
+    white-space: normal;
+    overflow: hidden;
+    text-overflow: ellipsis;
 }

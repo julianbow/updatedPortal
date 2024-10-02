@@ -79,6 +79,11 @@ class Day {
     return retval;
   }
 
+  static formatEpochTime(epochTime) {
+    // Convert the epoch time to a Day.js object and format it
+    return dayjs(epochTime * 1000).format('YYYY-MM-DD HH:mm:ss');
+  }
+
   static getFormattedLongDate(epoch) {
     if (epoch !== undefined && epoch !== null) {
       return dayjs.unix(epoch).format('dddd, MMMM Do YYYY');
