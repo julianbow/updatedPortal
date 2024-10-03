@@ -37,8 +37,9 @@
       async displayApplicationMenuGetData() {
         this.isLoading = true;
 
-        const response = await this.requestor.makeMetricsRequest();
         try {
+          const response = await this.requestor.makeMetricsRequest();
+
           if (response.data.status.status_code === 0) {
             this.metrics = response.data.metrics_names;
           } else {

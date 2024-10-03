@@ -99,6 +99,11 @@ class Requestor {
     const url = `https://metrics.weatherflow.com/metrics/rest/get_latest_metrics?metric_name_filter=${metric}`;
     return axios.get(url);
   }
+
+  makeMetricsChartDataRequest(metric, step, offset) {
+    const url = `https://metrics.weatherflow.com/metrics/rest/get_metric_values?step=${step}&minute_offset=${offset}&metric_name=${metric}`;
+    return axios.get(url);
+  }
 }
 
 export default Requestor;
