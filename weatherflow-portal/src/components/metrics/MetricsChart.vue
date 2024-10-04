@@ -1,55 +1,131 @@
 <template>
     <div id="metrics-chart">
       <Loader v-if="isLoading" />
-      <canvas ref="chartCanvas"></canvas>
+
+      <div v-if="datasets && datasets.length" :style="chartContainerStyle">
+        <Line v-if="chartType === 'line'" :data="chartData" :options="chartOptions" />
+        <Pie v-if="chartType === 'pie'" :data="chartData" :options="chartOptions" />
+      </div>
+      <div v-else>
+        <p>No data available for the selected metrics</p>
+      </div>
+
+      <button @click="toggleChartType">Switch to {{ chartType === 'line' ? 'Pie' : 'Line' }} Chart</button>
+      <button @click="toggleExpand">{{ isExpanded ? 'Collapse' : 'Expand' }} Chart</button>
     </div>
   </template>
 
   <script>
-    import { Chart as ChartJS, TimeScale, LinearScale, LineElement, PointElement, Title, Tooltip, Legend } from 'chart.js';
+    import { Chart as ChartJS, TimeScale, LinearScale, LineElement, PointElement, Title, Tooltip, Legend, ArcElement } from 'chart.js';
+    import { Line, Pie } from 'vue-chartjs';
     import zoomPlugin from 'chartjs-plugin-zoom';
     import 'chartjs-adapter-date-fns';
-    import Loader from '../Loader.vue';
+    import Loader from '@/components/Loader.vue';
 
-    ChartJS.register(TimeScale, LinearScale, LineElement, PointElement, Title, Tooltip, Legend, zoomPlugin);
+    ChartJS.register(TimeScale, LinearScale, LineElement, PointElement, ArcElement, Title, Tooltip, Legend, zoomPlugin);
 
     export default {
-      components: { Loader },
+      components: {
+        Loader,
+        Line,
+        Pie
+      },
       props: {
-        metrics: Array, // Array of selected metrics
+        metrics: Array,
         timeRange: String,
         period: String,
         requestor: Object
       },
       data() {
         return {
-          chartInstance: null,
           isLoading: false,
-          dataCache: {}, // Object to store cached data for metrics
-          currentMetrics: [] // Track currently active/selected metrics
+          dataCache: {},
+          datasets: null,
+          currentMetrics: [],
+          isExpanded: false,
+          chartType: 'line'
         };
+      },
+      computed: {
+        chartData() {
+          if (this.datasets && this.chartType === 'line') {
+            return { datasets: this.datasets };
+          } else if (this.datasets && this.chartType === 'pie') {
+            const labels = this.datasets.map(dataset => dataset.label);
+            const data = this.datasets.map(dataset => dataset.data.reduce((acc, point) => acc + point.y, 0));
+            const backgroundColor = this.datasets.map(dataset => dataset.borderColor);
+
+            return {
+              labels,
+              datasets: [{ data, backgroundColor }]
+            };
+          }
+        },
+        chartOptions() {
+          return {
+            responsive: true,
+            maintainAspectRatio: false,
+            interaction: {
+              mode: this.chartType === 'line' ? 'nearest' : 'point',
+              intersect: false,
+            },
+            hover: {
+              mode: this.chartType === 'line' ? 'nearest' : 'point',
+              intersect: false,
+            },
+            plugins: {
+              tooltip: {
+                enabled: true,
+                callbacks: {
+                  label: (context) => this.chartType === 'line'
+                    ? `${context.dataset.label}: ${context.parsed.y}`
+                    : `${context.label}: ${context.raw}`
+                }
+              },
+              zoom: this.chartType === 'line' ? {
+                pan: { enabled: true, mode: 'x' },
+                zoom: {
+                  wheel: { enabled: true },
+                  pinch: { enabled: true },
+                  mode: 'x',
+                },
+              } : undefined
+            },
+            scales: this.chartType === 'line' ? {
+              x: {
+                type: 'time',
+                time: { unit: 'day' },
+                title: { display: true, text: 'Time' }
+              }
+            } : undefined
+          };
+        },
+        chartContainerStyle() {
+          return {
+            height: this.isExpanded ? '600px' : '400px',
+            transition: 'height 0.3s ease',
+            width: '100%'
+          };
+        }
       },
       methods: {
         async fetchMetricsData() {
           this.isLoading = true;
           const datasets = [];
 
-          // Remove cached data for unselected metrics
           this.removeUnselectedMetrics();
 
           for (const metric of this.metrics) {
-            // Check if the metric data is already cached
-            if (this.dataCache[metric]) {
-              datasets.push(this.dataCache[metric]); // Use cached data
+            const cacheKey = `${metric}_${this.timeRange}_${this.period}`;
+            if (this.dataCache[cacheKey]) {
+              datasets.push(this.dataCache[cacheKey]);
             } else {
               try {
-                // If not cached, make API request
                 const response = await this.requestor.makeMetricsChartDataRequest(metric, this.period, this.timeRange);
                 if (response.data.status.status_code === 0) {
                   const dataset = this.buildDataset(response.data, metric);
                   datasets.push(dataset);
-                  this.dataCache[metric] = dataset; // Cache the data
-                  console.log(`Caching data for metric: ${metric}`);
+                  this.dataCache[cacheKey] = dataset;
                 }
               } catch (error) {
                 console.error(`Error fetching data for metric ${metric}:`, error);
@@ -57,17 +133,14 @@
             }
           }
 
-          this.renderChart(datasets);
+          this.datasets = datasets;
           this.isLoading = false;
         },
 
         buildDataset(data, metric) {
           const formattedData = data.values.map(valueString => {
             const bits = valueString.split(",");
-            return {
-              x: parseFloat(bits[0]) * 1000,
-              y: parseFloat(bits[1])
-            };
+            return { x: parseFloat(bits[0]) * 1000, y: parseFloat(bits[1]) };
           });
 
           const color = this.getRandomColor();
@@ -86,75 +159,16 @@
           };
         },
 
-        renderChart(datasets) {
-          console.log("RENDER CHART");
-          const ctx = this.$refs.chartCanvas.getContext('2d');
-
-          if (this.chartInstance) {
-            this.chartInstance.destroy(); // Destroy previous chart instance before creating a new one
-          }
-
-          this.chartInstance = new ChartJS(ctx, {
-            type: 'line',
-            data: { datasets },
-            options: {
-              interaction: {
-                mode: 'nearest',
-                intersect: false,
-              },
-              hover: {
-                mode: 'nearest',
-                intersect: false,
-              },
-              plugins: {
-                tooltip: {
-                  enabled: true,
-                  mode: 'nearest',
-                  intersect: false,
-                  callbacks: {
-                    label: (context) => `${context.dataset.label}: ${context.parsed.y}`
-                  }
-                },
-                zoom: {
-                  pan: {
-                    enabled: true,
-                    mode: 'x', // Enable panning on the x-axis
-                  },
-                  zoom: {
-                    wheel: {
-                      enabled: true, // Enable zooming with the mouse wheel
-                    },
-                    pinch: {
-                      enabled: true, // Enable zooming by pinching on touch devices
-                    },
-                    mode: 'x', // Zoom only along the x-axis
-                  },
-                },
-              },
-              scales: {
-                x: {
-                  type: 'time',
-                  time: { unit: 'day' },
-                  title: { display: true, text: 'Time' }
-                },
-              }
-            }
-          });
-        },
-
         removeUnselectedMetrics() {
-          // Remove data for metrics that are no longer selected
           const selectedMetrics = new Set(this.metrics);
 
-          // Iterate through cached data and remove unselected metrics
-          for (const metric in this.dataCache) {
+          for (const key in this.dataCache) {
+            const [metric] = key.split('_');
             if (!selectedMetrics.has(metric)) {
-              console.log(`Removing cached data for unselected metric: ${metric}`);
-              delete this.dataCache[metric]; // Remove the cached data
+              delete this.dataCache[key];
             }
           }
 
-          // Update currentMetrics to reflect the currently selected metrics
           this.currentMetrics = [...this.metrics];
         },
 
@@ -163,10 +177,30 @@
           const g = Math.floor(Math.random() * 255);
           const b = Math.floor(Math.random() * 255);
           return `rgba(${r}, ${g}, ${b}, 0.8)`;
+        },
+
+        toggleExpand() {
+          this.isExpanded = !this.isExpanded;
+        },
+
+        toggleChartType() {
+          this.chartType = this.chartType === 'line' ? 'pie' : 'line';
         }
       },
       watch: {
         metrics: {
+          immediate: true,
+          handler() {
+            this.fetchMetricsData();
+          }
+        },
+        timeRange: {
+          immediate: true,
+          handler() {
+            this.fetchMetricsData();
+          }
+        },
+        period: {
           immediate: true,
           handler() {
             this.fetchMetricsData();
