@@ -7,7 +7,7 @@
           Time Range:
           <select v-model="selectedTimeRange">
             <option value="10080">Last 1 Week</option>
-            <option value="20160" selected="selected">Last 2 Weeks</option>
+            <option value="20160">Last 2 Weeks</option>
             <option value="40320">Last 4 Weeks</option>
             <option value="120960">Last 26 Weeks</option>
             <option value="564480">Last 1 Year</option>
@@ -43,7 +43,7 @@
               </td>
               <td>{{ metric.name }}</td>
               <td>{{ metric.source }}</td>
-              <td>{{ metric.timestamp }}</td>
+              <td>{{ metric.time }}</td>
               <td>{{ metric.value }}</td>
             </tr>
           </tbody>
@@ -63,11 +63,12 @@
   <script>
     import Loader from '../Loader.vue';
     import MetricsChart from './MetricsChart.vue';
+    import Day from '../../helpers/Day';
 
     export default {
       components: {
         Loader,
-        MetricsChart
+        MetricsChart,
       },
       props: {
         metric: String,
@@ -77,8 +78,8 @@
         return {
           metricsData: null,
           selectedMetrics: [],
-          selectedTimeRange: "20160",
-          selectedPeriod: "60",
+          selectedTimeRange: "20160", // Default to 2 Weeks
+          selectedPeriod: "60", // Default to 1 Hour
           isLoading: false,
         };
       },
@@ -88,13 +89,17 @@
         },
 
         handleMetricClick(metric) {
-          const existingIndex = this.selectedMetrics.findIndex(m => m === metric.chartName);
+          const existingIndex = this.selectedMetrics.findIndex(
+            (m) => m === metric.chartName
+          );
           if (existingIndex === -1) {
             this.selectedMetrics = [...this.selectedMetrics, metric.chartName];
           } else {
-            this.selectedMetrics = this.selectedMetrics.filter(m => m !== metric.chartName);
+            this.selectedMetrics = this.selectedMetrics.filter(
+              (m) => m !== metric.chartName
+            );
           }
-          console.log('Updated selected metrics:', this.selectedMetrics);
+          this.updateUrl();
         },
 
         async showMetricsData(metric) {
@@ -105,27 +110,66 @@
               this.metricsData = this.buildMetricsObject(response.data.metrics);
             }
           } catch (error) {
-            console.error('Error getting metrics:', error);
+            console.error("Error getting metrics:", error);
           } finally {
             this.isLoading = false;
           }
         },
 
         buildMetricsObject(metrics) {
-          return metrics.map(metric => {
-            const nameParts = metric.name.split('.');
+          return metrics.map((metric) => {
+            const nameParts = metric.name.split(".");
             return {
               name: nameParts[1],
               chartName: metric.name,
               source: nameParts[nameParts.length - 1],
               value: metric.value,
+              time: Day.formatEpochTime(metric.timestamp),
               timestamp: metric.timestamp,
             };
           });
-        }
+        },
+
+        updateUrl() {
+          // Construct URL with encoded parameters
+          const encodedMetric = encodeURIComponent(this.metric);
+          const query = {
+            timeRange: this.selectedTimeRange,
+            period: this.selectedPeriod,
+            metrics: this.selectedMetrics.join(','),
+          };
+
+          this.$router.push({
+            name: 'MetricsDetails',
+            params: { encodedMetric },
+            query
+          });
+        },
+
+        parseQueryParams() {
+          // Parse query params on load
+          if (this.$route.query.timeRange) {
+            this.selectedTimeRange = this.$route.query.timeRange;
+          }
+          if (this.$route.query.period) {
+            this.selectedPeriod = this.$route.query.period;
+          }
+          if (this.$route.query.metrics) {
+            this.selectedMetrics = this.$route.query.metrics.split(',');
+          }
+        },
+      },
+      watch: {
+        selectedTimeRange() {
+          this.updateUrl();
+        },
+        selectedPeriod() {
+          this.updateUrl();
+        },
       },
       mounted() {
         this.showMetricsData(this.metric);
-      }
+        this.parseQueryParams();
+      },
     };
   </script>
