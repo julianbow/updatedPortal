@@ -1,5 +1,8 @@
 <template>
     <div id="metrics-data">
+      <div class="back-button-container">
+        <button class="button" @click="goBack">Back</button>
+      </div>
       <Loader :isLoading="isLoading" />
       <div class="metrics-header">
         <h1>{{ metric }}</h1>
@@ -163,6 +166,13 @@
           }
           if (this.$route.params.metrics) {
             this.selectedMetrics = this.$route.params.metrics.split(',');
+          }
+        },
+        goBack() {
+          if (this.selectedMetric) {
+            this.selectedMetric = null;
+          } else {
+            this.$router.push({ name: 'metrics' });
           }
         }
       },
