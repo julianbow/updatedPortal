@@ -8,6 +8,7 @@ import ApplicationsView from '@/views/ApplicationsView.vue';
 import MetricsView from '@/views/MetricsView.vue';
 import ApiMonitorView from '@/views/ApiMonitorView.vue';
 import { getAuth, onAuthStateChanged } from 'firebase/auth';
+import MetricsDetails from '@/components/metrics/MetricsDetails.vue';
 
 const auth = getAuth();
 
@@ -113,8 +114,15 @@ const router = createRouter({
     },
     {
       path: '/metrics/:metric',
-      name: "MetricsDetails",
+      name: "MetricsView",
       component: MetricsView,
+      meta: { requiresAuth: true },
+    },
+    {
+      path: '/metrics/:metric/:timeRange/:period/:metrics',
+      name: 'MetricsDetails',
+      component: MetricsView,
+      props: true,
       meta: { requiresAuth: true },
     },
     {

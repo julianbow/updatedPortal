@@ -131,33 +131,40 @@
         },
 
         updateUrl() {
-          // Construct URL with encoded parameters
-          const encodedMetric = encodeURIComponent(this.metric);
-          const query = {
-            timeRange: this.selectedTimeRange,
-            period: this.selectedPeriod,
-            metrics: this.selectedMetrics.join(','),
-          };
+          if (this.selectedMetrics.length === 0) {
+            this.$router.push({
+              name: 'MetricsView',
+              params: {
+                metric: this.metric,
+              }
+             });
+          } else {
+            const encodedMetric = this.metric;
+            const encodedMetrics = this.selectedMetrics.join(',');
 
-          this.$router.push({
-            name: 'MetricsDetails',
-            params: { encodedMetric },
-            query
-          });
-        },
+            this.$router.push({
+              name: 'MetricsDetails',
+              params: {
+                metric: encodedMetric,
+                timeRange: this.selectedTimeRange,
+                period: this.selectedPeriod,
+                metrics: encodedMetrics
+              }
+            });
 
-        parseQueryParams() {
-          // Parse query params on load
-          if (this.$route.query.timeRange) {
-            this.selectedTimeRange = this.$route.query.timeRange;
-          }
-          if (this.$route.query.period) {
-            this.selectedPeriod = this.$route.query.period;
-          }
-          if (this.$route.query.metrics) {
-            this.selectedMetrics = this.$route.query.metrics.split(',');
           }
         },
+        parseRouteParams() {
+          if (this.$route.params.timeRange) {
+            this.selectedTimeRange = this.$route.params.timeRange;
+          }
+          if (this.$route.params.period) {
+            this.selectedPeriod = this.$route.params.period;
+          }
+          if (this.$route.params.metrics) {
+            this.selectedMetrics = this.$route.params.metrics.split(',');
+          }
+        }
       },
       watch: {
         selectedTimeRange() {
@@ -166,10 +173,15 @@
         selectedPeriod() {
           this.updateUrl();
         },
+        '$route.params'() {
+          this.parseRouteParams();
+          this.updateUrl();
+          this.showMetricsData(this.metric);
+        }
       },
       mounted() {
+        this.parseRouteParams();
         this.showMetricsData(this.metric);
-        this.parseQueryParams();
       },
     };
   </script>
