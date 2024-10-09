@@ -119,11 +119,17 @@ const router = createRouter({
       meta: { requiresAuth: true },
     },
     {
-      path: '/metrics/:metric/:timeRange/:period/:metrics',
+      path: '/:metric',
       name: 'MetricsDetails',
       component: MetricsView,
-      props: true,
-      meta: { requiresAuth: true },
+      props: (route) => ({
+        metric: route.params.metric,
+        timeRange: route.query.timeRange || '20160',
+        period: route.query.period || '60',
+        metrics: route.query.metrics || '',
+        searchQuery: route.query.search || ''
+      }),
+      meta: { requiresAuth: true }
     },
     {
       path: "/monitoring",
