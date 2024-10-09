@@ -88,18 +88,18 @@ const router = createRouter({
       component: DevicesView,
       meta: { requiresAuth: true },
     },
-    // {
-    //   path: '/map',
-    //   name: 'map',
-    //   component: MapView,
-    //   meta: { requiresAuth: true },
-    // },
-    // {
-    //   path: '/map/:lat?/:lon?/:zoom?',
-    //   name: 'MapView',
-    //   component: MapView,
-    //   meta: { requiresAuth: true },
-    // },
+    {
+      path: '/map',
+      name: 'map',
+      component: MapView,
+      meta: { requiresAuth: true },
+    },
+    {
+      path: '/map/:lat?/:lon?/:zoom?',
+      name: 'MapView',
+      component: MapView,
+      meta: { requiresAuth: true },
+    },
     {
       path: '/applications',
       name: 'applications',

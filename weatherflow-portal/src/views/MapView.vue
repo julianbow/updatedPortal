@@ -35,7 +35,7 @@ export default {
           resolve();
         } else {
           const script = document.createElement('script');
-          script.src = `https://maps.googleapis.com/maps/api/js?key=${apiKeyGoogle}`;
+          script.src = `https://maps.googleapis.com/maps/api/js?key=${apiKeyGoogle}&libraries=marker`;
           script.async = true;
           script.defer = true;
           script.onload = resolve;
@@ -48,10 +48,12 @@ export default {
         center: this.center,
         zoom: this.zoom,
         scaleControl: true,
+        streetViewControl: false,
+        mapId: "1a765d8eadff1159" // Your Map ID
       });
 
       google.maps.event.addListener(this.map, 'idle', () => {
-        this.getStations();
+        this.getStations(); // Load stations when map is idle
         this.updateRouteWithMapPosition(); // Update the URL when the map moves
       });
     },
@@ -68,7 +70,6 @@ export default {
       });
     },
     async getStations() {
-      console.log("getStations");
       const bounds = this.map.getBounds();
       const newBounds = this.calculateNewBounds(bounds);
 
@@ -92,35 +93,81 @@ export default {
       }
     },
     addMarkers(stations) {
-      this.clearMarkers();
-      stations.forEach((station, index) => {
-        const position = { lat: station.latitude, lng: station.longitude };
-        const marker = new google.maps.Marker({
-          position,
-          map: this.map,
-          title: station.name,
-          icon: this.createMarkerSVG(false),
-          zIndex: index,
-        });
-        marker.addListener('click', () => {
-          this.showStationInfo(station, marker);
-        });
-        this.markers.push(marker);
+  this.clearMarkers();
+
+  if (stations.length > 0) {
+    // Center map on the first station
+    this.map.setCenter({ lat: stations[0].latitude, lng: stations[0].longitude });
+  }
+
+  stations.forEach((station, index) => {
+    const position = { lat: station.latitude, lng: station.longitude };
+
+    // Create a marker element
+    const markerElement = this.createMarkerElement(station.name, false);
+
+    // Log the created marker element
+
+    const pin = new google.maps.marker.PinElement({
+      scale: 1.5,
+      borderColor: "#137333",
+      background: "#FBBC04"
+    });
+
+      // Create an advanced marker with the DOM element as content
+      const marker = new google.maps.marker.AdvancedMarkerElement({
+        position,
+        map: this.map,
+        title: station.name,
+        content: pin.element, // Use the created marker element
       });
-    },
+
+      // Add a click listener to the marker
+      marker.addListener('click', () => {
+        this.showStationInfo(station, marker);
+      });
+
+      // Store the marker in the array
+      this.markers.push(marker);
+  });
+},
     clearMarkers() {
-      this.markers.forEach(marker => marker.setMap(null));
+      this.markers.forEach(marker => marker.map = null);
       this.markers = [];
     },
-    createMarkerSVG(selected) {
+    createMarkerElement(stationName, selected) {
       const color = selected ? '#00FF00' : '#008000';
-      const svg = `<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20">
-                    <circle cx="10" cy="10" r="8" stroke="black" stroke-width="1" fill="${color}" />
-                  </svg>`;
-      return {
-        url: 'data:image/svg+xml;charset=UTF-8,' + encodeURIComponent(svg),
-        scaledSize: new google.maps.Size(20, 20),
+      const markerElement = document.createElement('div');
+      markerElement.style.backgroundColor = color;
+      markerElement.style.borderRadius = '50%';
+      markerElement.style.width = '20px';
+      markerElement.style.height = '20px';
+      markerElement.style.border = '1px solid black';
+      markerElement.style.cursor = 'pointer';
+      return markerElement;
+    },
+    showStationInfo(station, marker) {
+      if (this.currentSelectedMarker) {
+        this.updateMarkerElement(this.currentSelectedMarker, false);
+      }
+      this.updateMarkerElement(marker, true);
+      this.stationInfo = {
+        name: station.name,
+        details: `Lat: ${station.latitude}, Lng: ${station.longitude}`,
       };
+      this.stationInfoVisible = true;
+      this.currentSelectedMarker = marker;
+    },
+    closeStationInfo() {
+      if (this.currentSelectedMarker) {
+        this.updateMarkerElement(this.currentSelectedMarker, false);
+        this.currentSelectedMarker = null;
+      }
+      this.stationInfoVisible = false;
+    },
+    updateMarkerElement(marker, selected) {
+      const markerElement = marker.content;
+      markerElement.style.backgroundColor = selected ? '#00FF00' : '#008000';
     },
     calculateNewBounds(bounds) {
       if (!this.previousBounds) return bounds;
@@ -155,25 +202,6 @@ export default {
 
       return null;
     },
-    showStationInfo(station, marker) {
-      if (this.currentSelectedMarker) {
-        this.updateMarkerIcon(this.currentSelectedMarker, false);
-      }
-      this.updateMarkerIcon(marker, true);
-      this.stationInfo = {
-        name: station.name,
-        details: `Lat: ${station.latitude}, Lng: ${station.longitude}`,
-      };
-      this.stationInfoVisible = true;
-      this.currentSelectedMarker = marker;
-    },
-    closeStationInfo() {
-      if (this.currentSelectedMarker) {
-        this.updateMarkerIcon(this.currentSelectedMarker, false);
-        this.currentSelectedMarker = null;
-      }
-      this.stationInfoVisible = false;
-    },
     updateTitle() {
       this.$emit('update-title', "Station Map");
     }
@@ -198,11 +226,9 @@ export default {
     },
   },
   mounted() {
-    const lat = this.lat ? parseFloat(this.lat) : this.defaultCenter.lat;
-    const lon = this.lon ? parseFloat(this.lon) : this.defaultCenter.lng;
-    const zoom = this.zoom ? parseInt(this.zoom) : this.defaultZoom;
-
-    console.log(lat, lon, zoom);
+    const lat = this.$route.params.lat ? parseFloat(this.$route.params.lat) : this.defaultCenter.lat;
+    const lon = this.$route.params.lon ? parseFloat(this.$route.params.lon) : this.defaultCenter.lng;
+    const zoom = this.$route.params.zoom ? parseInt(this.$route.params.zoom) : this.defaultZoom;
 
     this.center = { lat, lng: lon };
     this.zoom = zoom;
@@ -230,6 +256,5 @@ export default {
   background-color: white;
   padding: 10px;
   border: 1px solid black;
-  display: none;
 }
 </style>
