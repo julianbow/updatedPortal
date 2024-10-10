@@ -24,6 +24,7 @@
         position: absolute;
         top: 40%;
         left: 50%;
+        z-index: 1001;
         transform: translate(-50%, -50%);
     }
 

@@ -1,19 +1,21 @@
 <template>
   <div>
+    <Loader :isLoading="isLoading" />
     <div class="map-container" ref="mapContainer"></div>
-    <div id="station-info" v-if="stationInfoVisible">
-      <h2>{{ stationInfo.name }}</h2>
-      <p>{{ stationInfo.details }}</p>
-      <button @click="closeStationInfo">Close</button>
-    </div>
   </div>
 </template>
 
 <script>
 import { apiKeyGoogle } from '../../config.json';
 import Requestor from '@/helpers/Requestor';
+import Loader from '../components/Loader.vue';
+import locationMarker from '@/assets/images/location-marker-3x.webp';
+import locationMarkerGrow from '@/assets/images/location-marker-grow-3x.webp';
 
 export default {
+  components: {
+      Loader,
+    },
   data() {
     return {
       map: null,
@@ -26,6 +28,7 @@ export default {
       previousBounds: null,
       stationInfoVisible: false,
       stationInfo: {},
+      isLoading: false,
     };
   },
   methods: {
@@ -35,7 +38,7 @@ export default {
           resolve();
         } else {
           const script = document.createElement('script');
-          script.src = `https://maps.googleapis.com/maps/api/js?key=${apiKeyGoogle}&libraries=marker`;
+          script.src = `https://maps.googleapis.com/maps/api/js?key=${apiKeyGoogle}`;
           script.async = true;
           script.defer = true;
           script.onload = resolve;
@@ -43,20 +46,22 @@ export default {
         }
       });
     },
+
     initMap() {
       this.map = new google.maps.Map(this.$refs.mapContainer, {
         center: this.center,
         zoom: this.zoom,
         scaleControl: true,
         streetViewControl: false,
-        mapId: "1a765d8eadff1159" // Your Map ID
+        mapId: "1a765d8eadff1159"
       });
 
       google.maps.event.addListener(this.map, 'idle', () => {
-        this.getStations(); // Load stations when map is idle
-        this.updateRouteWithMapPosition(); // Update the URL when the map moves
+        this.getStations();
+        this.updateRouteWithMapPosition();
       });
     },
+
     updateRouteWithMapPosition() {
       const center = this.map.getCenter();
       const zoom = this.map.getZoom();
@@ -69,126 +74,75 @@ export default {
         },
       });
     },
+
     async getStations() {
       const bounds = this.map.getBounds();
       const newBounds = this.calculateNewBounds(bounds);
 
-      if (newBounds) {
-        const urlData = {
-          report_name: 'get_stations_by_bbox',
-          min_lat: newBounds.getSouthWest().lat(),
-          min_lon: newBounds.getSouthWest().lng(),
-          max_lat: newBounds.getNorthEast().lat(),
-          max_lon: newBounds.getNorthEast().lng(),
-          device_type: ""
-        };
+      this.isLoading = true;
 
-        const response = await this.requestor.makePostRequest('report', urlData);
+      try {
+        if (newBounds) {
+          const urlData = {
+            report_name: 'get_stations_by_bbox',
+            min_lat: newBounds.getSouthWest().lat(),
+            min_lon: newBounds.getSouthWest().lng(),
+            max_lat: newBounds.getNorthEast().lat(),
+            max_lon: newBounds.getNorthEast().lng(),
+            device_type: ""
+          };
 
-        if (response.data && response.status === 200) {
-          const stations = response.data;
-          this.addMarkers(stations);
-          this.previousBounds = bounds;
+          const response = await this.requestor.makePostRequest('report', urlData);
+
+          if (response.data && response.status === 200) {
+            const stations = response.data;
+            this.addMarkers(stations);
+            this.previousBounds = this.mergeBounds(this.previousBounds, bounds);
+          }
         }
+      } catch (error) {
+        console.error("Error getting stations:", error);
+      } finally {
+        this.isLoading = false;
       }
     },
-    addMarkers(stations) {
-  this.clearMarkers();
 
-  if (stations.length > 0) {
-    // Center map on the first station
-    this.map.setCenter({ lat: stations[0].latitude, lng: stations[0].longitude });
-  }
+    calculateNewBounds(currentBounds) {
+      if (!this.previousBounds) return currentBounds;
 
-  stations.forEach((station, index) => {
-    const position = { lat: station.latitude, lng: station.longitude };
-
-    // Create a marker element
-    const markerElement = this.createMarkerElement(station.name, false);
-
-    // Log the created marker element
-
-    const pin = new google.maps.marker.PinElement({
-      scale: 1.5,
-      borderColor: "#137333",
-      background: "#FBBC04"
-    });
-
-      // Create an advanced marker with the DOM element as content
-      const marker = new google.maps.marker.AdvancedMarkerElement({
-        position,
-        map: this.map,
-        title: station.name,
-        content: pin.element, // Use the created marker element
-      });
-
-      // Add a click listener to the marker
-      marker.addListener('click', () => {
-        this.showStationInfo(station, marker);
-      });
-
-      // Store the marker in the array
-      this.markers.push(marker);
-  });
-},
-    clearMarkers() {
-      this.markers.forEach(marker => marker.map = null);
-      this.markers = [];
-    },
-    createMarkerElement(stationName, selected) {
-      const color = selected ? '#00FF00' : '#008000';
-      const markerElement = document.createElement('div');
-      markerElement.style.backgroundColor = color;
-      markerElement.style.borderRadius = '50%';
-      markerElement.style.width = '20px';
-      markerElement.style.height = '20px';
-      markerElement.style.border = '1px solid black';
-      markerElement.style.cursor = 'pointer';
-      return markerElement;
-    },
-    showStationInfo(station, marker) {
-      if (this.currentSelectedMarker) {
-        this.updateMarkerElement(this.currentSelectedMarker, false);
-      }
-      this.updateMarkerElement(marker, true);
-      this.stationInfo = {
-        name: station.name,
-        details: `Lat: ${station.latitude}, Lng: ${station.longitude}`,
-      };
-      this.stationInfoVisible = true;
-      this.currentSelectedMarker = marker;
-    },
-    closeStationInfo() {
-      if (this.currentSelectedMarker) {
-        this.updateMarkerElement(this.currentSelectedMarker, false);
-        this.currentSelectedMarker = null;
-      }
-      this.stationInfoVisible = false;
-    },
-    updateMarkerElement(marker, selected) {
-      const markerElement = marker.content;
-      markerElement.style.backgroundColor = selected ? '#00FF00' : '#008000';
-    },
-    calculateNewBounds(bounds) {
-      if (!this.previousBounds) return bounds;
-
-      const newSW = bounds.getSouthWest();
+      const newSW = currentBounds.getSouthWest();
       const prevSW = this.previousBounds.getSouthWest();
-      const newNE = bounds.getNorthEast();
+      const newNE = currentBounds.getNorthEast();
       const prevNE = this.previousBounds.getNorthEast();
 
       const newAreas = [];
+
       if (newSW.lng() < prevSW.lng()) {
-        newAreas.push(new google.maps.LatLngBounds(new google.maps.LatLng(newSW.lat(), newSW.lng()), new google.maps.LatLng(newNE.lat(), prevSW.lng())));
+        newAreas.push(new google.maps.LatLngBounds(
+          new google.maps.LatLng(newSW.lat(), newSW.lng()),
+          new google.maps.LatLng(newNE.lat(), prevSW.lng())
+        ));
       }
+
       if (newNE.lng() > prevNE.lng()) {
-        newAreas.push(new google.maps.LatLngBounds(new google.maps.LatLng(newSW.lat(), prevNE.lng()), new google.maps.LatLng(newNE.lat(), newNE.lng())));
+        newAreas.push(new google.maps.LatLngBounds(
+          new google.maps.LatLng(newSW.lat(), prevNE.lng()),
+          new google.maps.LatLng(newNE.lat(), newNE.lng())
+        ));
       }
+
       if (newSW.lat() < prevSW.lat()) {
-        newAreas.push(new google.maps.LatLngBounds(new google.maps.LatLng(newSW.lat(), newSW.lng()), new google.maps.LatLng(prevSW.lat(), newNE.lng())));
+        newAreas.push(new google.maps.LatLngBounds(
+          new google.maps.LatLng(newSW.lat(), newSW.lng()),
+          new google.maps.LatLng(prevSW.lat(), newNE.lng())
+        ));
       }
+
       if (newNE.lat() > prevNE.lat()) {
-        newAreas.push(new google.maps.LatLngBounds(new google.maps.LatLng(prevNE.lat(), newSW.lng()), new google.maps.LatLng(newNE.lat(), newNE.lng())));
+        newAreas.push(new google.maps.LatLngBounds(
+          new google.maps.LatLng(prevNE.lat(), newSW.lng()),
+          new google.maps.LatLng(newNE.lat(), newNE.lng())
+        ));
       }
 
       if (newAreas.length > 0) {
@@ -202,28 +156,97 @@ export default {
 
       return null;
     },
+
+    mergeBounds(prevBounds, newBounds) {
+      if (!prevBounds) return newBounds;
+      const mergedBounds = new google.maps.LatLngBounds();
+      mergedBounds.extend(prevBounds.getSouthWest());
+      mergedBounds.extend(prevBounds.getNorthEast());
+      mergedBounds.extend(newBounds.getSouthWest());
+      mergedBounds.extend(newBounds.getNorthEast());
+      return mergedBounds;
+    },
+
+    addMarkers(stations) {
+      this.clearMarkers();
+
+      const infoWindow = new google.maps.InfoWindow();
+
+      stations.forEach((station) => {
+        const position = { lat: station.latitude, lng: station.longitude };
+
+        const customIcon = {
+          url: locationMarker,
+          scaledSize: new google.maps.Size(33, 42),
+          anchor: new google.maps.Point(14, 35)
+        };
+
+        const marker = new google.maps.Marker({
+          position,
+          map: this.map,
+          icon: customIcon,
+          title: station.name,
+        });
+
+        marker.addListener('click', () => {
+          this.showStationInfo(station, marker, infoWindow);
+        });
+
+        this.markers.push(marker);
+      });
+    },
+
+    clearMarkers() {
+      this.markers.forEach(marker => marker.map = null);
+      this.markers = [];
+    },
+
+    showStationInfo(station, marker, infoWindow) {
+      marker.setIcon({
+        url: locationMarkerGrow,
+        scaledSize: new google.maps.Size(33, 42),
+			  anchor: new google.maps.Point(14, 35)
+      });
+
+      const content = `
+        <div>
+          <h2>${station.name}</h2>
+          <p>Lat: ${station.latitude}, Lng: ${station.longitude}</p>
+          <p>Click for more details.</p>
+        </div>
+      `;
+
+      infoWindow.setContent(content);
+      infoWindow.open(this.map, marker);
+
+      google.maps.event.addListener(infoWindow, 'closeclick', () => {
+        marker.setIcon({
+          url: locationMarker,
+          scaledSize: new google.maps.Size(33, 42),
+          anchor: new google.maps.Point(14, 35)
+        });
+      });
+
+      this.currentSelectedMarker = marker;
+
+      this.stationInfo = {
+        name: station.name,
+        details: `Lat: ${station.latitude}, Lng: ${station.longitude}`,
+      };
+      this.stationInfoVisible = true;
+    },
+
+    closeStationInfo() {
+      if (this.currentSelectedMarker) {
+        this.updateMarkerElement(this.currentSelectedMarker, false);
+        this.currentSelectedMarker = null;
+      }
+      this.stationInfoVisible = false;
+    },
+
     updateTitle() {
       this.$emit('update-title', "Station Map");
     }
-  },
-  watch: {
-    '$route.params': {
-      handler(newParams) {
-        const lat = newParams.lat ? parseFloat(newParams.lat) : this.defaultCenter.lat;
-        const lon = newParams.lon ? parseFloat(newParams.lon) : this.defaultCenter.lng;
-        const zoom = newParams.zoom ? parseInt(newParams.zoom) : this.defaultZoom;
-
-        this.center = { lat, lng: lon };
-        this.zoom = zoom;
-
-        // If URL params change, update the map
-        if (this.map) {
-          this.map.setCenter(this.center);
-          this.map.setZoom(this.zoom);
-        }
-      },
-      immediate: true,
-    },
   },
   mounted() {
     const lat = this.$route.params.lat ? parseFloat(this.$route.params.lat) : this.defaultCenter.lat;
