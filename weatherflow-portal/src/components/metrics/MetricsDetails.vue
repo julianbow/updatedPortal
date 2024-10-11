@@ -142,7 +142,7 @@
         try {
           const response = await this.requestor.makeMetricsDataRequest(metric);
           if (response.data.status.status_code === 0) {
-            this.metricsData = this.buildMetricsObject(response.data.metrics);
+            this.metricsData = this.buildMetricsObject(response.data.metrics, metric);
             this.loadChart = true;
           }
         } catch (error) {
@@ -152,18 +152,35 @@
         }
       },
 
-      buildMetricsObject(metrics) {
-        return metrics.map((metric) => {
-          const nameParts = metric.name.split(".");
-          return {
-            name: nameParts[1],
-            chartName: metric.name,
-            source: nameParts[2],
-            value: metric.value,
-            time: Day.formatEpochTime(metric.timestamp),
-            timestamp: metric.timestamp,
-          };
+      buildMetricsObject(metrics, metricName) {
+        if (metricName === "swd-api") {
+          const filteredMetrics = metrics.filter((metric) => metric.name.startsWith('swd-api.'));
+
+          return filteredMetrics.map((metric) => {
+            const nameParts = metric.name.split(".");
+
+            return {
+              name: nameParts[1],
+              chartName: metric.name,
+              source: nameParts[2],
+              value: metric.value,
+              time: Day.formatEpochTime(metric.timestamp),
+              timestamp: metric.timestamp,
+            };
+          });
+        } else {
+          return metrics.map((metric) => {
+            const nameParts = metric.name.split(".");
+            return {
+              name: nameParts[1],
+              chartName: metric.name,
+              source: nameParts[2],
+              value: metric.value,
+              time: Day.formatEpochTime(metric.timestamp),
+              timestamp: metric.timestamp,
+            };
         });
+        }
       },
 
       updateUrl() {
