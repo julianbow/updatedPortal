@@ -1,16 +1,16 @@
 <template>
-    <div id="search-section">
-      <input
-        v-model="searchTerm"
-        @keyup.enter="searchUsers"
-        placeholder="Search users by email"
-        id="search-box"
-      />
-      <div v-if="localSearchError" class="err-msg">
-        No users found.
-      </div>
+  <div id="search-section">
+    <input
+      v-model="searchTerm"
+      @keyup.enter="searchUsers"
+      placeholder="Search users by email"
+      id="search-box"
+    />
+    <div v-if="localSearchError" class="err-msg">
+      {{ localSearchErrorMessage }}
     </div>
-  </template>
+  </div>
+</template>
 
 <script>
 export default {
@@ -25,6 +25,7 @@ export default {
     return {
       searchTerm: '',
       localSearchError: this.searchError,
+      localSearchErrorMessage: '',
     };
   },
   watch: {
@@ -35,10 +36,19 @@ export default {
   methods: {
     searchUsers() {
       this.localSearchError = false;
+
+      // Prevent search if the search term is empty
+      if (!this.searchTerm.trim()) {
+        this.localSearchError = true;
+        this.localSearchErrorMessage = "Search term cannot be empty.";
+        return;
+      }
+
       try {
         this.$emit('search', this.searchTerm);
       } catch (error) {
         this.localSearchError = true;
+        this.localSearchErrorMessage = "Error searching users.";
       }
     },
   },

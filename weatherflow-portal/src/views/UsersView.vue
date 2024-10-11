@@ -59,9 +59,14 @@ export default {
           email_address: searchTerm
         };
         const response = await this.requestor.makePostRequest('report', urlData);
-        this.searchResults = response.data;
-        this.searchError = this.searchResults.length === 0;
-        this.selectedUser = null;
+
+        if (response.data != "") {
+          this.searchResults = response.data;
+          this.searchError = this.searchResults.length === 0;
+          this.selectedUser = null;
+        } else {
+          this.searchError = true;
+        }
       } catch (error) {
         this.searchError = true;
       }
