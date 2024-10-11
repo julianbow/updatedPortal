@@ -19,7 +19,7 @@
     scrollbar-color: #512b59 transparent;
 }
 
-#search-form {
+#metrics-data #search-form {
     display: flex;
     flex-direction: column;
     justify-content: space-between;
@@ -28,7 +28,7 @@
     transform: translateX(-15%);
 }
 
-#search-form input {
+#metrics-data #search-form input {
     margin: 0;
 }
 

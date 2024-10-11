@@ -27,10 +27,6 @@ export default {
       type: Object,
       required: true
     },
-    chartOptions: {
-      type: Object,
-      required: true
-    }
   },
   data() {
     return {
@@ -46,7 +42,14 @@ export default {
         "#cda9d5",
         "#dec5e3",
         "#eee2f1",
-      ]
+      ],
+      chartOptions: {
+      plugins: {
+          legend: {
+            display: false
+          }
+        }
+    }
     };
   },
   computed: {
