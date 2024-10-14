@@ -64,6 +64,12 @@ export default {
         zoom: this.zoom,
         scaleControl: true,
         streetViewControl: false,
+        mapTypeControl: true,
+        fullscreenControl: false,
+        mapTypeControlOptions: {
+          style: google.maps.MapTypeControlStyle.HORIZONTAL_BAR,
+          position: google.maps.ControlPosition.TOP_RIGHT
+        },
         mapId: "1a765d8eadff1159"
       });
 
