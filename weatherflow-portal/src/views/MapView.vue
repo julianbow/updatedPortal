@@ -10,7 +10,8 @@ import { apiKeyGoogle } from '../../config.json';
 import Requestor from '@/helpers/Requestor';
 import Loader from '../components/Loader.vue';
 import DataDisplay from '@/helpers/DataDisplay';
-import locationMarker from '@/assets/images/location-marker-3x.webp';
+import locationMarker from '@/assets/images/location-marker-online.png';
+import locationMarkerOffline from '@/assets/images/location-marker-offline.png';
 import locationMarkerGrow from '@/assets/images/location-marker-grow-3x.webp';
 import "@/assets/css/map.css";
 
@@ -189,18 +190,23 @@ export default {
 
       stations.forEach((station) => {
         const position = { lat: station.latitude, lng: station.longitude };
+        const isOnline = station.location_status === 1;
 
-        const customIcon = {
-          url: locationMarker,
-          scaledSize: new google.maps.Size(33, 42),
-          anchor: new google.maps.Point(14, 35)
+        if (this.currentSelectedMarker && this.currentSelectedMarker.title === station.name) {
+          return;
+        }
+
+        const icon = {
+          url: isOnline ? locationMarker : locationMarkerOffline,
+          scaledSize: new google.maps.Size(20, 20),
+          anchor: new google.maps.Point(10, 20)
         };
 
         const marker = new google.maps.Marker({
           position,
           map: this.map,
-          icon: customIcon,
           title: station.name,
+          icon,
         });
 
         marker.addListener('click', () => {
@@ -217,10 +223,18 @@ export default {
     },
 
     async showStationInfo(station, marker, infoWindow) {
+      if (this.currentSelectedMarker && this.currentSelectedMarker !== marker) {
+        this.currentSelectedMarker.setIcon({
+          url: this.currentSelectedMarker.getIcon().url,
+          scaledSize: new google.maps.Size(20, 20),
+          anchor: new google.maps.Point(10, 20)
+        });
+      }
+
       marker.setIcon({
-        url: locationMarkerGrow,
-        scaledSize: new google.maps.Size(33, 42),
-        anchor: new google.maps.Point(14, 35)
+        url: marker.getIcon().url,
+        scaledSize: new google.maps.Size(30, 30),
+        anchor: new google.maps.Point(15, 30)
       });
 
       const urlData = {
@@ -257,7 +271,6 @@ export default {
             for (let x = 0; x < station.devices.length; x++) {
               let device = station.devices[x];
 
-              // Check if device_type is not "HB" and the serial number exists
               if (device.device_type !== "HB" && device.serial_number !== null) {
                 content += `
                   <li class="device-item">
@@ -282,12 +295,13 @@ export default {
 
           google.maps.event.addListener(infoWindow, 'closeclick', () => {
             marker.setIcon({
-              url: locationMarker,
-              scaledSize: new google.maps.Size(33, 42),
-              anchor: new google.maps.Point(14, 35)
+              url: marker.getIcon().url,
+              scaledSize: new google.maps.Size(20, 20),
+              anchor: new google.maps.Point(10, 20)
             });
           });
 
+          // Update the current selected marker
           this.currentSelectedMarker = marker;
           this.stationInfoVisible = true;
         }
@@ -334,19 +348,3 @@ export default {
   }
 };
 </script>
-
-<style scoped>
-.map-container {
-  width: 100%;
-  height: 100vh;
-  position: relative;
-}
-#station-info {
-  position: absolute;
-  top: 10px;
-  left: 10px;
-  background-color: white;
-  padding: 10px;
-  border: 1px solid black;
-}
-</style>
