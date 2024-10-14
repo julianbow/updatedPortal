@@ -1,0 +1,60 @@
+.info-window {
+    font-family: Arial, sans-serif;
+    width: 320px;
+    padding: 10px;
+}
+
+.station-info {
+    border-bottom: 2px solid #512b59;
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+}
+
+.station-name {
+    margin: 0;
+    font-size: 16px;
+}
+
+.station-email {
+    font-size: 14px;
+    color: #512b59;
+}
+
+.station-email a {
+    text-decoration: none;
+}
+
+.station-location,
+.station-elevation {
+    font-size: 12px;
+    margin: 0;
+}
+
+.station-elevation {
+    margin-bottom: 15px;
+}
+
+.devices-section {
+    margin-bottom: 10px;
+}
+
+.devices-title {
+    font-size: 14px;
+    margin-top: 15px;
+    color: #512b59;
+}
+
+.devices-list {
+    list-style-type: none;
+    padding: 0;
+    margin: 0;
+}
+
+.device-item {
+    border: 1px solid #ddd;
+    padding: 10px;
+    margin-bottom: 10px;
+    background-color: #f9f9f9;
+    border-radius: 5px;
+}

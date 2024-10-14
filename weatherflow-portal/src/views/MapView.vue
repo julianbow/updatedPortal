@@ -9,8 +9,10 @@
 import { apiKeyGoogle } from '../../config.json';
 import Requestor from '@/helpers/Requestor';
 import Loader from '../components/Loader.vue';
+import DataDisplay from '@/helpers/DataDisplay';
 import locationMarker from '@/assets/images/location-marker-3x.webp';
 import locationMarkerGrow from '@/assets/images/location-marker-grow-3x.webp';
+import "@/assets/css/map.css";
 
 export default {
   components: {
@@ -34,15 +36,23 @@ export default {
   methods: {
     loadGoogleMapsScript() {
       return new Promise((resolve, reject) => {
-        if (typeof google !== 'undefined') {
+        if (typeof google !== 'undefined' && typeof google.maps !== 'undefined') {
           resolve();
         } else {
-          const script = document.createElement('script');
-          script.src = `https://maps.googleapis.com/maps/api/js?key=${apiKeyGoogle}`;
-          script.async = true;
-          script.defer = true;
-          script.onload = resolve;
-          document.head.appendChild(script);
+          const existingScript = document.getElementById('googleMapsScript');
+          if (!existingScript) {
+            const script = document.createElement('script');
+            script.src = `https://maps.googleapis.com/maps/api/js?key=${apiKeyGoogle}`;
+            script.async = true;
+            script.defer = true;
+            script.id = 'googleMapsScript';
+            script.onload = resolve;
+            script.onerror = reject;
+            document.head.appendChild(script);
+          } else {
+            existingScript.onload = resolve;
+            existingScript.onerror = reject;
+          }
         }
       });
     },
@@ -65,6 +75,11 @@ export default {
     updateRouteWithMapPosition() {
       const center = this.map.getCenter();
       const zoom = this.map.getZoom();
+
+      localStorage.setItem('mapLat', center.lat());
+      localStorage.setItem('mapLon', center.lng());
+      localStorage.setItem('mapZoom', zoom);
+
       this.$router.push({
         name: 'MapView',
         params: {
@@ -201,39 +216,84 @@ export default {
       this.markers = [];
     },
 
-    showStationInfo(station, marker, infoWindow) {
+    async showStationInfo(station, marker, infoWindow) {
       marker.setIcon({
         url: locationMarkerGrow,
         scaledSize: new google.maps.Size(33, 42),
-			  anchor: new google.maps.Point(14, 35)
+        anchor: new google.maps.Point(14, 35)
       });
 
-      const content = `
-        <div>
-          <h2>${station.name}</h2>
-          <p>Lat: ${station.latitude}, Lng: ${station.longitude}</p>
-          <p>Click for more details.</p>
-        </div>
-      `;
-
-      infoWindow.setContent(content);
-      infoWindow.open(this.map, marker);
-
-      google.maps.event.addListener(infoWindow, 'closeclick', () => {
-        marker.setIcon({
-          url: locationMarker,
-          scaledSize: new google.maps.Size(33, 42),
-          anchor: new google.maps.Point(14, 35)
-        });
-      });
-
-      this.currentSelectedMarker = marker;
-
-      this.stationInfo = {
-        name: station.name,
-        details: `Lat: ${station.latitude}, Lng: ${station.longitude}`,
+      const urlData = {
+        report_name: "get_user",
+        user_id: station.user_id
       };
-      this.stationInfoVisible = true;
+
+      const response = await this.requestor.makePostRequest('report', urlData);
+
+      try {
+        if (response.data && response.status === 200) {
+          const stations = response.data;
+          const userId = station.user_id;
+
+          stations.forEach((station) => {
+            let content = `
+              <div class="info-window">
+                <div class="station-info">
+                  <h2 class="station-name">
+                    ${DataDisplay.getTempestWxLinkWithName(station.location_id, station.location_name)}
+                  </h2>
+                  <h3 class="station-email">
+                    <a href='/users/${userId}'>${station.email_address}</a>
+                  </h3>
+                  <p class="station-location">Location: ${station.latitude}, ${station.longitude}</p>
+                  <p class="station-elevation">Elevation: ${station.location_meta.elevation.toFixed(2)} meters</p>
+                </div>
+
+                <div class="devices-section">
+                  <h4 class="devices-title">Devices</h4>
+                  <ul class="devices-list">
+            `;
+
+            for (let x = 0; x < station.devices.length; x++) {
+              let device = station.devices[x];
+
+              // Check if device_type is not "HB" and the serial number exists
+              if (device.device_type !== "HB" && device.serial_number !== null) {
+                content += `
+                  <li class="device-item">
+                    <strong>Device Name:</strong> ${DataDisplay.getValue(device.device_meta.name)}<br />
+                    <strong>Serial Number:</strong> ${DataDisplay.getSerialWithLogLink(device.serial_number)}<br />
+                    <strong>Device ID:</strong> ${DataDisplay.getDeviceIdWithLink(device.v_device_id)}<br />
+                    <strong>Type:</strong> ${device.device_type}<br />
+                  </li>
+                `;
+              }
+            }
+
+            content += `
+                  </ul>
+                </div>
+              </div>
+            `;
+
+            infoWindow.setContent(content);
+            infoWindow.open(this.map, marker);
+          });
+
+          google.maps.event.addListener(infoWindow, 'closeclick', () => {
+            marker.setIcon({
+              url: locationMarker,
+              scaledSize: new google.maps.Size(33, 42),
+              anchor: new google.maps.Point(14, 35)
+            });
+          });
+
+          this.currentSelectedMarker = marker;
+          this.stationInfoVisible = true;
+        }
+      } catch (error) {
+        console.error("Error getting user:", error);
+      }
     },
 
     closeStationInfo() {
@@ -249,20 +309,29 @@ export default {
     }
   },
   mounted() {
-    const lat = this.$route.params.lat ? parseFloat(this.$route.params.lat) : this.defaultCenter.lat;
-    const lon = this.$route.params.lon ? parseFloat(this.$route.params.lon) : this.defaultCenter.lng;
-    const zoom = this.$route.params.zoom ? parseInt(this.$route.params.zoom) : this.defaultZoom;
+    const storedLat = localStorage.getItem('mapLat');
+    const storedLon = localStorage.getItem('mapLon');
+    const storedZoom = localStorage.getItem('mapZoom');
 
-    this.center = { lat, lng: lon };
+    const lat = storedLat ? parseFloat(storedLat) : (this.$route.params.lat ? parseFloat(this.$route.params.lat) : this.defaultCenter.lat);
+    const lng = storedLon ? parseFloat(storedLon) : (this.$route.params.lon ? parseFloat(this.$route.params.lon) : this.defaultCenter.lng);
+    const zoom = storedZoom ? parseInt(storedZoom) : (this.$route.params.zoom ? parseInt(this.$route.params.zoom) : this.defaultZoom);
+
+    this.center = { lat, lng };
     this.zoom = zoom;
 
     this.updateTitle();
 
     this.requestor = new Requestor();
-    this.loadGoogleMapsScript().then(() => {
-      this.initMap();
-    });
-  },
+
+    this.loadGoogleMapsScript()
+      .then(() => {
+        this.initMap();
+      })
+      .catch((error) => {
+        console.error("Google Maps script could not be loaded:", error);
+      });
+  }
 };
 </script>
 

@@ -103,6 +103,16 @@ class DataDisplay {
     return "";
   }
 
+  static getTempestWxLinkWithName(deviceId, name) {
+    deviceId = this.getValue(deviceId);
+
+    if (deviceId !== "") {
+      return `<a href='https://tempestwx.com/station/${deviceId}' target='_blank'>${name}</a>`;
+    }
+
+    return "";
+  }
+
   static getFirmwareRevisionWithUpgradeLink(firmware, serialNumber, deviceType) {
     firmware = this.getValue(firmware);
     serialNumber = this.getValue(serialNumber);
