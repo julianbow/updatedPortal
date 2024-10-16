@@ -13,23 +13,21 @@ html, body {
 }
 
 #grid {
-	display: flex;
-	flex-flow: row wrap;
+	display: grid;
+	grid-template-columns: repeat(2, 1fr);
 	margin: 20px 0 0 0;
 }
 
 .grid-item {
-	flex: 1;
 	background: #f9f9f9;
 	border-radius: 8px;
 	padding: 20px;
 	box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
 	border: 1px solid #E2D8E4;
 	margin: 10px;
-	min-width: 300px;
 }
 
-.grid-item h2 {
+.grid-item h2, .grid-item-graph h2 {
 	background-color: #E2D8E4;
 	padding: 5px;
 	margin: 0;
@@ -148,4 +146,8 @@ html, body {
 
 .grid-list li:hover {
     transform: translateY(-5px);
+}
+
+#network-graph {
+	margin-top: 60px;
 }

@@ -50,7 +50,7 @@
                 />
             </div>
             <p class="grid-content-footnote">
-                <span>{{ onlineTempestCount }} Online Tempests</span>
+                <span>{{ onlineTempestCount }} <a @click="showOnlineOfflineGraph">Online Tempests</a></span>
                 <span>{{ latestTimestamp }}</span>
             </p>
         </div>
@@ -298,6 +298,9 @@ export default {
       }
 
       return latestTimestampString;
+    },
+    showOnlineOfflineGraph() {
+      this.$router.push("/online-offline");
     },
     getDisplayDate(timestamp) {
       return Day.getUTCDate(timestamp);

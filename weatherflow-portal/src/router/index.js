@@ -9,6 +9,7 @@ import MetricsView from '@/views/MetricsView.vue';
 import ApiMonitorView from '@/views/ApiMonitorView.vue';
 import ToolsView from '@/views/ToolsView.vue';
 import { getAuth, onAuthStateChanged } from 'firebase/auth';
+import OnlineOfflineChart from '@/components/home/OnlineOfflineChart.vue';
 
 const auth = getAuth();
 
@@ -56,6 +57,12 @@ const router = createRouter({
       path: '/home',
       name: 'home',
       component: HomeView,
+      meta: { requiresAuth: true },
+    },
+    {
+      path: '/online-offline',
+      name: 'onlineOffline',
+      component: OnlineOfflineChart,
       meta: { requiresAuth: true },
     },
     {
