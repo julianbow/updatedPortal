@@ -12,7 +12,6 @@
     </div>
   </template>
 
-
 <script>
 import { Line } from 'vue-chartjs';
 import Requestor from '@/helpers/Requestor';
@@ -31,53 +30,53 @@ export default {
         isExpanded: false,
         chartData1: null,
         chartOptions: {
-        responsive: true,
-        maintainAspectRatio: false,
-        scales: {
-            yAxes: [
-            {
-                id: 'y-left',
-                position: 'left',
-                ticks: {
-                beginAtZero: true,
-                callback: function(value) { return value + '%'; }
-                },
-                scaleLabel: {
-                display: true,
-                labelString: 'Online Percentage'
-                }
-            },
-            {
-                id: 'y-right',
-                position: 'right',
-                ticks: {
-                beginAtZero: true,
-                callback: function(value) { return value + '%'; }
-                },
-                scaleLabel: {
-                display: true,
-                labelString: 'Offline Percentage'
+            responsive: true,
+            maintainAspectRatio: false,
+            scales: {
+                yAxes: [
+                    {
+                        id: 'y-left',
+                        position: 'left',
+                        ticks: {
+                        beginAtZero: true,
+                        callback: function(value) { return value + '%'; }
+                        },
+                        scaleLabel: {
+                        display: true,
+                        labelString: 'Online Percentage'
+                        }
+                    },
+                    {
+                        id: 'y-right',
+                        position: 'right',
+                        ticks: {
+                        beginAtZero: true,
+                        callback: function(value) { return value + '%'; }
+                        },
+                        scaleLabel: {
+                        display: true,
+                        labelString: 'Offline Percentage'
+                        }
+                    }
+                ],
+                x: {
+                    type: 'time',
+                    time: {
+                        unit: false, // Let Chart.js decide the appropriate unit
+                        tooltipFormat: 'yyyy-MM-DD HH:mm', // Adjust tooltip to display date and time properly
+                        displayFormats: {
+                        millisecond: 'HH:mm:ss.SSS',
+                        second: 'HH:mm:ss',
+                        minute: 'HH:mm',
+                        hour: 'HH:mm',
+                        day: 'MMM D',
+                        week: 'MMM D',
+                        month: 'MMM yyyy',
+                        year: 'yyyy',
+                        }
+                    },
                 }
             }
-            ],
-            x: {
-            type: 'time',
-            time: {
-                unit: false, // Let Chart.js decide the appropriate unit
-                tooltipFormat: 'yyyy-MM-DD HH:mm', // Adjust tooltip to display date and time properly
-                displayFormats: {
-                millisecond: 'HH:mm:ss.SSS',
-                second: 'HH:mm:ss',
-                minute: 'HH:mm',
-                hour: 'HH:mm',
-                day: 'MMM D',
-                week: 'MMM D',
-                month: 'MMM yyyy',
-                year: 'yyyy',
-                }
-            },
-            }
-        }
         }
     };
 },
