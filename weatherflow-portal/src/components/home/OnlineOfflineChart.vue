@@ -1,5 +1,5 @@
 <template>
-    <div id="network-graph">
+  <div id="network-graph">
       <Loader v-if="isLoading" />
 
       <div class="button-ctn">
@@ -25,7 +25,6 @@ export default {
   data() {
     return {
         isLoading: false,
-        reportType: 'network_status_st',
         requestor: new Requestor(),
         isExpanded: false,
         chartData: null,
@@ -75,10 +74,21 @@ export default {
           },
           scales: {
             x: {
-              type: 'time',
-              time: { unit: 'day' },
-              title: { display: true, text: 'Time' }
+            type: 'time',
+            time: {
+              unit: 'month',
+              displayFormats: {
+                month: 'MMM yyyy',
+              },
             },
+            title: {
+              display: true,
+              text: 'Time'
+            },
+            ticks: {
+              maxTicksLimit: 10,
+            },
+          },
             'y-left': {
               type: 'linear',
               position: 'left',
@@ -115,23 +125,29 @@ export default {
     };
   },
   methods: {
-    toggleExpand() {
-      this.isExpanded = !this.isExpanded;
-    },
-    async getNetworkStatus() {
-        this.isLoading = true;
-      try {
-        const response = await this.requestor.makePostRequest("report", {
-          report_name: this.reportType,
-        });
-
-        this.chartData = this.generateChartData(response.data);
-    } catch (error) {
-        console.error("Error fetching network status:", error);
-        this.isLoading = false;
-    } finally {
-        this.isLoading = false;
+    async toggleExpand() {
+      const chartContainer = this.$refs.chartContainer;
+      // Enter fullscreen
+      if (chartContainer.requestFullscreen) {
+        await chartContainer.requestFullscreen();
       }
+
+    },
+    async getNetworkStatus(type) {
+        this.isLoading = true;
+        try {
+            const reportName = type === "st" ? "network_status_st" : "network_status";
+            const response = await this.requestor.makePostRequest("report", {
+                report_name: reportName,
+            });
+
+            this.chartData = this.generateChartData(response.data);
+        } catch (error) {
+            console.error("Error fetching network status:", error);
+            this.isLoading = false;
+        } finally {
+            this.isLoading = false;
+        }
     },
     generateChartData(dataSet) {
       const sortedData = dataSet.sort((a, b) => new Date(a.timestamp) - new Date(b.timestamp));
@@ -196,13 +212,21 @@ export default {
           ]
       };
   },
-    updateTitle() {
+  updateTitle(type) {
+    if (type === "st") {
       this.$emit('update-title', "Online & Offline Tempests");
+    } else {
+    this.$emit('update-title', "Online & Offline Stations");
     }
   },
+},
   mounted() {
-    this.getNetworkStatus();
-    this.updateTitle();
-  }
+    this.isLoading = true;
+
+    const type = this.$route.query.type || "";
+
+    this.getNetworkStatus(type);
+    this.updateTitle(type);
+  },
 };
 </script>

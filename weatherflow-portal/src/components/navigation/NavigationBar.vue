@@ -53,6 +53,9 @@ export default {
   },
   watch: {
     selectedMenuTitle(newTitle) {
+      if (newTitle.includes("Online")) {
+        newTitle = "Home";
+      }
       this.setActive(newTitle);
     }
   },

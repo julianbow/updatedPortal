@@ -50,7 +50,7 @@
                 />
             </div>
             <p class="grid-content-footnote">
-                <span>{{ onlineTempestCount }} <a @click="showOnlineOfflineGraph">Online Tempests</a></span>
+                <span>{{ onlineTempestCount }} <a @click="showOnlineOfflineGraph('st')" style="cursor: pointer; text-decoration: underline;">Online Tempests</a></span>
                 <span>{{ latestTimestamp }}</span>
             </p>
         </div>
@@ -63,7 +63,7 @@
               />
           </div>
           <p class="grid-content-footnote">
-            <span>{{ onlineStationCount }} Online Stations</span>
+            <span>{{ onlineTempestCount }} <a @click="showOnlineOfflineGraph()" style="cursor: pointer; text-decoration: underline;">Online Stations</a></span>
             <span>{{ latestTimestamp }}</span>
           </p>
         </div>
@@ -299,8 +299,12 @@ export default {
 
       return latestTimestampString;
     },
-    showOnlineOfflineGraph() {
-      this.$router.push("/online-offline");
+    showOnlineOfflineGraph(type) {
+        if (type === "st") {
+            this.$router.push("/online-offline?type=st");
+        } else {
+            this.$router.push("/online-offline");
+        }
     },
     getDisplayDate(timestamp) {
       return Day.getUTCDate(timestamp);
