@@ -6,21 +6,21 @@
         <button @click="toggleExpand" class="button">Fullscreen</button>
       </div>
 
-      <div v-if="chartData1" :class="['chart-container', { expanded: isExpanded }]" ref="chartContainer">
-        <Line :data="chartData1" :options="chartOptions" />
+      <div v-if="chartData" :class="['chart-container', { expanded: isExpanded }]" ref="chartContainer">
+        <Line :data="chartData" :options="chartOptions" />
       </div>
     </div>
   </template>
 
 <script>
+import Loader from '../Loader.vue';
 import { Line } from 'vue-chartjs';
 import Requestor from '@/helpers/Requestor';
-import Loader from '../Loader.vue';
 
 export default {
   components: {
-    Line,
-    Loader
+    Loader,
+    Line
   },
   data() {
     return {
@@ -28,58 +28,92 @@ export default {
         reportType: 'network_status_st',
         requestor: new Requestor(),
         isExpanded: false,
-        chartData1: null,
+        chartData: null,
         chartOptions: {
-            responsive: true,
-            maintainAspectRatio: false,
-            scales: {
-                yAxes: [
-                    {
-                        id: 'y-left',
-                        position: 'left',
-                        ticks: {
-                        beginAtZero: true,
-                        callback: function(value) { return value + '%'; }
-                        },
-                        scaleLabel: {
-                        display: true,
-                        labelString: 'Online Percentage'
-                        }
-                    },
-                    {
-                        id: 'y-right',
-                        position: 'right',
-                        ticks: {
-                        beginAtZero: true,
-                        callback: function(value) { return value + '%'; }
-                        },
-                        scaleLabel: {
-                        display: true,
-                        labelString: 'Offline Percentage'
-                        }
-                    }
-                ],
-                x: {
-                    type: 'time',
-                    time: {
-                        unit: false, // Let Chart.js decide the appropriate unit
-                        tooltipFormat: 'yyyy-MM-DD HH:mm', // Adjust tooltip to display date and time properly
-                        displayFormats: {
-                        millisecond: 'HH:mm:ss.SSS',
-                        second: 'HH:mm:ss',
-                        minute: 'HH:mm',
-                        hour: 'HH:mm',
-                        day: 'MMM D',
-                        week: 'MMM D',
-                        month: 'MMM yyyy',
-                        year: 'yyyy',
-                        }
-                    },
-                }
+          responsive: true,
+          maintainAspectRatio: false,
+          interaction: {
+            mode: 'index',
+            intersect: false,
+          },
+          elements: {
+            point: {
+              radius: 0,
+              hoverRadius: 5,
+              hoverBorderWidth: 3,
             }
+          },
+          plugins: {
+            tooltip: {
+              enabled: true,
+              mode: 'index',
+              intersect: false,
+              callbacks: {
+                title: (tooltipItems) => {
+                  const timestamp = tooltipItems[0].label;
+                  return `${timestamp}`;
+                },
+                label: (context) => {
+                  const value = context.raw;
+                  const label = context.dataset.label;
+                  if (label === 'Online Percentage') {
+                    return `${label}: ${value}%`;
+                  } else {
+                    return `${label}: ${value}`;
+                  }
+                }
+              }
+            },
+            zoom: {
+              pan: { enabled: true, mode: 'x' },
+              zoom: {
+                wheel: { enabled: true },
+                pinch: { enabled: true },
+                mode: 'x',
+              },
+            }
+          },
+          scales: {
+            x: {
+              type: 'time',
+              time: { unit: 'day' },
+              title: { display: true, text: 'Time' }
+            },
+            'y-left': {
+              type: 'linear',
+              position: 'left',
+              beginAtZero: true,
+              title: {
+                display: true,
+                text: 'Count'
+              },
+              ticks: {
+                callback: (value) => value.toLocaleString(),
+              },
+              grid: {
+                drawOnChartArea: true,
+              }
+            },
+            'y-right': {
+              type: 'linear',
+              position: 'right',
+              beginAtZero: true,
+              max: 100,
+              title: {
+                display: true,
+                text: 'Percentage (%)'
+              },
+              ticks: {
+                callback: (value) => `${value}%`,
+              },
+              grid: {
+                drawOnChartArea: false,
+              }
+            }
+          }
         }
     };
-},
+  },
   methods: {
     toggleExpand() {
       this.isExpanded = !this.isExpanded;
@@ -90,7 +124,8 @@ export default {
         const response = await this.requestor.makePostRequest("report", {
           report_name: this.reportType,
         });
-        this.processOnlineOfflineData(response.data);
+
+        this.chartData = this.generateChartData(response.data);
     } catch (error) {
         console.error("Error fetching network status:", error);
         this.isLoading = false;
@@ -98,58 +133,69 @@ export default {
         this.isLoading = false;
       }
     },
-    processOnlineOfflineData(data) {
-      this.chartData1 = this.generateChartData(data);
-      this.chartData2 = this.generateChartData(data);
-    },
     generateChartData(dataSet) {
-        const sortedData = dataSet.sort((a, b) => new Date(a.timestamp) - new Date(b.timestamp));
-        const totalCounts = {};
-        const onlineCounts = {};
-        const offlineCounts = {};
+      const sortedData = dataSet.sort((a, b) => new Date(a.timestamp) - new Date(b.timestamp));
+      const totalCounts = {};
+      const onlineCounts = {};
+      const offlineCounts = {};
 
-        sortedData.forEach(item => {
-            const timestamp = item.timestamp;
-            if (!totalCounts[timestamp]) totalCounts[timestamp] = 0;
-            if (!onlineCounts[timestamp]) onlineCounts[timestamp] = 0;
-            if (!offlineCounts[timestamp]) offlineCounts[timestamp] = 0;
+      sortedData.forEach(item => {
+          const timestamp = item.timestamp;
+          if (!totalCounts[timestamp]) totalCounts[timestamp] = 0;
+          if (!onlineCounts[timestamp]) onlineCounts[timestamp] = 0;
+          if (!offlineCounts[timestamp]) offlineCounts[timestamp] = 0;
 
-            totalCounts[timestamp] += item.count;
-            if (item.status.includes('online')) {
-            onlineCounts[timestamp] += item.count;
-            } else if (item.status.includes('offline')) {
-            offlineCounts[timestamp] += item.count;
-            }
-        });
+          totalCounts[timestamp] += item.count;
+          if (item.status.includes('online')) {
+              onlineCounts[timestamp] += item.count;
+          } else if (item.status.includes('offline')) {
+              offlineCounts[timestamp] += item.count;
+          }
+      });
 
-        const labels = sortedData.map(item => item.timestamp);
-        const onlineData = labels.map(timestamp => onlineCounts[timestamp] || 0);
-        const offlineData = labels.map(timestamp => offlineCounts[timestamp] || 0);
+      const labels = sortedData.map(item => item.timestamp);
+      const onlineData = labels.map(timestamp => onlineCounts[timestamp] || 0);
+      const offlineData = labels.map(timestamp => offlineCounts[timestamp] || 0);
 
-        return {
-            labels: labels,
-            datasets: [
-            {
-                label: 'Online Count',
-                data: onlineData,
-                fill: false,
-                borderColor: 'rgb(75, 192, 192)',
-                tension: 0.1,
-                pointRadius: 0,
-                pointHoverRadius: 5,
-            },
-            {
-                label: 'Offline Count',
-                data: offlineData,
-                fill: false,
-                borderColor: 'rgb(255, 99, 132)',
-                tension: 0.1,
-                pointRadius: 0,
-                pointHoverRadius: 5,
-            }
-            ]
-        };
-    },
+      const onlinePercentageData = onlineData.map((onlineCount, index) => {
+          const total = totalCounts[labels[index]] || 0;
+          const percentage = total > 0 ? (onlineCount / total) * 100 : 0;
+          return percentage.toFixed(2);
+      });
+
+      return {
+          labels: labels,
+          datasets: [
+              {
+                  label: 'Online Count',
+                  data: onlineData,
+                  fill: false,
+                  borderColor: 'rgb(75, 192, 192)',
+                  backgroundColor: 'rgb(75, 192, 192)',
+                  tension: 0.1,
+                  yAxisID: 'y-left',
+              },
+              {
+                  label: 'Offline Count',
+                  data: offlineData,
+                  fill: false,
+                  borderColor: 'rgb(255, 99, 132)',
+                  backgroundColor: 'rgb(255, 99, 132)',
+                  tension: 0.1,
+                  yAxisID: 'y-left',
+              },
+              {
+                  label: 'Online Percentage',
+                  data: onlinePercentageData,
+                  fill: false,
+                  borderColor: 'rgb(54, 162, 235)',
+                  backgroundColor: 'rgb(54, 162, 235)',
+                  tension: 0.1,
+                  yAxisID: 'y-right',
+              }
+          ]
+      };
+  },
     updateTitle() {
       this.$emit('update-title', "Online & Offline Tempests");
     }
