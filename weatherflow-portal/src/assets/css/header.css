@@ -179,21 +179,31 @@
 }
 
 #main-menu li:nth-child(7) .icon {
-    background-image: url('../images/monitoring.svg');
+    background-image: url('../images/cube.svg');
     filter: invert(100%) sepia(0%) saturate(0%) hue-rotate(180deg) brightness(100%) contrast(100%);
 }
 
 #main-menu li:nth-child(7) .icon.filled {
-    background-image: url('../images/monitoring-fill.svg');
+    background-image: url('../images/cube-fill.svg');
     filter: invert(100%) sepia(0%) saturate(0%) hue-rotate(180deg) brightness(100%) contrast(100%);
 }
 
 #main-menu li:nth-child(8) .icon {
-    background-image: url('../images/tools.svg');
+    background-image: url('../images/monitoring.svg');
     filter: invert(100%) sepia(0%) saturate(0%) hue-rotate(180deg) brightness(100%) contrast(100%);
 }
 
 #main-menu li:nth-child(8) .icon.filled {
+    background-image: url('../images/monitoring-fill.svg');
+    filter: invert(100%) sepia(0%) saturate(0%) hue-rotate(180deg) brightness(100%) contrast(100%);
+}
+
+#main-menu li:nth-child(9) .icon {
+    background-image: url('../images/tools.svg');
+    filter: invert(100%) sepia(0%) saturate(0%) hue-rotate(180deg) brightness(100%) contrast(100%);
+}
+
+#main-menu li:nth-child(9) .icon.filled {
     background-image: url('../images/tools-fill.svg');
     filter: invert(100%) sepia(0%) saturate(0%) hue-rotate(180deg) brightness(100%) contrast(100%);
 }

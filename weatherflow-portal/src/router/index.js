@@ -6,6 +6,7 @@ import DevicesView from '@/views/DevicesView.vue';
 import MapView from '@/views/MapView.vue';
 import ApplicationsView from '@/views/ApplicationsView.vue';
 import MetricsView from '@/views/MetricsView.vue';
+import M3Dashboard from '@/views/M3Dashboard.vue';
 import ApiMonitorView from '@/views/ApiMonitorView.vue';
 import ToolsView from '@/views/ToolsView.vue';
 import { getAuth, onAuthStateChanged } from 'firebase/auth';
@@ -137,6 +138,12 @@ const router = createRouter({
         searchQuery: route.query.search || ''
       }),
       meta: { requiresAuth: true }
+    },
+    {
+      path: '/m3-dashboard',
+      name: "M3Dashboard",
+      component: M3Dashboard,
+      meta: { requiresAuth: true },
     },
     {
       path: "/monitoring",

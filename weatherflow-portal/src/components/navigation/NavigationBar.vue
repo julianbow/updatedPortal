@@ -33,6 +33,7 @@ export default {
         { name: 'Station Map', url: '/map' },
         { name: 'Applications', url: '/applications' },
         { name: 'System Metrics', url: '/metrics' },
+        { name: 'M3 Dashboard', url: '/m3-dashboard' },
         { name: 'API Monitoring', url: '/monitoring' },
         { name: 'Tools', url: '/tools' }
       ],
