@@ -5,149 +5,208 @@
       <div class="metrics-summary">
         <div
           class="metric-card"
-          v-for="metric in metrics"
+          v-for="metric in metricsSummary"
           :key="metric.id"
         >
           <span class="title">{{ metric.title }}</span>
           <div class="value">{{ metric.value }}</div>
           <div
-            :class="['change', metric.change > 0 ? 'positive' : 'negative']"
+            :class="[
+              'change',
+              metric.change > 0
+                ? 'positive'
+                : metric.change < 0
+                ? 'negative'
+                : 'neutral'
+            ]"
           >
-            {{ metric.change > 0 ? '▲' : '▼' }} {{ Math.abs(metric.change) }}%
+            <span v-if="metric.change > 0">▲ {{ Math.abs(metric.change) }}%</span>
+            <span v-else-if="metric.change < 0">▼ {{ Math.abs(metric.change) }}%</span>
+            <span v-else>0%</span>
           </div>
         </div>
       </div>
 
-      <div class="chart">
-        <canvas id="line-chart"></canvas>
-      </div>
+      <MetricsChart
+        v-if="metrics.length > 0"
+        :metrics="metrics"
+        :timeRange="'20160'"
+        :period="'1'"
+        :showLegend="false"
+        :showPie="false"
+        :showFullscreen="false"
+        :requestor="requestor"
+        />
     </div>
   </template>
 
-  <script>
-  import Requestor from '@/helpers/Requestor';
-  import Loader from '@/components/Loader.vue';
-  import "../assets/css/metrics.css";
+<script>
+import Requestor from '@/helpers/Requestor';
+import Loader from '@/components/Loader.vue';
+import MetricsChart from '../components/metrics/MetricsChart.vue';
+import "../assets/css/metrics.css";
 
-  export default {
-    components: {
-      Loader,
-    },
-    data() {
-      return {
-        isLoading: false,
-        metrics: [
-          { id: 1, metric_name: "mmm.hubs_ever_installed_count.swd-ps02", title: 'Hubs Installed', value: 0, change: 0 },
-          { id: 2, metric_name: "mmm.hubs_reporting_count.swd-ps02", title: 'Hubs Reporting', value: 0, change: 0 },
-          { id: 3, metric_name: "mmm.devices_reporting_count.swd-ps02", title: 'Devices Reporting', value: 0, change: 0 },
-        //   { id: 4, metric_name: "mmm.devices_reporting_count.swd-ps02", title: 'Sensor Failures', value: 0, change: 0 },
-        ],
-      };
-    },
-    methods: {
-      async fetchMetrics() {
-        this.isLoading = true;
-        try {
-          // Iterate over each metric to fetch data
-          for (let i = 0; i < this.metrics.length; i++) {
-            console.log(`Fetching data for metric: ${this.metrics[i].metric_name}`);
-            // const response = await this.fetchMetricData(this.metrics[i].title);
-            // this.metrics[i].value = response.value;
-            // this.metrics[i].change = response.change;
+export default {
+  components: {
+    Loader,
+    MetricsChart
+  },
+  data() {
+    return {
+      requestor: new Requestor(),
+      isLoading: false,
+      metrics: [],
+      metricsSummary: [
+        {
+          id: 1,
+          metric_name: "mmm.hubs_ever_installed_count.swd-ps02",
+          title: 'Hubs Installed',
+          value: 0,
+          change: 0,
+        },
+        {
+          id: 2,
+          metric_name: "mmm.hubs_reporting_count.swd-ps02",
+          title: 'Hubs Reporting',
+          value: 0,
+          change: 0,
+        },
+        {
+          id: 3,
+          metric_name: "mmm.devices_reporting_count.swd-ps02",
+          title: 'Devices Reporting',
+          value: 0,
+          change: 0,
+        },
+      ],
+    };
+  },
+  methods: {
+    async fetchMetrics() {
+      this.isLoading = true;
+      try {
+        for (let i = 0; i < this.metricsSummary.length; i++) {
+          let metricName = this.metricsSummary[i].metric_name;
+
+          const response = await this.requestor.makeMetricsChartDataRequest(metricName, 1, 20160);
+          const values = response.data.values;
+          this.metrics = [...this.metrics, metricName];
+
+          if (Array.isArray(values) && values.length > 0) {
+            const lastItem = values[values.length - 1].split(',');
+            const secondLastItem = values.length > 1 ? values[values.length - 2].split(',') : null;
+
+            const lastValue = parseFloat(lastItem[1]);
+            const secondLastValue = secondLastItem ? parseFloat(secondLastItem[1]) : null;
+
+            this.metricsSummary[i].value = lastValue;
+
+            if (secondLastValue !== null) {
+              const percentChange = ((lastValue - secondLastValue) / secondLastValue) * 100;
+              this.metricsSummary[i].change = Number(percentChange.toFixed(3));
+            } else {
+              this.metricsSummary[i].change = 0;
+            }
+          } else {
+            console.warn(`No values available for metric: ${metricName}`);
+            this.metricsSummary[i].value = 0;
+            this.metricsSummary[i].change = 0;
           }
-        } catch (error) {
-          console.error('Error fetching metrics:', error);
-        } finally {
-          this.isLoading = false;
         }
-      },
-      fetchMetricData(metricTitle) {
-        console.log(`Fetching data for metric: ${metricTitle}`);
-      },
+      } catch (error) {
+        console.error('Error fetching metrics:', error);
+      } finally {
+        this.isLoading = false;
+      }
     },
-    mounted() {
-      this.$emit('update-title', 'M3 Dashboard');
-      this.fetchMetrics();
-    },
-  };
-  </script>
+  },
+  mounted() {
+    this.$emit('update-title', 'M3 Dashboard');
+    this.fetchMetrics();
+  },
+};
+</script>
 
   <style scoped>
-  #m3-dashboard {
-    margin: 80px 20px;
-    padding: 20px;
-    background-color: #f9f9f9;
-    border: 1px solid #ddd;
-    border-radius: 8px;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-  }
+    #m3-dashboard {
+        margin: 80px 20px;
+        padding: 20px;
+        background-color: #f9f9f9;
+        border: 1px solid #ddd;
+        border-radius: 8px;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    }
 
-  .metrics-summary {
-    display: flex;
-    justify-content: space-between;
-    margin: 20px;
-  }
+    .metrics-summary {
+        display: flex;
+        justify-content: space-between;
+        margin: 20px;
+    }
 
-  .metric-card {
-    background: white;
-    padding: 10px;
-    border-radius: 8px;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-    text-align: center;
-    width: 20%;
-  }
+    .metric-card {
+        background: white;
+        padding: 10px;
+        border-radius: 8px;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        text-align: center;
+        width: 20%;
+    }
 
-  .metric-card .title {
-    font-size: 14px;
-    color: #555;
-  }
+    .metric-card .title {
+        font-size: 14px;
+        color: #555;
+    }
 
-  .metric-card .value {
-    font-size: 24px;
-    font-weight: bold;
-    color: #333;
-  }
+    .metric-card .value {
+        font-size: 24px;
+        font-weight: bold;
+        color: #333;
+    }
 
-  .metric-card .change {
-    font-size: 12px;
-    margin-top: 5px;
-  }
+    .metric-card .change {
+        font-size: 12px;
+        margin-top: 5px;
+    }
 
-  .metric-card .change.positive {
-    color: green;
-  }
+    .metric-card .change.positive {
+        color: green;
+    }
 
-  .metric-card .change.negative {
-    color: red;
-  }
+    .metric-card .change.negative {
+        color: red;
+    }
 
-  .chart {
-    margin: 20px;
-    background: #f9f9f9;
-    padding: 20px;
-    border-radius: 8px;
-  }
+    .metric-card .change.neutral {
+        color: gray;
+    }
 
-  .failure-section {
-    margin: 20px;
-  }
+    .chart {
+        margin: 20px;
+        background: #f9f9f9;
+        padding: 20px;
+        border-radius: 8px;
+    }
 
-  .failure-section h2 {
-    font-size: 18px;
-    margin-bottom: 10px;
-  }
+    .failure-section {
+        margin: 20px;
+    }
 
-  .failure-metrics {
-    display: flex;
-    justify-content: space-between;
-  }
+    .failure-section h2 {
+        font-size: 18px;
+        margin-bottom: 10px;
+    }
 
-  .failure-card {
-    background: white;
-    padding: 10px;
-    border-radius: 8px;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-    text-align: center;
-    width: 30%;
-  }
+    .failure-metrics {
+        display: flex;
+        justify-content: space-between;
+    }
+
+    .failure-card {
+        background: white;
+        padding: 10px;
+        border-radius: 8px;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        text-align: center;
+        width: 30%;
+    }
   </style>

@@ -3,8 +3,8 @@
     <Loader v-if="isLoading" />
 
     <div class="button-ctn">
-      <button @click="toggleChartType" class="button">{{ chartType === 'line' ? 'Pie' : 'Line' }} Chart</button>
-      <button @click="toggleExpand" class="button">Fullscreen</button>
+      <button v-if="showPie" @click="toggleChartType" class="button">{{ chartType === 'line' ? 'Pie' : 'Line' }} Chart</button>
+      <button v-if="showFullscreen" @click="toggleExpand" class="button">Fullscreen</button>
     </div>
     <div v-if="datasets && datasets.length" :class="['chart-container', { expanded: isExpanded }]" ref="chartContainer">
       <Line v-if="chartType === 'line'" :data="chartData" :options="chartOptions" />
@@ -35,6 +35,9 @@ export default {
     metrics: Array,
     timeRange: String,
     period: String,
+    showLegend: Boolean,
+    showPie: Boolean,
+    showFullscreen: Boolean,
     requestor: Object
   },
   data() {
@@ -82,6 +85,9 @@ export default {
                 ? `${context.dataset.label}: ${context.parsed.y}`
                 : `${context.label}: ${context.raw}`
             }
+          },
+          legend: {
+            display: this.showLegend, // Show or hide legend based on the prop
           },
           zoom: this.chartType === 'line' ? {
             pan: { enabled: true, mode: 'x' },
@@ -175,11 +181,10 @@ export default {
 
     async toggleExpand() {
       const chartContainer = this.$refs.chartContainer;
-      // Enter fullscreen
+
       if (chartContainer.requestFullscreen) {
         await chartContainer.requestFullscreen();
       }
-
     },
 
     toggleChartType() {
