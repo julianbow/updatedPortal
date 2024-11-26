@@ -27,7 +27,7 @@
         </div>
       </div>
 
-      <MetricsChart
+      <M3Chart
         v-if="metrics.length > 0"
         :metrics="metrics"
         :timeRange="'20160'"
@@ -43,13 +43,13 @@
 <script>
 import Requestor from '@/helpers/Requestor';
 import Loader from '@/components/Loader.vue';
-import MetricsChart from '../components/metrics/MetricsChart.vue';
+import M3Chart from '../components/dashboard/M3Chart.vue';
 import "../assets/css/metrics.css";
 
 export default {
   components: {
     Loader,
-    MetricsChart
+    M3Chart
   },
   data() {
     return {
@@ -61,6 +61,7 @@ export default {
           id: 1,
           metric_name: "mmm.hubs_ever_installed_count.swd-ps02",
           title: 'Hubs Installed',
+          color: "rgba(142, 142, 142, 1)",
           value: 0,
           change: 0,
         },
@@ -68,6 +69,7 @@ export default {
           id: 2,
           metric_name: "mmm.hubs_reporting_count.swd-ps02",
           title: 'Hubs Reporting',
+          color: "rgba(90, 197, 68, 1)",
           value: 0,
           change: 0,
         },
@@ -75,6 +77,7 @@ export default {
           id: 3,
           metric_name: "mmm.devices_reporting_count.swd-ps02",
           title: 'Devices Reporting',
+          color: "rgba(89, 163, 248, 1)",
           value: 0,
           change: 0,
         },
@@ -83,16 +86,23 @@ export default {
   },
   methods: {
     async fetchMetrics() {
-      this.isLoading = true;
-      try {
+        this.isLoading = true;
+        try {
         for (let i = 0; i < this.metricsSummary.length; i++) {
-          let metricName = this.metricsSummary[i].metric_name;
+            const metricName = this.metricsSummary[i].metric_name;
+            const metricTitle = this.metricsSummary[i].title;
+            const color = this.metricsSummary[i].color;
 
-          const response = await this.requestor.makeMetricsChartDataRequest(metricName, 1, 20160);
-          const values = response.data.values;
-          this.metrics = [...this.metrics, metricName];
+            // Add the metric with color to the metrics array
+            this.metrics = [
+                ...this.metrics,
+                { name: metricName, title: metricTitle, color: color }
+            ];
 
-          if (Array.isArray(values) && values.length > 0) {
+            const response = await this.requestor.makeMetricsChartDataRequest(metricName, 1, 20160);
+            const values = response.data.values;
+
+            if (Array.isArray(values) && values.length > 0) {
             const lastItem = values[values.length - 1].split(',');
             const secondLastItem = values.length > 1 ? values[values.length - 2].split(',') : null;
 
@@ -102,22 +112,22 @@ export default {
             this.metricsSummary[i].value = lastValue;
 
             if (secondLastValue !== null) {
-              const percentChange = ((lastValue - secondLastValue) / secondLastValue) * 100;
-              this.metricsSummary[i].change = Number(percentChange.toFixed(3));
+                const percentChange = ((lastValue - secondLastValue) / secondLastValue) * 100;
+                this.metricsSummary[i].change = Number(percentChange.toFixed(3));
             } else {
-              this.metricsSummary[i].change = 0;
+                this.metricsSummary[i].change = 0;
             }
-          } else {
+            } else {
             console.warn(`No values available for metric: ${metricName}`);
             this.metricsSummary[i].value = 0;
             this.metricsSummary[i].change = 0;
-          }
+            }
         }
-      } catch (error) {
+        } catch (error) {
         console.error('Error fetching metrics:', error);
-      } finally {
+        } finally {
         this.isLoading = false;
-      }
+        }
     },
   },
   mounted() {
