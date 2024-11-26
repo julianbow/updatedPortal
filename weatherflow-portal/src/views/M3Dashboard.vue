@@ -34,9 +34,7 @@
                 <span v-else>0%</span>
                 </template>
             </div>
-            </div>
-
-
+        </div>
       </div>
 
       <M3Chart
