@@ -26,35 +26,37 @@
             class="metric-card"
             v-for="metric in metricsSummary"
             :key="metric.id"
-            >
+        >
             <div class="color-indicator" :style="{ backgroundColor: metric.color }"></div>
             <span class="title">{{ metric.title }}</span>
-            <div class="value">{{ metric.value }}</div>
+            <!-- Format the value with commas -->
+            <div class="value">{{ formatNumber(metric.value) }}</div>
             <div
-                :class="[
+            :class="[
                 'change',
                 metric.change > 0
-                    ? 'positive'
-                    : metric.change < 0
-                    ? 'negative'
-                    : 'neutral'
-                ]"
+                ? 'positive'
+                : metric.change < 0
+                ? 'negative'
+                : 'neutral'
+            ]"
             >
-                <!-- Special condition for Sensor Failures -->
-                <template v-if="metric.title === 'Sensor Failures'">
+            <!-- Special condition for Sensor Failures -->
+            <template v-if="metric.title === 'Sensor Failures'">
                 <span v-if="metric.change > 0" style="color: red;">▲ {{ Math.abs(metric.change) }}%</span>
                 <span v-else-if="metric.change < 0" style="color: green;">▼ {{ Math.abs(metric.change) }}%</span>
                 <span v-else>0%</span>
-                </template>
-                <!-- Default behavior for other metrics -->
-                <template v-else>
+            </template>
+            <!-- Default behavior for other metrics -->
+            <template v-else>
                 <span v-if="metric.change > 0">▲ {{ Math.abs(metric.change) }}%</span>
                 <span v-else-if="metric.change < 0">▼ {{ Math.abs(metric.change) }}%</span>
                 <span v-else>0%</span>
-                </template>
+            </template>
             </div>
         </div>
-      </div>
+        </div>
+
 
       <M3Chart
         v-if="metrics.length > 0"
@@ -250,6 +252,12 @@ methods: {
         }
     },
 
+    formatNumber(value) {
+        if (typeof value === "number") {
+        return new Intl.NumberFormat().format(value); // Adds commas to the number
+        }
+        return value;
+    },
 },
   mounted() {
     this.$emit('update-title', 'M3 Dashboard');
