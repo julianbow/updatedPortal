@@ -199,13 +199,11 @@ export default {
       }
     },
     timeRange: {
-      immediate: true,
       handler() {
         this.fetchMetricsData();
       }
     },
     period: {
-      immediate: true,
       handler() {
         this.fetchMetricsData();
       }

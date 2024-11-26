@@ -2,6 +2,25 @@
     <div id="m3-dashboard" class="grid-list">
       <Loader :isLoading="isLoading" />
 
+      <div class="header">
+          <div class="timerange-selector">
+            Time Range:
+            <select v-model="selectedTimeRange">
+              <option value="10080">Last 1 Week</option>
+              <option value="20160">Last 2 Weeks</option>
+              <option value="40320">Last 4 Weeks</option>
+              <option value="120960">Last 26 Weeks</option>
+              <option value="564480">Last 1 Year</option>
+            </select>
+            Period:
+            <select v-model="selectedPeriod">
+              <option value="1">1 Minute</option>
+              <option value="10">10 Minutes</option>
+              <option value="60">1 Hour</option>
+            </select>
+          </div>
+      </div>
+
       <div class="metrics-summary">
         <div
             class="metric-card"
@@ -40,8 +59,8 @@
       <M3Chart
         v-if="metrics.length > 0"
         :metrics="metrics"
-        :timeRange="'20160'"
-        :period="'1'"
+        :timeRange="selectedTimeRange"
+        :period="selectedPeriod"
         :showLegend="false"
         :showPie="false"
         :showFullscreen="false"
@@ -65,6 +84,8 @@ export default {
     return {
       requestor: new Requestor(),
       isLoading: false,
+      selectedTimeRange: "20160",
+      selectedPeriod: "1",
       metrics: [],
       metricsSummary: [
         {
@@ -245,6 +266,13 @@ methods: {
         border: 1px solid #ddd;
         border-radius: 8px;
         box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    }
+
+    .header {
+        display: flex;
+        flex-direction: row;
+        justify-content: end;
+        margin-right: 20px;
     }
 
     .metrics-summary {

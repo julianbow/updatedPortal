@@ -197,6 +197,16 @@ export default {
       handler() {
         this.fetchMetricsData();
       }
+    },
+    timeRange: {
+      handler() {
+        this.fetchMetricsData();
+      }
+    },
+    period: {
+      handler() {
+        this.fetchMetricsData();
+      }
     }
   }
 };
