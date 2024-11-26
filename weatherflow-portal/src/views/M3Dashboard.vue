@@ -4,27 +4,39 @@
 
       <div class="metrics-summary">
         <div
-          class="metric-card"
-          v-for="metric in metricsSummary"
-          :key="metric.id"
-        >
-          <span class="title">{{ metric.title }}</span>
-          <div class="value">{{ metric.value }}</div>
-          <div
-            :class="[
-              'change',
-              metric.change > 0
-                ? 'positive'
-                : metric.change < 0
-                ? 'negative'
-                : 'neutral'
-            ]"
-          >
-            <span v-if="metric.change > 0">▲ {{ Math.abs(metric.change) }}%</span>
-            <span v-else-if="metric.change < 0">▼ {{ Math.abs(metric.change) }}%</span>
-            <span v-else>0%</span>
-          </div>
-        </div>
+            class="metric-card"
+            v-for="metric in metricsSummary"
+            :key="metric.id"
+            >
+            <div class="color-indicator" :style="{ backgroundColor: metric.color }"></div>
+            <span class="title">{{ metric.title }}</span>
+            <div class="value">{{ metric.value }}</div>
+            <div
+                :class="[
+                'change',
+                metric.change > 0
+                    ? 'positive'
+                    : metric.change < 0
+                    ? 'negative'
+                    : 'neutral'
+                ]"
+            >
+                <!-- Special condition for Sensor Failures -->
+                <template v-if="metric.title === 'Sensor Failures'">
+                <span v-if="metric.change > 0" style="color: red;">▲ {{ Math.abs(metric.change) }}%</span>
+                <span v-else-if="metric.change < 0" style="color: green;">▼ {{ Math.abs(metric.change) }}%</span>
+                <span v-else>0%</span>
+                </template>
+                <!-- Default behavior for other metrics -->
+                <template v-else>
+                <span v-if="metric.change > 0">▲ {{ Math.abs(metric.change) }}%</span>
+                <span v-else-if="metric.change < 0">▼ {{ Math.abs(metric.change) }}%</span>
+                <span v-else>0%</span>
+                </template>
+            </div>
+            </div>
+
+
       </div>
 
       <M3Chart
@@ -250,6 +262,16 @@ methods: {
         box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
         text-align: center;
         width: 20%;
+        position: relative;
+    }
+
+    .color-indicator {
+        width: 10px; /* Size of the circle */
+        height: 10px; /* Size of the circle */
+        border-radius: 50%; /* Make it circular */
+        position: absolute; /* Position it relative to the card */
+        top: 10px; /* Adjust the top position */
+        left: 10px; /* Adjust the left position */
     }
 
     .metric-card .title {
