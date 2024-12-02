@@ -434,6 +434,11 @@
     border-bottom: none !important;
 }
 
+.value.hub {
+    text-decoration: underline;
+    cursor: pointer;
+}
+
 .hub-reboot {
     font-size: 12px;
     text-decoration: underline;

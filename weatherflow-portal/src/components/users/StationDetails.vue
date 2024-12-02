@@ -24,7 +24,7 @@
 
       <div class="hub-info">
         <div class="station-info-col-1">
-          <div><p class="label">Serial</p><span class="value">{{ stationHub.serial_number || 'N/A' }} <span class="hub-reboot" @click="rebootHub(stationHub.serial_number)">(Reboot)</span></span></div>
+          <div><p class="label">Serial</p><span class="value hub" @click.stop="openDeviceInformationModal(stationHub.serial_number)">{{ stationHub.serial_number || 'N/A' }} <span class="hub-reboot" @click="rebootHub(stationHub.serial_number)">(Reboot)</span></span></div>
           <div><p class="label" title="Radio Frequency">Frequency</p><span class="value">{{ hubFrequency || 'N/A' }}</span></div>
           <div>
             <p class="label"
@@ -103,6 +103,12 @@
           :hardwareName ="this.hardwareType"
           ref="showHardwareModal"
         />
+
+        <!-- DeviceInformationModal -->
+        <DeviceInformationModal
+          :requestor="requestor"
+          ref="updateDeviceInformation"
+        />
   </div>
   </template>
 
@@ -114,6 +120,7 @@ import StationDevices from './StationDevices.vue';
 import StationInfo from './StationInfo.vue';
 import HardwareModal from './HardwareModal.vue';
 import FirmwareUpgrade from './FirmwareUpgrade.vue';
+import DeviceInformationModal from './DeviceInformationModal.vue';
 import Day from '@/helpers/Day';
 
 export default {
@@ -121,6 +128,7 @@ export default {
     StationDevices,
     StationInfo,
     HardwareModal,
+    DeviceInformationModal,
     FirmwareUpgrade
   },
   props: {
@@ -337,6 +345,9 @@ export default {
     },
     showHardwareImage() {
       this.$refs.showHardwareModal.showModal();
+    },
+    openDeviceInformationModal(device) {
+      this.$refs.updateDeviceInformation.openModal(device);
     },
     getFirmwareRevision() {
       this.$refs.showFirmwareUpgrade.openDialog(this.stationHub.serial_number, this.stationHub.firmware_revision);
