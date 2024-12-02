@@ -17,58 +17,71 @@
       </div>
 
       <div class="tab-content">
+        <!-- No Data Message for Born On Date -->
+        <div v-if="activeTab === 'bornOnDate' && !bornOnDateData.length" class="no-data-message">
+          <p>No data available for Born On Date.</p>
+        </div>
+
         <!-- Born On Date Table -->
-        <div class="table-container">
-        <table v-if="activeTab === 'bornOnDate'" class="devices-table">
-          <thead>
-            <tr>
-              <th title="Date">Date</th>
-              <th title="Days Ago">Days Ago</th>
-              <th title="Days Ago (String)">Days Ago (String)</th>
-              <th title="Operation">Operation</th>
-              <th title="Device ID">Device ID</th>
-              <th title="Station ID">Station ID</th>
-              <th title="Email">Email</th>
-              <th title="User ID">User ID</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr v-for="(row, index) in bornOnDateData" :key="index">
-              <td>{{ formatTimestamp(row.time_epoch) }}</td>
-              <td>{{ row.days_ago }}</td>
-              <td>{{ row.days_ago_str }}</td>
-              <td>{{ row.operation }}</td>
-              <td>{{ row.device_id }}</td>
-              <td>{{ row.station_id }}</td>
-              <td :title="row.email">{{ row.email }}</td>
-              <td :title="row.user_id">{{ row.user_id }}</td>
-            </tr>
-          </tbody>
-        </table>
-      </div>
+        <div class="table-container" v-if="bornOnDateData.length && activeTab === 'bornOnDate'">
+          <table class="devices-table">
+            <thead>
+              <tr>
+                <th title="Date">Date</th>
+                <th title="Days Ago">Days Ago</th>
+                <th title="Days Ago (String)">Days Ago (String)</th>
+                <th title="Operation">Operation</th>
+                <th title="Device ID">Device ID</th>
+                <th title="Station ID">Station ID</th>
+                <th title="Email">Email</th>
+                <th title="User ID">User ID</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr v-for="(row, index) in bornOnDateData" :key="index">
+                <td :title="formatTimestamp(row.time_epoch)">{{ formatTimestamp(row.time_epoch) }}</td>
+                <td :title="row.days_ago">{{ row.days_ago }}</td>
+                <td :title="row.days_ago_str">{{ row.days_ago_str }}</td>
+                <td :title="row.operation">{{ row.operation }}</td>
+                <td :title="row.device_id">{{ row.device_id }}</td>
+                <td :title="row.station_id">{{ row.station_id }}</td>
+                <td :title="row.email">{{ row.email }}</td>
+                <td :title="row.user_id">{{ row.user_id }}</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <!-- No Data Message for Factory Test Results -->
+        <div v-if="activeTab === 'factoryTestResults' && !factoryTestResultsData.length" class="no-data-message">
+          <p>No data available for Factory Test Results.</p>
+        </div>
 
         <!-- Factory Test Results Table -->
-        <h2 v-if="factoryTimestamp && activeTab === 'factoryTestResults'">{{ factoryTimestamp }}</h2>
-        <table v-if="activeTab === 'factoryTestResults'" class="devices-table">
-          <thead>
-            <tr>
-              <th>Name</th>
-              <th>Test Result</th>
-              <th>Value</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr v-for="(row, index) in factoryTestResultsData" :key="index">
-              <td>{{ row.name }}</td>
-              <td>{{ row.testResult }}</td>
-              <td>{{ row.value }}</td>
-            </tr>
-          </tbody>
-        </table>
+        <div v-if="factoryTestResultsData.length && activeTab === 'factoryTestResults'">
+          <h2>{{ factoryTimestamp }}</h2>
+          <table class="devices-table">
+            <thead>
+              <tr>
+                <th>Name</th>
+                <th>Test Result</th>
+                <th>Value</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr v-for="(row, index) in factoryTestResultsData" :key="index">
+                <td>{{ row.name }}</td>
+                <td>{{ row.testResult }}</td>
+                <td>{{ row.value }}</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
       </div>
     </div>
   </div>
 </template>
+
 
 <script>
 import Day from '@/helpers/Day';
@@ -112,7 +125,7 @@ export default {
       }
       const response = await this.requestor.makeTempestInternalGetRequest("tempestinternal/born_on_dates", urlData);
       try {
-        if (response.data.status.status_code === 0) {
+        if (response.data.status.status_code === 0 && response.data.born_on_records !== undefined) {
           this.bornOnDateData = response.data.born_on_records;
         }
       } catch (error) {
@@ -177,6 +190,14 @@ td {
   text-overflow: ellipsis;
   white-space: nowrap;
 }
+
+.no-data-message {
+  text-align: center;
+  margin: 20px;
+  font-size: 1.2em;
+  color: #666;
+}
+
 
 th:nth-child(1) { width: 6%; }
 th:nth-child(2) { width: 3%; }
