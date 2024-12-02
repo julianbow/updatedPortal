@@ -28,7 +28,12 @@
             v-html="getSensorImage(device.statusText)"
             @click.stop="openDeviceStatusModal(device)"
           ></td>
-          <td class="device-log" v-html="device.serialLink"></td>
+          <td
+            class="device-log"
+            style="cursor: pointer; text-decoration: underline;"
+            v-html="device.serial"
+            @click.stop="openDeviceInformationModal(device.serial)"
+            ></td>
           <td class="device-hardware" v-html="getValue(device.hardware)"></td>
           <td class="device-firmware" v-html="getValue(device.firmware)"></td>
           <td v-html="getValue(device.name)"></td>
@@ -63,16 +68,24 @@
       :requestor="requestor"
       ref="updateDeviceStatus"
     />
+
+    <!-- DeviceInformationModal -->
+    <DeviceInformationModal
+      :requestor="requestor"
+      ref="updateDeviceInformation"
+    />
   </div>
 </template>
 
 <script>
 import DeviceStatusModal from './DeviceStatusModal.vue';
+import DeviceInformationModal from './DeviceInformationModal.vue';
 import HubDeviceSettingsModal from './HubDeviceSettingsModal.vue';
 
 export default {
   components: {
     DeviceStatusModal,
+    DeviceInformationModal,
     HubDeviceSettingsModal
   },
   props: {
@@ -189,6 +202,9 @@ export default {
     },
     openDeviceStatusModal(device) {
       this.$refs.updateDeviceStatus.openModal(device);
+    },
+    openDeviceInformationModal(device) {
+      this.$refs.updateDeviceInformation.openModal(device);
     },
     openDeviceCalibrationModal(deviceId) {
       this.$refs.deviceCalibration.openModal(deviceId);
