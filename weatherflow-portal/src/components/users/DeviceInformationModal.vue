@@ -29,7 +29,6 @@
               <tr>
                 <th title="Date">Date</th>
                 <th title="Days Ago">Days Ago</th>
-                <th title="Days Ago (String)">Days Ago (String)</th>
                 <th title="Operation">Operation</th>
                 <th title="Device ID">Device ID</th>
                 <th title="Station ID">Station ID</th>
@@ -40,7 +39,6 @@
             <tbody>
               <tr v-for="(row, index) in bornOnDateData" :key="index">
                 <td :title="formatTimestamp(row.time_epoch)">{{ formatTimestamp(row.time_epoch) }}</td>
-                <td :title="row.days_ago">{{ row.days_ago }}</td>
                 <td :title="row.days_ago_str">{{ row.days_ago_str }}</td>
                 <td :title="row.operation">{{ row.operation }}</td>
                 <td :title="row.device_id">{{ row.device_id }}</td>
@@ -199,14 +197,13 @@ td {
 }
 
 
-th:nth-child(1) { width: 6%; }
-th:nth-child(2) { width: 3%; }
-th:nth-child(3) { width: 4%; }
+th:nth-child(1) { width: 3%; }
+th:nth-child(2) { width: 2%; }
+th:nth-child(3) { width: 1%; }
 th:nth-child(4) { width: 1%; }
-th:nth-child(5) { width: 3%; }
-th:nth-child(6) { width: 3%; }
-th:nth-child(7) { width: 6%; }
-th:nth-child(8) { width: 6%; }
+th:nth-child(5) { width: 1%; }
+th:nth-child(6) { width: 4%; }
+th:nth-child(7) { width: 7%; }
 
 /* Add horizontal scrollbar styling */
 .table-container::-webkit-scrollbar {
