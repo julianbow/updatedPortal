@@ -156,7 +156,7 @@ const router = createRouter({
       name: "tools",
       component: ToolsView,
       meta: { requiresAuth: true },
-    }
+    },
   ],
 });
 
