@@ -48,7 +48,7 @@
                 <td class="firmware">{{ item.pending_firmare_revision }}</td>
                 <td>{{ item.timezone }}</td>
                 <td>{{ item.hardware_revision }}</td>
-                <td v-html="getEmailWithSearchLink(item.email)"></td>
+                <td><a :href="'/users/search/' + item.email">{{ item.email }}</a></td>
                 </tr>
             </tbody>
             </table>
@@ -113,9 +113,6 @@ export default {
     onHourChange() {
         localStorage.setItem("selectedHour", this.selectedHour);
         this.fetchFirmwareItems();
-    },
-    getEmailWithSearchLink(email) {
-        return `<a href="/search?query=${encodeURIComponent(email)}">${email}</a>`;
     },
     updateTitle() {
         this.$emit("update-title", "Firmware Updates - Hub Nightly");
