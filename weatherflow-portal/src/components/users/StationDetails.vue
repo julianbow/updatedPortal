@@ -299,11 +299,11 @@ export default {
           device_type: device.device_type,
           statusText: this.deviceStatus.findStatus(matchingDeviceInfo?.sensor_status, device.device_type),
           status: matchingDeviceInfo.sensor_status,
-          rssi: matchingDeviceInfo?.rssi || 'N/A',
-          battery: matchingDeviceInfo?.voltage || 'N/A',
-          uptime: DataDisplay.calculateUptimeDay(matchingDeviceInfo?.uptime) || 'N/A',
-          lastMqtt: Day.getFuzzyTimestampWithEpoch(matchingDeviceInfo?.last_mqtt_ob_epoch) || 'N/A',
-          lastWs: Day.getFuzzyTimestampWithEpoch(matchingDeviceInfo?.last_ob_epoch) || 'N/A'
+          rssi: matchingDeviceInfo.rssi ? matchingDeviceInfo.rssi : 'N/A',
+          battery: matchingDeviceInfo.voltage ? matchingDeviceInfo.voltage : 'N/A',
+          uptime: matchingDeviceInfo.uptime ? DataDisplay.calculateUptimeDay(matchingDeviceInfo.uptime) : 'N/A',
+          lastMqtt: matchingDeviceInfo.last_mqtt_ob_epoch ? Day.getFuzzyTimestampWithEpoch(matchingDeviceInfo.last_mqtt_ob_epoch) : 'N/A',
+          lastWs: matchingDeviceInfo.last_ob_epoch ? Day.getFuzzyTimestampWithEpoch(matchingDeviceInfo.last_ob_epoch) : 'N/A'
         };
       });
     },

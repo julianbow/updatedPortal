@@ -173,7 +173,7 @@ methods: {
 
                 if (Array.isArray(values) && values.length > 0) {
                     const lastItem = values[values.length - 1].split(',');
-                    const secondLastItem = values.length > 1 ? values[values.length - 2].split(',') : null;
+                    const secondLastItem = values.length > 1 ? values[0].split(',') : null;
 
                     const lastValue = parseFloat(lastItem[1]);
                     const secondLastValue = secondLastItem ? parseFloat(secondLastItem[1]) : null;
@@ -214,7 +214,7 @@ methods: {
 
                 if (Array.isArray(values) && values.length > 0) {
                     const lastItem = values[values.length - 1].split(',');
-                    const secondLastItem = values.length > 1 ? values[values.length - 2].split(',') : null;
+                    const secondLastItem = values.length > 1 ? values[0].split(',') : null;
 
                     const lastValue = parseFloat(lastItem[1]);
                     const secondLastValue = secondLastItem ? parseFloat(secondLastItem[1]) : null;
