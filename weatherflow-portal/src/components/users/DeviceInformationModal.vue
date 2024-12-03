@@ -198,12 +198,12 @@ td {
 
 
 th:nth-child(1) { width: 3%; }
-th:nth-child(2) { width: 2%; }
+th:nth-child(2) { width: 3%; }
 th:nth-child(3) { width: 1%; }
 th:nth-child(4) { width: 1%; }
 th:nth-child(5) { width: 1%; }
 th:nth-child(6) { width: 4%; }
-th:nth-child(7) { width: 7%; }
+th:nth-child(7) { width: 4%; }
 
 /* Add horizontal scrollbar styling */
 .table-container::-webkit-scrollbar {
