@@ -20,6 +20,7 @@
         //   { title: "Calibration Tool", path: "/tools/calibrate" },
           { title: "Firmware Updates - Hub Nightly", path: "/tools/firmware-nightly" },
           { title: "Firmware List (Hub & Tempest)", path: "/tools/firmware-list" },
+          // combine rain ais admin and csv
           { title: "Rain AIS Admin", path: "/tools/rain-ais" },
           {
             title: "Rain AIS CSV",
@@ -28,32 +29,28 @@
           },
           { title: "Tempest Data QC", path: "/tools/tempest-qc" },
           { title: "CPO QC", path: "/tools/cpo-qc" },
-          { title: "Cellular Hub Info", path: "/tools/cell-hub-info" },
+          // combine CS network management and Prod
           { title: "Customer Service Network Management", path: "/tools/network-management-cs" },
           { title: "Production Network Management", path: "/tools/network-management-prod" },
           { title: "Network Hubs", path: "/tools/hub-network-list" },
           { title: "Custom Networks", path: "/tools/networks" },
           { title: "VIP Users", path: "/tools/vip" },
+          // comibne cellular hub info and report
+          { title: "Cellular Hub Info", path: "/tools/cell-hub-info" },
           { title: "Cell Hub Report", path: "/tools/cell-hub-report" },
         ],
       };
     },
     methods: {
-      navigateTo(path) {
-        if (path.startsWith("http")) {
-          // Open external link in a new tab
-          window.open(path, "_blank");
-        } else {
-          // Use Vue Router to navigate internally without refreshing
-          this.$router.push(path);
-        }
-      },
-      updateTitle() {
-        this.$emit("update-title", "Tools");
-      },
+        navigateTo(path) {
+            this.$router.push(path);
+        },
+        updateTitle() {
+            this.$emit("update-title", "Tools");
+        },
     },
     mounted() {
-      this.updateTitle();
+        this.updateTitle();
     },
   };
   </script>
@@ -80,20 +77,20 @@
   .tool-button {
     display: block;
     width: 100%;
-    height: 80px; /* Fixed height for all buttons */
+    height: 80px;
     text-align: center;
     background-color: #fff;
     border: 1px solid #ddd;
     border-radius: 8px;
-    padding: 10px 20px; /* Adjust padding for vertical alignment within fixed height */
+    padding: 10px 20px;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
     color: #512b59;
-    font-size: 16px; /* Adjust font size for visual balance */
+    font-size: 16px;
     font-weight: bold;
     cursor: pointer;
     transition: transform 0.2s, background-color 0.3s;
-    overflow: hidden; /* Prevent text overflow */
-    display: flex; /* Flexbox for vertical and horizontal alignment */
+    overflow: hidden;
+    display: flex;
     align-items: center;
     justify-content: center;
   }

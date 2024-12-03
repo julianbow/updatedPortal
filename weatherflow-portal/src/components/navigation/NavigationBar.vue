@@ -56,6 +56,8 @@ export default {
     selectedMenuTitle(newTitle) {
       if (newTitle.includes("Online")) {
         newTitle = "Home";
+      } else if (newTitle.includes("Firmware")) {
+        newTitle = "Tools";
       }
       this.setActive(newTitle);
     }
