@@ -27,9 +27,11 @@
             v-for="metric in metricsSummary"
             :key="metric.id"
         >
-            <div class="color-indicator" :style="{ backgroundColor: metric.color }"></div>
+        <div class="dotted-border" v-if="metric.id === metricsSummary[0].id">
+          <div class="color-indicator" :style="{ backgroundColor: metric.color }"></div>
+        </div>
+        <div v-else class="color-indicator" :style="{ backgroundColor: metric.color }"></div>
             <span class="title">{{ metric.title }}</span>
-            <!-- Format the value with commas -->
             <div class="value">{{ formatNumber(metric.value) }}</div>
             <div
             :class="[
@@ -114,42 +116,13 @@ export default {
           value: 0,
           change: 0,
         },
-      ],
-      failedSensors: [
-        {
-          id: 1,
-          metric_name: "mmm.sensor_fail_humidity_count.swd-ps02",
-          value: 0,
-        },
-        {
-          id: 2,
-          metric_name: "mmm.sensor_fail_lightning_count.swd-ps02",
-          value: 0,
-        },
-        {
-          id: 3,
-          metric_name: "mmm.sensor_fail_pressure_count.swd-ps02",
-          value: 0,
-        },
         {
           id: 4,
-          metric_name: "mmm.sensor_fail_rain_count.swd-ps02",
+          metric_name: "mmm.sensor_fail_total_count.swd-ps02",
+          title: 'Sensor Failures',
+          color: "rgba(255, 0, 0, 1)",
           value: 0,
-        },
-        {
-          id: 5,
-          metric_name: "mmm.sensor_fail_sunlight_count.swd-ps02",
-          value: 0,
-        },
-        {
-          id: 6,
-          metric_name: "mmm.sensor_fail_temp_count.swd-ps02",
-          value: 0,
-        },
-        {
-          id: 7,
-          metric_name: "mmm.sensor_fail_wind_count.swd-ps02",
-          value: 0,
+          change: 0,
         },
       ],
     };
@@ -181,8 +154,12 @@ methods: {
                     this.metricsSummary[i].value = lastValue;
 
                     if (secondLastValue !== null) {
+                      if (secondLastValue !== null && secondLastValue !== 0) {
                         const percentChange = ((lastValue - secondLastValue) / secondLastValue) * 100;
                         this.metricsSummary[i].change = Number(percentChange.toFixed(3));
+                      } else {
+                        this.metricsSummary[i].change = 0;
+                      }
                     } else {
                         this.metricsSummary[i].change = 0;
                     }
@@ -192,66 +169,12 @@ methods: {
                     this.metricsSummary[i].change = 0;
                 }
             }
-
-            // Fetch failed sensors after fetching other metrics
-            await this.fetchFailedSensors();
-
         } catch (error) {
             console.error('Error fetching metrics:', error);
         } finally {
             this.isLoading = false;
         }
     },
-
-    async fetchFailedSensors() {
-        try {
-            let totalFailures = 0;
-            let totalPreviousFailures = 0; // To calculate the change
-
-            for (const sensor of this.failedSensors) {
-                const response = await this.requestor.makeMetricsChartDataRequest(sensor.metric_name, 1, 20160);
-                const values = response.data.values;
-
-                if (Array.isArray(values) && values.length > 0) {
-                    const lastItem = values[values.length - 1].split(',');
-                    const secondLastItem = values.length > 1 ? values[0].split(',') : null;
-
-                    const lastValue = parseFloat(lastItem[1]);
-                    const secondLastValue = secondLastItem ? parseFloat(secondLastItem[1]) : null;
-
-                    // Update the sensor's value
-                    sensor.value = lastValue;
-
-                    // Accumulate the total failures
-                    totalFailures += lastValue;
-
-                    // Accumulate the total previous failures for change calculation
-                    if (secondLastValue !== null) {
-                        totalPreviousFailures += secondLastValue;
-                    }
-                } else {
-                    console.warn(`No values available for failed sensor: ${sensor.metric_name}`);
-                }
-            }
-
-            let change = 0;
-            if (totalPreviousFailures > 0) {
-                change = ((totalFailures - totalPreviousFailures) / totalPreviousFailures) * 100;
-            }
-
-            this.metricsSummary.push({
-                id: this.metricsSummary.length + 1,
-                metric_name: "sensor_failures",
-                title: "Sensor Failures",
-                value: totalFailures,
-                change: Number(change.toFixed(3)),
-            });
-
-        } catch (error) {
-            console.error('Error fetching failed sensors:', error);
-        }
-    },
-
     formatNumber(value) {
         if (typeof value === "number") {
         return new Intl.NumberFormat().format(value); // Adds commas to the number
@@ -260,12 +183,11 @@ methods: {
     },
 },
   mounted() {
-    this.$emit('update-title', 'M3 Dashboard');
+    this.$emit('update-title', 'M³ Dashboard');
     this.fetchMetrics();
   },
 };
 </script>
-
   <style scoped>
     #m3-dashboard {
         margin: 80px 20px;
@@ -290,23 +212,49 @@ methods: {
     }
 
     .metric-card {
-        background: white;
-        padding: 10px;
-        border-radius: 8px;
-        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-        text-align: center;
-        width: 20%;
-        position: relative;
+      background: white;
+      padding: 20px 10px;
+      border-radius: 8px;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+      text-align: center;
+      width: 20%;
+      position: relative;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
     }
 
-    .color-indicator {
-        width: 10px; /* Size of the circle */
-        height: 10px; /* Size of the circle */
-        border-radius: 50%; /* Make it circular */
-        position: absolute; /* Position it relative to the card */
-        top: 10px; /* Adjust the top position */
-        left: 10px; /* Adjust the left position */
+    /* Dotted border in the top-left corner */
+    .dotted-border {
+        border: 2.5px dotted #8e8e8e;
+        border-radius: 50%;
+        width: 25px;
+        height: 25px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        position: absolute;
+        top: 10px;
+        left: 10px;
+        box-sizing: border-box;
     }
+
+    /* Color indicator for cards without dotted border */
+    .color-indicator {
+        width: 13px;
+        height: 13px;
+        border-radius: 50%;
+        position: absolute;
+        top: 10px;
+        left: 10px;
+        background-color: inherit;
+    }
+
+  .dotted-border .color-indicator {
+      position: static;
+  }
+
 
     .metric-card .title {
         font-size: 14px;
@@ -329,7 +277,7 @@ methods: {
     }
 
     .metric-card .change.negative {
-        color: red;
+        color: #ff0000;
     }
 
     .metric-card .change.neutral {
