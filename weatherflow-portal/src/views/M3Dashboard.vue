@@ -128,56 +128,68 @@ export default {
     };
   },
 methods: {
-    async fetchMetrics() {
-        this.isLoading = true;
-        try {
-            for (let i = 0; i < this.metricsSummary.length; i++) {
-                const metricName = this.metricsSummary[i].metric_name;
-                const metricTitle = this.metricsSummary[i].title;
-                const color = this.metricsSummary[i].color;
+  async fetchMetrics() {
+    this.isLoading = true;
+    try {
+        for (let i = 0; i < this.metricsSummary.length; i++) {
+            const metricName = this.metricsSummary[i].metric_name;
+            const metricTitle = this.metricsSummary[i].title;
+            const color = this.metricsSummary[i].color;
 
-                this.metrics = [
-                    ...this.metrics,
-                    { name: metricName, title: metricTitle, color: color }
-                ];
+            this.metrics = [
+                ...this.metrics,
+                { name: metricName, title: metricTitle, color: color }
+            ];
 
-                const response = await this.requestor.makeMetricsChartDataRequest(metricName, 1, 20160);
-                const values = response.data.values;
+            const response = await this.requestor.makeMetricsChartDataRequest(metricName, 1, 20160);
+            const values = response.data.values;
 
-                if (Array.isArray(values) && values.length > 0) {
-                    const lastItem = values[values.length - 1].split(',');
-                    const secondLastItem = values.length > 1 ? values[0].split(',') : null;
+            if (Array.isArray(values) && values.length > 0) {
+                const lastItem = values[values.length - 1].split(',');
+                const lastValue = parseFloat(lastItem[1]);
 
-                    const lastValue = parseFloat(lastItem[1]);
-                    const secondLastValue = secondLastItem ? parseFloat(secondLastItem[1]) : null;
+                // Find the first non-zero item in the array
+                let initialIndex = 0;
+                let foundNonZero = false;
+                for (let j = 0; j < values.length - 1; j++) {
+                    const val = parseFloat(values[j].split(',')[1]);
+                    if (val !== 0) {
+                        initialIndex = j;
+                        foundNonZero = true;
+                        break;
+                    }
+                }
 
-                    this.metricsSummary[i].value = lastValue;
+                const firstItem = foundNonZero ? values[initialIndex].split(',') : null;
+                const secondLastValue = firstItem ? parseFloat(firstItem[1]) : null;
 
-                    if (secondLastValue !== null) {
-                      if (secondLastValue !== null && secondLastValue !== 0) {
+                this.metricsSummary[i].value = lastValue;
+
+                if (secondLastValue !== null) {
+                    if (secondLastValue !== 0) {
                         const percentChange = ((lastValue - secondLastValue) / secondLastValue) * 100;
                         this.metricsSummary[i].change = Number(percentChange.toFixed(3));
-                      } else {
-                        this.metricsSummary[i].change = 0;
-                      }
                     } else {
                         this.metricsSummary[i].change = 0;
                     }
                 } else {
-                    console.warn(`No values available for metric: ${metricName}`);
-                    this.metricsSummary[i].value = 0;
                     this.metricsSummary[i].change = 0;
                 }
+            } else {
+                console.warn(`No values available for metric: ${metricName}`);
+                this.metricsSummary[i].value = 0;
+                this.metricsSummary[i].change = 0;
             }
-        } catch (error) {
-            console.error('Error fetching metrics:', error);
-        } finally {
-            this.isLoading = false;
         }
-    },
+    } catch (error) {
+        console.error('Error fetching metrics:', error);
+    } finally {
+        this.isLoading = false;
+    }
+},
     formatNumber(value) {
         if (typeof value === "number") {
-        return new Intl.NumberFormat().format(value); // Adds commas to the number
+        return new Intl.NumberFormat().format(value);
         }
         return value;
     },
