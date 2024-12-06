@@ -26,6 +26,7 @@
           class="metric-card"
           v-for="metric in metricsSummary"
           :key="metric.id"
+          :class="{ clicked: metric.clicked }"
           @click="toggleMetricSeries(metric)"
       >
         <div class="dotted-border" v-if="metric.id === metricsSummary[0].id">
@@ -99,6 +100,7 @@ data() {
         color: "rgba(142, 142, 142, 1)",
         value: 0,
         change: 0,
+        clicked: false
       },
       {
         id: 2,
@@ -107,6 +109,7 @@ data() {
         color: "rgba(90, 197, 68, 1)",
         value: 0,
         change: 0,
+        clicked: false
       },
       {
         id: 3,
@@ -115,6 +118,7 @@ data() {
         color: "rgba(89, 163, 248, 1)",
         value: 0,
         change: 0,
+        clicked: false
       },
       {
         id: 4,
@@ -123,6 +127,7 @@ data() {
         color: "rgba(255, 0, 0, 1)",
         value: 0,
         change: 0,
+        clicked: false
       },
     ],
   };
@@ -197,6 +202,7 @@ methods: {
     if (this.$refs.m3Chart && this.$refs.m3Chart.toggleSeries) {
       this.$refs.m3Chart.toggleSeries(metric.metric_name);
     }
+    metric.clicked = !metric.clicked; // Toggle the clicked state
   }
 },
 mounted() {
@@ -230,18 +236,26 @@ mounted() {
 }
 
 .metric-card {
-background: white;
-padding: 20px 10px;
-border-radius: 8px;
-box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-text-align: center;
-width: 20%;
-position: relative;
-display: flex;
-flex-direction: column;
-align-items: center;
-justify-content: center;
-cursor: pointer; /* Make card clickable */
+  background: white;
+  padding: 20px 10px;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  text-align: center;
+  width: 20%;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.metric-card.clicked {
+  background: #d3d3d3;
+  transform: scale(0.95);
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
+  color: #555;
 }
 
 .dotted-border {
