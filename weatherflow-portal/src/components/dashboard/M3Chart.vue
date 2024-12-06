@@ -2,50 +2,26 @@
   <div id="metrics-chart">
     <Loader v-if="isLoading" />
 
-    <!-- <div class="button-ctn">
-      <button v-if="showPie" @click="toggleChartType" class="button">
-        {{ chartType === 'line' ? 'Pie' : 'Line' }} Chart
-      </button>
-      <button v-if="showFullscreen" @click="toggleExpand" class="button">Fullscreen</button>
-    </div> -->
-
-    <!-- First chart container (line or pie) -->
-    <div v-if="datasets && datasets.length" :class="['chart-container', { expanded: isExpanded }]" ref="chartContainer">
-      <Line v-if="chartType === 'line'" :data="chartData" :options="chartOptions" />
-      <Pie v-if="chartType === 'pie'" :data="chartData" :options="chartOptions" />
-    </div>
+    <div v-if="datasets && datasets.length" class="chart-container" ref="chartContainer"></div>
     <div v-else>
       <p>No data available for the selected metrics</p>
-    </div>
-
-    <!-- Second chart container (bar) for the last metric -->
-    <div v-if="barDataset" class="chart-container bar" style="margin-top: 2rem;">
-      <Bar :data="barChartData" :options="barChartOptions" />
     </div>
   </div>
 </template>
 
 <script>
-import { Chart as ChartJS, TimeScale, LinearScale, LineElement, PointElement, Title, Tooltip, Legend, ArcElement, Filler, BarElement, CategoryScale } from 'chart.js';
-import { Line, Pie, Bar } from 'vue-chartjs';
-import zoomPlugin from 'chartjs-plugin-zoom';
+import Highcharts from 'highcharts';
 import Loader from '@/components/Loader.vue';
-
-ChartJS.register(TimeScale, LinearScale, CategoryScale, LineElement, PointElement, ArcElement, Title, Tooltip, Legend, zoomPlugin, Filler, BarElement);
 
 export default {
   components: {
-    Loader,
-    Line,
-    Pie,
-    Bar
+    Loader
   },
   props: {
     metrics: Array,
     timeRange: String,
     period: String,
     showLegend: Boolean,
-    showPie: Boolean,
     showFullscreen: Boolean,
     requestor: Object
   },
@@ -54,143 +30,199 @@ export default {
       isLoading: false,
       dataCache: {},
       datasets: null,
-      barDataset: null,
       currentMetrics: [],
       isExpanded: false,
       chartType: 'line',
+      chart: null
     };
   },
   computed: {
-    chartData() {
-      // For line or pie chart data
-      if (this.datasets && this.chartType === 'line') {
-        return { datasets: this.datasets };
-      } else if (this.datasets && this.chartType === 'pie') {
-        const labels = this.datasets.map(dataset => dataset.label);
-        const data = this.datasets.map(dataset =>
-          dataset.data.reduce((acc, point) => acc + point.y, 0)
-        );
-        const backgroundColor = this.datasets.map(dataset => dataset.borderColor);
+    highchartsOptions() {
+      if (!this.datasets || !this.datasets.length) return {};
+
+      const lastIndex = this.datasets.length - 1;
+      const series = this.datasets.map((ds, index) => {
+        const isFirst = index === 0;
+        const isLast = index === lastIndex;
+        const isSecondOrThird = index === 1 || index === 2;
+
+        let seriesType = 'spline';
+        const additionalProps = {};
+
+        if (isFirst) {
+          additionalProps.dashStyle = 'Dot';
+          additionalProps.lineWidth = 4;
+        }
+
+        if (isLast) {
+          seriesType = 'column';
+          // Object.assign(additionalProps, {
+          //   // pointWidth: 20,
+          //   // borderWidth: 0,
+          //   // groupPadding: 0.1,
+          //   // pointPadding: 0.1,
+          //   // pointPlacement: 'on'
+          // });
+          ds.borderColor = 'rgba(255, 0, 0, 0.6)';
+        } else {
+          additionalProps.marker = {
+            enabled: false,
+            states: {
+              hover: {
+                enabled: true
+              }
+            }
+          };
+        }
+
+        if (!isFirst && !isLast && isSecondOrThird) {
+          seriesType = 'areaspline';
+          additionalProps.fillColor = {
+            linearGradient: [0, 0, 0, 300],
+            stops: [
+              [0, ds.borderColor.replace('1)', '0.9)')],
+              [0.7, ds.borderColor.replace('1)', '0.1')],
+              [1, ds.borderColor.replace('1)', '0')],
+            ]
+          };
+        }
 
         return {
-          labels,
-          datasets: [{ data, backgroundColor }]
+          id: ds.id,
+          name: ds.label,
+          type: seriesType,
+          data: ds.data.map(point => [point.x, point.y]),
+          color: ds.borderColor,
+          yAxis: isLast ? 1 : 0,
+          ...additionalProps
         };
-      }
-    },
-    chartOptions() {
-      // Options for line/pie chart
+      });
+
       return {
-        responsive: true,
-        maintainAspectRatio: false,
-        interaction: {
-          mode: 'index',
-          intersect: false,
+        chart: {
+          type: 'line',
+          zoomType: 'xy',
+          backgroundColor: 'transparent',
+          events: {
+            render: function() {
+              const chart = this;
+              const lineY = chart.plotTop + chart.plotHeight * 0.65;
+
+              if (!chart.topLine) {
+                chart.topLine = chart.renderer.path(['M', chart.plotLeft, lineY, 'L', chart.plotLeft + chart.plotWidth, lineY])
+                  .attr({
+                    stroke: '#000',
+                    'stroke-width': 2
+                  })
+                  .add();
+              } else {
+                chart.topLine.attr({
+                  d: ['M', chart.plotLeft, lineY, 'L', chart.plotLeft + chart.plotWidth, lineY]
+                });
+              }
+            }
+          }
         },
-        plugins: {
-          tooltip: {
-            enabled: true,
-          },
-          legend: {
-            display: this.showLegend,
-          },
-          zoom: {
-            pan: {
-              enabled: true,
-              mode: 'xy',
+        title: { text: '' },
+        credits: { enabled: false },
+        xAxis: {
+          type: 'datetime',
+          crosshair: true,
+          labels: {
+            style: {
+              color: '#555',
+              fontSize: '12px'
+            }
+          }
+        },
+        yAxis: [
+          {
+            top: '0%',
+            height: '65%',
+            lineWidth: 1,
+            title: { text: null },
+            labels: {
+              formatter: function() {
+                return this.value.toLocaleString();
+              }
             },
-            zoom: {
-              wheel: { enabled: true },
-              pinch: { enabled: true },
-              mode: 'xy',
+            min: 60000,
+            showFirstLabel: false
+          },
+          {
+            top: '65%',
+            height: '35%',
+            offset: 0,
+            lineWidth: 1,
+            title: { text: null },
+            labels: {
+              formatter: function() {
+                return this.value.toLocaleString();
+              }
             },
+            plotBands: [{
+              from: 0,
+              to: 30,
+              color: '#f6f7f8'
+            }]
+          }
+        ],
+        tooltip: {
+          shared: true,
+          backgroundColor: 'rgba(0,0,0,0.7)',
+          borderRadius: 4,
+          borderWidth: 0,
+          style: {
+            color: '#fff'
           },
+          formatter: function() {
+            let s = `<b>${Highcharts.dateFormat('%A, %b %e, %Y', this.x)}</b><br/>`;
+            this.points.forEach(point => {
+              s += `<span style="color:${point.color}">\u25CF</span> ${point.series.name}: ${point.y.toLocaleString()}<br/>`;
+            });
+            return s;
+          }
         },
-        scales: {
-          x: {
-            type: 'time',
-            time: { unit: 'day' },
-            title: { display: true, text: 'Time' },
-          },
-          y: {
-            beginAtZero: false,
-            ticks: {
-              callback: (value) => value.toLocaleString(),
-            },
-          },
+        legend: {
+          enabled: this.showLegend,
+          itemStyle: {
+            color: '#555',
+            fontSize: '12px'
+          }
         },
-      };
-    },
-    barChartData() {
-      // Data for the bar chart (only the last metric)
-      return this.barDataset
-        ? { datasets: [this.barDataset] }
-        : { datasets: [] };
-    },
-    barChartOptions() {
-      // Options for the bar chart
-      return {
-        responsive: true,
-        maintainAspectRatio: false,
-        interaction: {
-          mode: 'index',
-          intersect: false,
+        plotOptions: {
+          series: {
+            states: {
+              inactive: {
+                enabled: false
+              }
+            }
+          }
         },
-        plugins: {
-          tooltip: {
-            enabled: true,
-          },
-          legend: {
-            display: this.showLegend,
-          },
-        },
-        scales: {
-          x: {
-            type: 'time',
-            time: { unit: 'day' },
-            title: { display: true, text: 'Time' },
-          },
-          y: {
-            beginAtZero: true,
-            ticks: {
-              callback: (value) => value.toLocaleString(),
-            },
-          },
-        },
+        series
       };
     }
   },
   methods: {
     async fetchMetricsData() {
       this.isLoading = true;
-      const lineDatasets = [];
-      let barDataset = null;
-
+      const datasets = [];
       this.removeUnselectedMetrics();
 
       for (let i = 0; i < this.metrics.length; i++) {
         const metric = this.metrics[i];
+        const isLastMetric = i === this.metrics.length - 1;
         const cacheKey = `${metric.name}_${this.timeRange}_${this.period}`;
 
         if (this.dataCache[cacheKey]) {
-          if (i === this.metrics.length - 1) {
-            // last metric is bar chart
-            barDataset = this.dataCache[cacheKey];
-          } else {
-            lineDatasets.push(this.dataCache[cacheKey]);
-          }
+          datasets.push(this.dataCache[cacheKey]);
         } else {
           try {
             const response = await this.requestor.makeMetricsChartDataRequest(metric.name, this.period, this.timeRange);
             if (response.data.status.status_code === 0) {
-              const isLastMetric = i === this.metrics.length - 1;
               const dataset = this.buildDataset(response.data, metric, isLastMetric);
+              datasets.push(dataset);
               this.dataCache[cacheKey] = dataset;
-              if (isLastMetric) {
-                barDataset = dataset;
-              } else {
-                lineDatasets.push(dataset);
-              }
             }
           } catch (error) {
             console.error(`Error fetching data for metric ${metric.name}:`, error);
@@ -198,9 +230,9 @@ export default {
         }
       }
 
-      this.datasets = lineDatasets;
-      this.barDataset = barDataset;
+      this.datasets = datasets;
       this.isLoading = false;
+      this.updateChart();
     },
 
     buildDataset(data, metric, isLastMetric) {
@@ -210,45 +242,13 @@ export default {
       });
 
       const color = metric.color;
-      const title = metric.title;
-      const isHubsInstalled = (title === 'Hubs Installed');
 
-      if (isLastMetric) {
-        // Create a bar dataset for the last metric
-        return {
-          label: metric.title,
-          backgroundColor: color.replace('1)', '0.5)'),
-          borderColor: color,
-          borderWidth: 1,
-          data: formattedData,
-          type: 'bar'
-        };
-      }
-
-      // Create line datasets for all other metrics
+      console.log(metric.name)
       return {
+        id: metric.name,
         label: metric.title,
         borderColor: color,
-        pointBackgroundColor: color,
-        pointHoverBackgroundColor: color,
-        borderWidth: 3,
-        borderDash: isHubsInstalled ? [5, 5] : [],
-        pointRadius: 0,
-        pointHoverRadius: 7,
-        hitRadius: 10,
-        tension: 0.4,
-        fill: true,
-        backgroundColor: isHubsInstalled ? 'transparent' : (context) => {
-          const chart = context.chart;
-          const { ctx, chartArea } = chart;
-          if (!chartArea) return;
-
-          const gradient = ctx.createLinearGradient(0, chartArea.top, 0, chartArea.bottom);
-          gradient.addColorStop(0, color.replace('1)', '0.9)'));
-          gradient.addColorStop(1, color.replace('1)', '0)'));
-          return gradient;
-        },
-        data: formattedData,
+        data: formattedData
       };
     },
 
@@ -260,8 +260,17 @@ export default {
           delete this.dataCache[key];
         }
       }
-
       this.currentMetrics = [...this.metrics];
+    },
+
+    updateChart() {
+      if (!this.$refs.chartContainer) return;
+
+      if (!this.chart) {
+        this.chart = Highcharts.chart(this.$refs.chartContainer, this.highchartsOptions);
+      } else {
+        this.chart.update(this.highchartsOptions, true, true);
+      }
     },
 
     async toggleExpand() {
@@ -271,8 +280,17 @@ export default {
       }
     },
 
-    toggleChartType() {
-      this.chartType = this.chartType === 'line' ? 'pie' : 'line';
+    toggleSeries(id) {
+      const series = this.chart.get(id);
+      if (series) {
+        // Toggle visibility
+        const currentlyVisible = series.visible;
+        series.setVisible(!currentlyVisible, false);
+        // Redraw after toggling
+        this.chart.redraw();
+      } else {
+        console.warn(`Series with id "${id}" not found.`);
+      }
     }
   },
   watch: {
@@ -282,14 +300,15 @@ export default {
         this.fetchMetricsData();
       }
     },
-    timeRange: {
-      handler() {
-        this.fetchMetricsData();
-      }
+    timeRange() {
+      this.fetchMetricsData();
     },
-    period: {
-      handler() {
-        this.fetchMetricsData();
+    period() {
+      this.fetchMetricsData();
+    },
+    datasets() {
+      if (this.datasets) {
+        this.updateChart();
       }
     }
   }
@@ -299,18 +318,14 @@ export default {
 <style scoped>
 .chart-container {
   position: relative;
-  height: 300px;
+  height: 400px;
   margin-bottom: 2rem;
-}
-
-.chart-container.bar {
-  height: 200px;
+  background: transparent;
 }
 
 .button-ctn {
   margin-bottom: 1rem;
 }
-
 .button {
   margin-right: 1rem;
   cursor: pointer;
