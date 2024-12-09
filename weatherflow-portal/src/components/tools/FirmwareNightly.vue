@@ -25,8 +25,8 @@
         <p id="msg">Nightly firmware update process targets the local 4am hour.</p>
 
         <div id="devices">
-            <h2 v-if="firmwareItems.length">Hour {{ selectedHour }}</h2>
-            <table v-if="firmwareItems.length">
+            <div v-if="firmwareItems.length" class="list-hdr">Hour {{ selectedHour }}</div>
+            <table v-if="firmwareItems.length" class="table">
             <thead>
                 <tr>
                 <th>Status</th>
@@ -59,6 +59,7 @@
 
 <script>
 import Requestor from "@/helpers/Requestor";
+import "@/assets/css/main.css";
 
 export default {
   name: "FirmwareNightly",
@@ -228,21 +229,6 @@ input:focus + .slider {
 
 
 /* Table Styles */
-table {
-    width: 100%;
-    border-collapse: collapse;
-}
-
-thead th {
-    background-color: #f4f4f4;
-    text-align: left;
-    padding: 8px;
-}
-
-tbody td {
-    padding: 8px;
-    border-bottom: 1px solid #ddd;
-}
 
 .firmware {
     text-align: center;

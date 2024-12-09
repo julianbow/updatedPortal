@@ -166,3 +166,45 @@ html, body {
     height: 400px;
     width: 100%;
   }
+
+.table {
+	width: 100%;
+    max-width: 100%;
+    border-collapse: collapse;
+    font-family: 'Arial', sans-serif;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    margin-bottom: 20px;
+    table-layout: fixed;
+}
+
+.table th {
+    background-color: #AE9AB3;
+    color: white;
+    font-weight: bold;
+    text-align: center;
+    padding: 8px;
+    text-transform: uppercase;
+    font-size: 0.85em;
+    white-space: wrap;
+    overflow: hidden;
+}
+
+.table th, .table td {
+    word-wrap: break-word;
+    word-break: break-word;
+    hyphens: auto;
+}
+
+.table td {
+    padding: 8px;
+    font-size: 0.85em;
+    text-align: center;
+}
+
+.table tr {
+    border-bottom: 1px solid #ccc;
+}
+
+.table tr:hover td {
+    background-color: #eeeeee;
+}

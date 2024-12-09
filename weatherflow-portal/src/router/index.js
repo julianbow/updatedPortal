@@ -12,6 +12,7 @@ import ToolsView from '@/views/ToolsView.vue';
 import { getAuth, onAuthStateChanged } from 'firebase/auth';
 import OnlineOfflineChart from '@/components/home/OnlineOfflineChart.vue';
 import FirmwareNightly from '@/components/tools/FirmwareNightly.vue';
+import FirmwareList from '@/components/tools/FirmwareList.vue';
 
 const auth = getAuth();
 
@@ -162,6 +163,12 @@ const router = createRouter({
       path: "/tools/firmware-nightly",
       name: "firmwareNightly",
       component: FirmwareNightly,
+      meta: { requiresAuth: true },
+    },
+    {
+      path: "/tools/firmware-list",
+      name: "firmwareList",
+      component: FirmwareList,
       meta: { requiresAuth: true },
     },
   ],
