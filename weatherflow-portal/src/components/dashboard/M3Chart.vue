@@ -56,13 +56,6 @@ export default {
 
         if (isLast) {
           seriesType = 'column';
-          // Object.assign(additionalProps, {
-          //   // pointWidth: 20,
-          //   // borderWidth: 0,
-          //   // groupPadding: 0.1,
-          //   // pointPadding: 0.1,
-          //   // pointPlacement: 'on'
-          // });
           ds.borderColor = 'rgba(255, 0, 0, 0.6)';
         } else {
           additionalProps.marker = {
@@ -111,7 +104,7 @@ export default {
               if (!chart.topLine) {
                 chart.topLine = chart.renderer.path(['M', chart.plotLeft, lineY, 'L', chart.plotLeft + chart.plotWidth, lineY])
                   .attr({
-                    stroke: '#000',
+                    stroke: '#D3D3D3',
                     'stroke-width': 2
                   })
                   .add();
@@ -153,6 +146,7 @@ export default {
             top: '65%',
             height: '35%',
             offset: 0,
+            maxPadding: 0.3,
             lineWidth: 1,
             title: { text: null },
             labels: {
