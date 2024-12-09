@@ -1,61 +1,64 @@
 <template>
     <div id="firmware-nightly">
-        <main>
+        <button class="button" @click="goBack">Back</button>
+      <main>
         <div id="button-container">
-            <div id="firmware-switch-container">
+          <div id="firmware-switch-container">
             <label class="label" :class="{ enabled: isFirmwareOn }">
-                Firmware Updates are {{ isFirmwareOn ? "ON" : "OFF" }}
+              Firmware Updates are {{ isFirmwareOn ? "ON" : "OFF" }}
             </label>
             <label class="switch">
-                <input type="checkbox" v-model="isFirmwareOn" @change="toggleFirmwareUpdates($event.target.checked)" />
-                <span class="slider round"></span>
+              <input
+                type="checkbox"
+                v-model="isFirmwareOn"
+                @change="toggleFirmwareUpdates($event.target.checked)"
+              />
+              <span class="slider round"></span>
             </label>
-            </div>
-            <div>
+          </div>
+          <div>
             <label for="hour-selector">Select Hour: </label>
             <select id="hour-selector" v-model="selectedHour" @change="onHourChange">
-                <option value="">Select hour...</option>
-                <option v-for="hour in hours" :key="hour" :value="hour">
+              <option value="">Select hour...</option>
+              <option v-for="hour in hours" :key="hour" :value="hour">
                 {{ hour }}
-                </option>
+              </option>
             </select>
-            </div>
+          </div>
         </div>
 
         <p id="msg">Nightly firmware update process targets the local 4am hour.</p>
 
         <div id="devices">
-            <div v-if="firmwareItems.length" class="list-hdr">Hour {{ selectedHour }}</div>
-            <table v-if="firmwareItems.length" class="table">
+          <div v-if="sortedFirmwareItems.length" class="list-hdr">Hour {{ selectedHour }}</div>
+          <table v-if="sortedFirmwareItems.length" class="table">
             <thead>
-                <tr>
-                <th>Status</th>
-                <th>Serial</th>
-                <th>Firmware</th>
-                <th>Pending</th>
-                <th>Timezone</th>
-                <th>Hardware Revision</th>
-                <th>User</th>
-                </tr>
+              <tr>
+                <th @click="sortTable('online_status')" :class="getSortClass('online_status')">Status</th>
+                <th @click="sortTable('serial_number')" :class="getSortClass('serial_number')">Serial</th>
+                <th @click="sortTable('firmare_revision')" :class="getSortClass('firmare_revision')">Firmware</th>
+                <th @click="sortTable('pending_firmare_revision')" :class="getSortClass('pending_firmare_revision')">Pending</th>
+                <th @click="sortTable('timezone')" :class="getSortClass('timezone')">Timezone</th>
+                <th @click="sortTable('hardware_revision')" :class="getSortClass('hardware_revision')">Hardware Revision</th>
+                <th @click="sortTable('email')" :class="getSortClass('email')">User</th>
+              </tr>
             </thead>
             <tbody>
-                <tr v-for="item in firmwareItems" :key="item.serial_number">
-                <td>
-                    <span :class="'station-status-' + item.online_status"></span>
-                </td>
+              <tr v-for="item in sortedFirmwareItems" :key="item.serial_number">
+                <td><span class="station-status" :class="{ 'online': item.online_status === 1, 'offline': item.online_status !== 1 }"></span></td>
                 <td>{{ item.serial_number }}</td>
                 <td class="firmware">{{ item.firmare_revision }}</td>
                 <td class="firmware">{{ item.pending_firmare_revision }}</td>
                 <td>{{ item.timezone }}</td>
                 <td>{{ item.hardware_revision }}</td>
                 <td><a :href="'/users/search/' + item.email">{{ item.email }}</a></td>
-                </tr>
+              </tr>
             </tbody>
-            </table>
+          </table>
         </div>
-        </main>
+      </main>
     </div>
-</template>
+  </template>
 
 <script>
 import Requestor from "@/helpers/Requestor";
@@ -70,7 +73,22 @@ export default {
       selectedHour: localStorage.getItem("selectedHour") || 4,
       hours: Array.from({ length: 24 }, (_, i) => i + 1),
       firmwareItems: [],
+      sortKey: "serial_number", // Default sort column
+      sortDirection: "asc", // Default sort direction
     };
+  },
+  computed: {
+    sortedFirmwareItems() {
+      return this.firmwareItems.slice().sort((a, b) => {
+        let modifier = this.sortDirection === "asc" ? 1 : -1;
+        const valA = a[this.sortKey] ?? "";
+        const valB = b[this.sortKey] ?? "";
+
+        if (valA < valB) return -1 * modifier;
+        if (valA > valB) return 1 * modifier;
+        return 0;
+      });
+    },
   },
   methods: {
     async fetchFirmwareItems() {
@@ -79,45 +97,66 @@ export default {
         const response = await this.requestor.makeTempestInternalGetRequest("tempestinternal/firmware_work_list", urlData);
         const data = response.data;
         if (data.status && data.status.status_code === 0) {
-            this.isFirmwareOn = data.is_firmware_update_system_on || false;
-            this.firmwareItems = data.firmware_update_items || [];
+          this.isFirmwareOn = data.is_firmware_update_system_on || false;
+          this.firmwareItems = data.firmware_update_items || [];
         } else {
-            this.isFirmwareOn = false;
-            this.firmwareItems = [];
+          this.isFirmwareOn = false;
+          this.firmwareItems = [];
         }
       } catch (error) {
         console.error("Error fetching firmware items:", error);
       }
     },
     async toggleFirmwareUpdates(newState) {
-        const toggleState = newState ? "on" : "off";
-        const urlData = {
-            value: toggleState,
-            name: "firmware_auto_update_system_on_off_switch",
-        };
+      const toggleState = newState ? "on" : "off";
+      const urlData = {
+        value: toggleState,
+        name: "firmware_auto_update_system_on_off_switch",
+      };
 
-        try {
-            const response = await this.requestor.makeTempestInternalGetRequest("tempestinternal/system_settings", urlData);
-            const data = response.data;
+      try {
+        const response = await this.requestor.makeTempestInternalGetRequest(
+          "tempestinternal/system_settings",
+          urlData
+        );
+        const data = response.data;
 
-            if (data.status && data.status.status_code === 0) {
-                this.isFirmwareOn = newState;
-            } else {
-                console.error("Failed to toggle firmware updates:", data.status);
-                alert("Error: Unable to toggle firmware updates.");
-            }
-        } catch (error) {
-            console.error("Error toggling firmware updates:", error);
-            alert("Error: Unable to connect to the server.");
+        if (data.status && data.status.status_code === 0) {
+          this.isFirmwareOn = newState;
+        } else {
+          console.error("Failed to toggle firmware updates:", data.status);
+          alert("Error: Unable to toggle firmware updates.");
         }
+      } catch (error) {
+        console.error("Error toggling firmware updates:", error);
+        alert("Error: Unable to connect to the server.");
+      }
     },
     onHourChange() {
-        localStorage.setItem("selectedHour", this.selectedHour);
-        this.fetchFirmwareItems();
+      localStorage.setItem("selectedHour", this.selectedHour);
+      this.fetchFirmwareItems();
     },
     updateTitle() {
-        this.$emit("update-title", "Firmware Updates - Hub Nightly");
+      this.$emit("update-title", "Firmware Updates - Hub Nightly");
     },
+    sortTable(key) {
+      if (this.sortKey === key) {
+        this.sortDirection = this.sortDirection === "asc" ? "desc" : "asc";
+      } else {
+        this.sortKey = key;
+        this.sortDirection = "asc";
+      }
+    },
+    getSortClass(key) {
+      return {
+        sorted: this.sortKey === key,
+        ascending: this.sortKey === key && this.sortDirection === "asc",
+        descending: this.sortKey === key && this.sortDirection === "desc",
+      };
+    },
+    goBack() {
+        this.$router.push({ name: 'tools' });
+    }
   },
   mounted() {
     this.updateTitle();
@@ -227,18 +266,27 @@ input:focus + .slider {
     box-shadow: 0 0 1px #4caf50;
 }
 
-
-/* Table Styles */
+.table th {
+    cursor: pointer;
+}
 
 .firmware {
     text-align: center;
 }
 
-.station-status-online {
-    color: green;
+.station-status {
+    display: inline-block;
+    height: 15px;
+    width: 15px;
+    border-radius: 50%;
+    margin-right: 8px;
 }
 
-.station-status-offline {
-    color: red;
+.station-status.online {
+    background-color: #4caf50;
+}
+
+.station-status.offline {
+    background-color: #f44336;
 }
 </style>
