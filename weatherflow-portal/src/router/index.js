@@ -11,8 +11,8 @@ import ApiMonitorView from '@/views/ApiMonitorView.vue';
 import ToolsView from '@/views/ToolsView.vue';
 import { getAuth, onAuthStateChanged } from 'firebase/auth';
 import OnlineOfflineChart from '@/components/home/OnlineOfflineChart.vue';
-import FirmwareNightly from '@/components/tools/FirmwareNightly.vue';
-import FirmwareList from '@/components/tools/FirmwareList.vue';
+import FirmwareNightly from '@/components/tools/firmware/FirmwareNightly.vue';
+import FirmwareList from '@/components/tools/firmware/FirmwareList.vue';
 import QCView from '@/components/tools/qc/QCView.vue';
 
 const auth = getAuth();
