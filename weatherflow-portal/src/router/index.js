@@ -13,6 +13,7 @@ import { getAuth, onAuthStateChanged } from 'firebase/auth';
 import OnlineOfflineChart from '@/components/home/OnlineOfflineChart.vue';
 import FirmwareNightly from '@/components/tools/FirmwareNightly.vue';
 import FirmwareList from '@/components/tools/FirmwareList.vue';
+import QCView from '@/views/QCView.vue';
 
 const auth = getAuth();
 
@@ -169,6 +170,12 @@ const router = createRouter({
       path: "/tools/firmware-list",
       name: "firmwareList",
       component: FirmwareList,
+      meta: { requiresAuth: true },
+    },
+    {
+      path: "/tools/qc-dashboard",
+      name: "qcDashboard",
+      component: QCView,
       meta: { requiresAuth: true },
     },
   ],

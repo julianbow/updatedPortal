@@ -58,6 +58,8 @@ export default {
         newTitle = "Home";
       } else if (newTitle.includes("Firmware")) {
         newTitle = "Tools";
+      } else if (newTitle.includes("QC")) {
+        newTitle = "Tools";
       }
       this.setActive(newTitle);
     }

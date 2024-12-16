@@ -17,11 +17,9 @@
     data() {
       return {
         tools: [
-        //   { title: "Calibration Tool", path: "/tools/calibrate" },
           { title: "Firmware Updates - Hub Nightly", path: "/tools/firmware-nightly" },
           { title: "Firmware List (Hub & Tempest)", path: "/tools/firmware-list" },
-          { title: "Tempest Data QC", path: "/tools/tempest-qc" },
-          { title: "CPO QC", path: "/tools/cpo-qc" },
+          { title: "QC Dashboard", path: "/tools/qc-dashboard" },
           // combine CS network management and Prod
           { title: "Customer Service Network Management", path: "/tools/network-management-cs" },
           { title: "Production Network Management", path: "/tools/network-management-prod" },
