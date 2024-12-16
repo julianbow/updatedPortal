@@ -237,7 +237,6 @@ export default {
 
       const color = metric.color;
 
-      console.log(metric.name)
       return {
         id: metric.name,
         label: metric.title,

@@ -20,13 +20,6 @@
         //   { title: "Calibration Tool", path: "/tools/calibrate" },
           { title: "Firmware Updates - Hub Nightly", path: "/tools/firmware-nightly" },
           { title: "Firmware List (Hub & Tempest)", path: "/tools/firmware-list" },
-          // combine rain ais admin and csv
-          { title: "Rain AIS Admin", path: "/tools/rain-ais" },
-          {
-            title: "Rain AIS CSV",
-            path: "https://swd.weatherflow.com/swd/rest/cl_device_qc_set?api_key=2bab16fe-18a5-45f5-a8ec-1087420a347e&format=csv",
-            external: true,
-          },
           { title: "Tempest Data QC", path: "/tools/tempest-qc" },
           { title: "CPO QC", path: "/tools/cpo-qc" },
           // combine CS network management and Prod

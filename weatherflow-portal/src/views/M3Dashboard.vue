@@ -72,6 +72,13 @@
       :showFullscreen="false"
       :requestor="requestor"
     />
+
+    <M3Failures
+      :requestor="requestor"
+      :selectedTimeRange="selectedTimeRange"
+      :selectedPeriod="selectedPeriod"
+    />
+
   </div>
 </template>
 
@@ -79,11 +86,13 @@
 import Requestor from '@/helpers/Requestor';
 import Loader from '@/components/Loader.vue';
 import M3Chart from '../components/dashboard/M3Chart.vue';
+import M3Failures from '@/components/dashboard/M3Failures.vue';
 
 export default {
 components: {
   Loader,
-  M3Chart
+  M3Chart,
+  M3Failures
 },
 data() {
   return {
