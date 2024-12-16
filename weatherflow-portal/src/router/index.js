@@ -13,7 +13,7 @@ import { getAuth, onAuthStateChanged } from 'firebase/auth';
 import OnlineOfflineChart from '@/components/home/OnlineOfflineChart.vue';
 import FirmwareNightly from '@/components/tools/FirmwareNightly.vue';
 import FirmwareList from '@/components/tools/FirmwareList.vue';
-import QCView from '@/views/QCView.vue';
+import QCView from '@/components/tools/qc/QCView.vue';
 
 const auth = getAuth();
 

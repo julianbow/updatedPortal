@@ -22,8 +22,8 @@
   </template>
 
   <script>
-  import TempestDataQC from '@/components/qc/TempestDataQC.vue';
-  import CPOQC from '@/components/qc/CPOQC.vue';
+  import TempestDataQC from './TempestDataQC.vue';
+  import CPOQC from './CPOQC.vue';
 
   export default {
     name: 'App',
