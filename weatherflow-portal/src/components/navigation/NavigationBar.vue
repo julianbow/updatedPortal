@@ -60,6 +60,10 @@ export default {
         newTitle = "Tools";
       } else if (newTitle.includes("QC")) {
         newTitle = "Tools";
+      } else if (newTitle.includes("Network")) {
+        newTitle = "Tools";
+      } else if (newTitle.includes("Cell")) {
+        newTitle = "Tools";
       }
       this.setActive(newTitle);
     }

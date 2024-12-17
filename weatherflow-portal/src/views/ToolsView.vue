@@ -21,8 +21,9 @@
           { title: "Firmware List (Hub & Tempest)", path: "/tools/firmware-list" },
           { title: "QC Dashboard", path: "/tools/qc-dashboard" },
           // combine CS network management and Prod
-          { title: "Customer Service Network Management", path: "/tools/network-management-cs" },
-          { title: "Production Network Management", path: "/tools/network-management-prod" },
+          { title: "Network Management", path: "/tools/network-management" },
+          // { title: "Customer Service Network Management", path: "/tools/network-management-cs" },
+          // { title: "Production Network Management", path: "/tools/network-management-prod" },
           { title: "Network Hubs", path: "/tools/hub-network-list" },
           { title: "Custom Networks", path: "/tools/networks" },
           { title: "VIP Users", path: "/tools/vip" },

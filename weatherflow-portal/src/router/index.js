@@ -14,6 +14,7 @@ import OnlineOfflineChart from '@/components/home/OnlineOfflineChart.vue';
 import FirmwareNightly from '@/components/tools/firmware/FirmwareNightly.vue';
 import FirmwareList from '@/components/tools/firmware/FirmwareList.vue';
 import QCView from '@/components/tools/qc/QCView.vue';
+import NetworkManagementView from '@/components/tools/network-management/NetworkManagementView.vue';
 
 const auth = getAuth();
 
@@ -178,6 +179,12 @@ const router = createRouter({
       component: QCView,
       meta: { requiresAuth: true },
     },
+    {
+      path: "/tools/network-management",
+      name: "networkManagement",
+      component: NetworkManagementView,
+      meta: { requiresAuth: true },
+    }
   ],
 });
 
