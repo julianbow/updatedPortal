@@ -22,7 +22,6 @@
           { title: "QC Dashboard", path: "/tools/qc-dashboard" },
           // combine CS network management and Prod
           { title: "Network Management", path: "/tools/network-management" },
-          { title: "Custom Networks", path: "/tools/networks" },
           { title: "VIP Users", path: "/tools/vip" },
           // comibne cellular hub info and report
           { title: "Cellular Hub Info", path: "/tools/cell-hub-info" },

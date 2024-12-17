@@ -2,7 +2,7 @@
 	<div class="hub-network">
 	  <!-- Network Selector -->
 	  <div id="networkSelector">
-		<label for="network" class="chooseNetwork">Choose a network: </label>
+		<label for="network" class="chooseNetwork" >Choose a network: </label>
 		<select
 		  id="network"
 		  name="network"
@@ -69,7 +69,6 @@
 		],
 		selectedNetwork: 'WeatherBug',
 		tableData: [],
-		displayNetworkName: 'WeatherBug',
 	  };
 	},
 	computed: {
@@ -141,6 +140,7 @@
 
   <style scoped>
   .chooseNetwork {
+	color: #512b59;
 	font-weight: bold;
   }
 

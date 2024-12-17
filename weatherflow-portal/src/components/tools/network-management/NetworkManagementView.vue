@@ -21,13 +21,18 @@
           @click="setTab('hub')">
           Hub Network List
         </button>
+        <button
+          :class="{ active: activeTab === 'custom' }"
+          @click="setTab('custom')">
+          Custom Networks
+        </button>
       </div>
 
       <!-- Tab Content -->
       <div class="tab-content">
         <!-- Customer Service and Production Tabs -->
         <div class="network-container" :class="{ blurred: showModal }" v-if="activeTab === 'prod' || activeTab === 'cs'">
-          <h3>Select Network and Input Hub Serial Number</h3>
+          <h3 class="title">Select Network and Input Hub Serial Number</h3>
           <div id="form-container">
             <div id="networkSelector">
               <label for="network" class="chooseNetwork">Choose a network: </label>
@@ -75,8 +80,12 @@
         </div>
 
         <!-- Hub Network Tab Content -->
-        <div v-if="activeTab === 'hub'">
+        <div v-show="activeTab === 'hub'">
           <HubNetworkList :requestor="request"/>
+        </div>
+
+        <div v-show="activeTab === 'custom'">
+          <CustomNetworks :requestor="request"/>
         </div>
 
         <!-- Modal -->
@@ -98,11 +107,13 @@
   import Requestor from '@/helpers/Requestor.js';
   import dayjs from 'dayjs';
   import HubNetworkList from './HubNetworkList.vue';
+  import CustomNetworks from './CustomNetworks.vue';
 
   export default {
     name: 'NetworkManagement',
     components: {
-      HubNetworkList
+      HubNetworkList,
+      CustomNetworks
     },
     data() {
       return {
@@ -150,7 +161,7 @@
     },
     methods: {
       setTab(tabName) {
-        if (!['cs', 'prod', 'hub'].includes(tabName)) return;
+        if (!['cs', 'prod', 'hub', 'custom'].includes(tabName)) return;
         this.activeTab = tabName;
         this.$router.push({ query: { ...this.$route.query, tab: tabName } });
         this.initializeTab();
@@ -360,7 +371,7 @@
     mounted() {
       this.updateTitle();
       const tabFromUrl = this.$route.query.tab;
-      if (tabFromUrl && ['prod', 'cs', 'hub'].includes(tabFromUrl)) {
+      if (tabFromUrl && ['prod', 'cs', 'hub', 'custom'].includes(tabFromUrl)) {
         this.activeTab = tabFromUrl;
       } else {
         this.$router.replace({ query: { ...this.$route.query, tab: this.activeTab } });
@@ -393,10 +404,11 @@
     cursor: pointer;
     border-bottom: 2px solid transparent;
     font-size: 16px;
+    color: #512b59;
   }
 
   .tabs button.active {
-    border-bottom: 2px solid #333;
+    border-bottom: 2px solid #512b59;
     font-weight: bold;
   }
 
@@ -411,6 +423,10 @@
 
   .blurred {
     filter: blur(2px);
+  }
+
+  .title {
+    color: #512b59;
   }
 
   #form-container {
@@ -433,7 +449,7 @@
 
   #serialNumberForm button {
     padding: 5px 10px;
-    background-color: #333;
+    background-color: #512b59;
     color: white;
     border: none;
     cursor: pointer;
