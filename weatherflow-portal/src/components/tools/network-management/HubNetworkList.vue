@@ -20,10 +20,10 @@
 		</select>
 	  </div>
 
-	  <h3 class="network-name">{{ displayNetworkName }}</h3>
 
 	  <!-- Hub Network List Table -->
 	  <div id="hub-network-list">
+		  <h3 class="list-hdr">{{ displayNetworkName }}</h3>
 		<table class="table">
 		  <thead>
 			<tr>
@@ -142,6 +142,10 @@
   <style scoped>
   .chooseNetwork {
 	font-weight: bold;
+  }
+
+  .list-hdr {
+	margin: 0;
   }
 
   #networkSelector {
