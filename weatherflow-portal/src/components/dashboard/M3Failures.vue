@@ -1,11 +1,14 @@
 <template>
   <div class="failure-section">
-    <div>
-      <label for="sortFilter">Sort by:</label>
-      <select id="sortFilter" v-model="selectedSortOption" @change="sortFailures">
-        <option value="highest">Highest to Lowest</option>
-        <option value="trending">Trending</option>
-      </select>
+    <div class="failure-hdr">
+      <h2>Sensor Failure Rates</h2>
+      <div>
+        <label for="sortFilter">Sort by:</label>
+        <select id="sortFilter" v-model="selectedSortOption" @change="sortFailures">
+          <option value="highest">Highest to Lowest</option>
+          <option value="trending">Trending</option>
+        </select>
+      </div>
     </div>
     <div class="failure-metrics-wrapper" ref="scrollWrapper">
       <div class="failure-metrics">
@@ -127,17 +130,21 @@ export default {
   },
   computed: {
     sortedFailures() {
-      if (this.selectedSortOption === "highest") {
-        return [...this.metrics]
-          .filter((metric) => Array.isArray(metric.data) && metric.data.length > 0)
-          .sort((a, b) => b.value - a.value);
-      } else if (this.selectedSortOption === "trending") {
-        return [...this.metrics]
-          .filter((metric) => Array.isArray(metric.data) && metric.data.length > 0)
-          .sort((a, b) => Math.abs(b.change) - Math.abs(a.change));
-      }
-      return this.metrics;
-    },
+        if (this.selectedSortOption === "highest") {
+          return [...this.metrics]
+            .filter((metric) => Array.isArray(metric.data) && metric.data.length > 0)
+            .sort((a, b) => b.value - a.value);
+        } else if (this.selectedSortOption === "trending") {
+          return [...this.metrics]
+            .filter((metric) => Array.isArray(metric.data) && metric.data.length > 0)
+            .sort((a, b) => {
+              if (b.trendDirection === "up" && a.trendDirection !== "up") return 1;
+              if (a.trendDirection === "up" && b.trendDirection !== "up") return -1;
+              return Math.abs(b.change) - Math.abs(a.change);
+            });
+        }
+        return this.metrics;
+      },
   },
   methods: {
     async fetchFailureMetrics() {
@@ -177,9 +184,6 @@ export default {
         this.loading = false;
       }
     },
-    sortFailures() {
-      // Trigger reactivity manually if necessary
-    },
     formatNumber(value) {
       return typeof value === "number" ? new Intl.NumberFormat().format(value) : value;
     },
@@ -211,6 +215,11 @@ export default {
 
   .failure-section {
     margin: 20px;
+  }
+
+  .failure-hdr {
+    display: flex;
+    justify-content: space-between;
   }
 
   .failure-metrics-wrapper {
