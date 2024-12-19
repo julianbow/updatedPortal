@@ -59,7 +59,7 @@
                 linearGradient: { x1: 0, y1: 0, x2: 0, y2: 1 },
                 stops: [
                   [0, "rgba(128, 128, 128, 0.5)"], // Light grey at the top
-                  [1, "rgba(128, 128, 128, 0)"],   // Transparent at the bottom
+                  // [1, "rgba(128, 128, 128, 0)"],   // Transparent at the bottom
                 ],
               },
               lineColor: "rgba(128, 128, 128, 1)", // Grey line color

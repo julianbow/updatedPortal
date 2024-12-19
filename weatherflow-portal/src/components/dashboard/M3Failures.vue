@@ -1,35 +1,17 @@
 <template>
-    <div class="failure-section">
-      <!-- Highest Failure Rates Section -->
-      <h2>Highest Failure Rates</h2>
+  <div class="failure-section">
+    <div>
+      <label for="sortFilter">Sort by:</label>
+      <select id="sortFilter" v-model="selectedSortOption" @change="sortFailures">
+        <option value="highest">Highest to Lowest</option>
+        <option value="trending">Trending</option>
+      </select>
+    </div>
+    <div class="failure-metrics-wrapper" ref="scrollWrapper">
       <div class="failure-metrics">
         <div
           class="failure-card"
-          v-for="metric in topFailures"
-          :key="metric.id"
-        >
-          <div class="metric-header">
-            <span class="metric-title">{{ metric.title }}</span>
-            <div
-              class="metric-change"
-              :class="{ positive: metric.trendDirection === 'down', negative: metric.trendDirection === 'up' }"
-            >
-              <span v-if="metric.trendDirection === 'up'">▲ {{ Math.abs(metric.change).toFixed(1) }}%</span>
-              <span v-else-if="metric.trendDirection === 'down'">▼ {{ Math.abs(metric.change).toFixed(1) }}%</span>
-              <span v-else>0%</span>
-            </div>
-          </div>
-          <div class="metric-value">{{ formatNumber(metric.value) }}</div>
-          <MiniGraph :data="metric.data" :color="metric.color" />
-        </div>
-      </div>
-
-      <!-- Trending Failure Rates Section -->
-      <h2>Trending Failure Rates</h2>
-      <div class="failure-metrics">
-        <div
-          class="failure-card"
-          v-for="metric in trendingFailures"
+          v-for="metric in sortedFailures"
           :key="metric.id"
         >
           <div class="metric-header">
@@ -48,237 +30,266 @@
         </div>
       </div>
     </div>
-  </template>
+  </div>
+</template>
 
-  <script>
-  import MiniGraph from "@/components/dashboard/MiniGraph.vue";
+<script>
+import MiniGraph from "@/components/dashboard/MiniGraph.vue";
 
-  export default {
-    props: {
-      requestor: {
-        type: Object,
-        required: true,
-      },
-      selectedTimeRange: {
-        type: String,
-        required: true,
-      },
-      selectedPeriod: {
-        type: String,
-        required: true,
-      },
+export default {
+  props: {
+    requestor: {
+      type: Object,
+      required: true,
     },
-    components: {
-      MiniGraph,
+    selectedTimeRange: {
+      type: String,
+      required: true,
     },
-    data() {
-      return {
-        loading: true,
-        metrics: [
-          {
-            id: 1,
-            metric_name: "mmm.sensor_fail_humidity_count.swd-ps02",
-            title: "Humidity",
-            color: "rgba(142, 142, 142, 1)",
-            value: 0,
-            change: 0,
-            clicked: false,
-          },
-          {
-            id: 2,
-            metric_name: "mmm.sensor_fail_lightning_count.swd-ps02",
-            title: "Lightning",
-            color: "rgba(90, 197, 68, 1)",
-            value: 0,
-            change: 0,
-            clicked: false,
-          },
-          {
-            id: 3,
-            metric_name: "mmm.sensor_fail_pressure_count.swd-ps02",
-            title: "Pressure",
-            color: "rgba(89, 163, 248, 1)",
-            value: 0,
-            change: 0,
-            clicked: false,
-          },
-          {
-            id: 4,
-            metric_name: "mmm.sensor_fail_rain_count.swd-ps02",
-            title: "Rain",
-            color: "rgba(255, 165, 0, 1)",
-            value: 0,
-            change: 0,
-            clicked: false,
-          },
-          {
-            id: 5,
-            metric_name: "mmm.sensor_fail_sunlight_count.swd-ps02",
-            title: "Sunlight",
-            color: "rgba(255, 215, 0, 1)",
-            value: 0,
-            change: 0,
-            clicked: false,
-          },
-          {
-            id: 6,
-            metric_name: "mmm.sensor_fail_temp_count.swd-ps02",
-            title: "Temperature",
-            color: "rgba(255, 99, 71, 1)",
-            value: 0,
-            change: 0,
-            clicked: false,
-          },
-          {
-            id: 7,
-            metric_name: "mmm.sensor_fail_wind_count.swd-ps02",
-            title: "Wind",
-            color: "rgba(0, 0, 255, 1)",
-            value: 0,
-            change: 0,
-            clicked: false,
-          },
-        ],
-      };
+    selectedPeriod: {
+      type: String,
+      required: true,
     },
-    computed: {
-      topFailures() {
+  },
+  components: {
+    MiniGraph,
+  },
+  data() {
+    return {
+      loading: true,
+      selectedSortOption: "highest",
+      metrics: [
+        {
+          id: 1,
+          metric_name: "mmm.sensor_fail_humidity_count.swd-ps02",
+          title: "Humidity",
+          color: "rgba(142, 142, 142, 1)",
+          value: 0,
+          change: 0,
+          clicked: false,
+        },
+        {
+          id: 2,
+          metric_name: "mmm.sensor_fail_lightning_count.swd-ps02",
+          title: "Lightning",
+          color: "rgba(90, 197, 68, 1)",
+          value: 0,
+          change: 0,
+          clicked: false,
+        },
+        {
+          id: 3,
+          metric_name: "mmm.sensor_fail_pressure_count.swd-ps02",
+          title: "Pressure",
+          color: "rgba(89, 163, 248, 1)",
+          value: 0,
+          change: 0,
+          clicked: false,
+        },
+        {
+          id: 4,
+          metric_name: "mmm.sensor_fail_rain_count.swd-ps02",
+          title: "Rain",
+          color: "rgba(255, 165, 0, 1)",
+          value: 0,
+          change: 0,
+          clicked: false,
+        },
+        {
+          id: 5,
+          metric_name: "mmm.sensor_fail_sunlight_count.swd-ps02",
+          title: "Sunlight",
+          color: "rgba(255, 215, 0, 1)",
+          value: 0,
+          change: 0,
+          clicked: false,
+        },
+        {
+          id: 6,
+          metric_name: "mmm.sensor_fail_temp_count.swd-ps02",
+          title: "Temperature",
+          color: "rgba(255, 99, 71, 1)",
+          value: 0,
+          change: 0,
+          clicked: false,
+        },
+        {
+          id: 7,
+          metric_name: "mmm.sensor_fail_wind_count.swd-ps02",
+          title: "Wind",
+          color: "rgba(0, 0, 255, 1)",
+          value: 0,
+          change: 0,
+          clicked: false,
+        },
+      ],
+    };
+  },
+  computed: {
+    sortedFailures() {
+      if (this.selectedSortOption === "highest") {
         return [...this.metrics]
           .filter((metric) => Array.isArray(metric.data) && metric.data.length > 0)
-          .sort((a, b) => b.value - a.value)
-          .slice(0, 3);
-      },
-      trendingFailures() {
+          .sort((a, b) => b.value - a.value);
+      } else if (this.selectedSortOption === "trending") {
         return [...this.metrics]
-          .filter((metric) =>
-            Array.isArray(metric.data) &&
-            metric.data.length > 0
-          )
-          .filter(metric => metric.trendDirection === "up")
-          .sort((a, b) => Math.abs(b.change) - Math.abs(a.change))
-          .slice(0, 3);
-      },
+          .filter((metric) => Array.isArray(metric.data) && metric.data.length > 0)
+          .sort((a, b) => Math.abs(b.change) - Math.abs(a.change));
+      }
+      return this.metrics;
     },
-    methods: {
-      async fetchFailureMetrics() {
-        this.loading = true;
-        try {
-          for (let metric of this.metrics) {
-            const response = await this.requestor.makeMetricsChartDataRequest(
-              metric.metric_name,
-              this.selectedPeriod,
-              this.selectedTimeRange
-            );
-            const values = response.data.values;
+  },
+  methods: {
+    async fetchFailureMetrics() {
+      this.loading = true;
+      try {
+        for (let metric of this.metrics) {
+          const response = await this.requestor.makeMetricsChartDataRequest(
+            metric.metric_name,
+            this.selectedPeriod,
+            this.selectedTimeRange
+          );
+          const values = response.data.values;
 
-            if (Array.isArray(values) && values.length > 0) {
-              metric.data = values.map((val) => parseFloat(val.split(",")[1]));
-              const lastValue = metric.data[metric.data.length - 1];
-              const firstValue = metric.data[0];
+          if (Array.isArray(values) && values.length > 0) {
+            metric.data = values.map((val) => parseFloat(val.split(",")[1]));
+            const lastValue = metric.data[metric.data.length - 1];
+            const firstValue = metric.data[0];
 
-              metric.value = lastValue;
+            metric.value = lastValue;
 
-              metric.change = firstValue !== 0
-                ? ((lastValue - firstValue) / firstValue) * 100
-                : 0;
+            metric.change = firstValue !== 0
+              ? ((lastValue - firstValue) / firstValue) * 100
+              : 0;
 
-              metric.trendDirection = lastValue > firstValue ? "up" : "down";
-            } else {
-              // Reset if no data is found
-              metric.data = [];
-              metric.value = 0;
-              metric.change = 0;
-              metric.trendDirection = null;
-            }
+            metric.trendDirection = lastValue > firstValue ? "up" : "down";
+          } else {
+            // Reset if no data is found
+            metric.data = [];
+            metric.value = 0;
+            metric.change = 0;
+            metric.trendDirection = null;
           }
-        } catch (error) {
-          console.error("Error fetching failure metrics:", error);
-        } finally {
-          this.loading = false;
         }
-      },
-      formatNumber(value) {
-        return typeof value === "number" ? new Intl.NumberFormat().format(value) : value;
-      },
+      } catch (error) {
+        console.error("Error fetching failure metrics:", error);
+      } finally {
+        this.loading = false;
+      }
     },
-    mounted() {
-      this.fetchFailureMetrics();
+    sortFailures() {
+      // Trigger reactivity manually if necessary
     },
-    watch: {
-      selectedPeriod: {
-        immediate: false,
-        handler() {
-          this.fetchFailureMetrics();
-        }
-      },
-      selectedTimeRange: {
-        immediate: false,
-        handler() {
-          this.fetchFailureMetrics();
-        }
+    formatNumber(value) {
+      return typeof value === "number" ? new Intl.NumberFormat().format(value) : value;
+    },
+  },
+  mounted() {
+    this.fetchFailureMetrics();
+  },
+  watch: {
+    selectedPeriod: {
+      immediate: false,
+      handler() {
+        this.fetchFailureMetrics();
+      }
+    },
+    selectedTimeRange: {
+      immediate: false,
+      handler() {
+        this.fetchFailureMetrics();
       }
     }
-  };
-  </script>
+  }
+};
+</script>
 
-  <style scoped>
-    h2 {
-      font-size: 20px;
-    }
+<style scoped>
+  h2 {
+    font-size: 20px;
+  }
 
-    .failure-section {
-      margin: 20px;
-    }
+  .failure-section {
+    margin: 20px;
+  }
 
-    .failure-metrics {
-      display: flex;
-      flex-wrap: wrap;
-      justify-content: space-evenly;
-      gap: 10px;
-    }
+  .failure-metrics-wrapper {
+    overflow-x: hidden;
+    padding: 5px 5px;
+    flex-grow: 1;
+    position: relative;
+  }
 
-    .failure-card {
-      background: white;
-      padding: 15px;
-      border-radius: 8px;
-      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-      text-align: left;
-      width: calc(25% - 10px);
-      position: relative;
-    }
+  .failure-metrics-wrapper:hover {
+    overflow-x: auto;
+  }
 
-    .metric-header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      margin-bottom: 10px;
-    }
+  .failure-metrics-wrapper::-webkit-scrollbar {
+    height: 8px;
+    background: transparent;
+  }
 
-    .metric-value {
-      font-size: 18px;
-      font-weight: bold;
-      color: #333;
-      margin-bottom: 10px;
-    }
+  .failure-metrics-wrapper:hover::-webkit-scrollbar {
+    background: rgba(0, 0, 0, 0.1);
+  }
 
-    .metric-change {
-      font-size: 14px;
-      font-weight: bold;
-      margin-top: 10px;
-      display: inline-block;
-    }
+  .failure-metrics-wrapper::-webkit-scrollbar-thumb {
+    background: rgba(0, 0, 0, 0.5);
+    border-radius: 4px;
+  }
 
-    .metric-change.positive {
-      color: green;
-    }
+  .failure-metrics-wrapper:hover::-webkit-scrollbar-thumb {
+    background: rgba(0, 0, 0, 0.7);
+  }
 
-    .metric-change.negative {
-      color: red;
-    }
+  .failure-metrics {
+    display: flex;
+    flex-wrap: nowrap;
+    margin-top: 10px;
+    gap: 15px;
+  }
 
-    .mini-graph {
-      width: 100%;
-      height: 50px;
-      margin: 10px 0;
-    }
-  </style>
+  .failure-card {
+    background: white;
+    padding: 15px;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    text-align: left;
+    width: 250px;
+    flex-shrink: 0;
+  }
+
+  .metric-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 10px;
+  }
+
+  .metric-value {
+    font-size: 18px;
+    font-weight: bold;
+    color: #333;
+    margin-bottom: 10px;
+  }
+
+  .metric-change {
+    font-size: 14px;
+    font-weight: bold;
+    display: inline-block;
+  }
+
+  .metric-change.positive {
+    color: green;
+  }
+
+  .metric-change.negative {
+    color: red;
+  }
+
+  .mini-graph {
+    width: 100%;
+    height: 50px;
+    margin: 5px 0;
+  }
+</style>
