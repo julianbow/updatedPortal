@@ -118,33 +118,8 @@
     data() {
       return {
         activeTab: 'cs', // default tab
-        prodNetworks: [
-          { value: "WeatherBug", name: "WeatherBug", dataSerial: "N-OGFhY2U0N" },
-          { value: "TempestOne", name: "TempestOne", dataSerial: "N-MmM0NjFmO" },
-          { value: "Clemson University", name: "Clemson University", dataSerial: "N-NTVlODg0Y" },
-          { value: "Amazon", name: "Amazon", dataSerial: "N-YzdlMmU3N" },
-          { value: "Amazon UK", name: "Amazon UK", dataSerial: "N-MzIyOTQ3M" },
-          { value: "Amazon CA", name: "Amazon CA", dataSerial: "N-YjBhYzdhN" },
-          { value: "WJAX", name: "WJAX", dataSerial: "N-ZWY0MmJlM" },
-          { value: "Schools", name: "Schools", dataSerial: "N-ZGM1MjBhO" },
-          { value: "TempestOne-Prologis", name: "TempestOne-Prologis", dataSerial: "N-ZDlmOGRiO" },
-          { value: "MyRadar Purchased", name: "MyRadar Purchased", dataSerial: "N-YWJlMWU2Z" },
-          { value: "Purple Air", name: "Purple Air", dataSerial: "N-OTgyOTU4O" },
-          { value: "Grey TV", name: "Grey TV", dataSerial: "N-ZTk1MTcwM" },
-          { value: "KHOU TV", name: "KHOU TV", dataSerial: "N-ZmIzMThkZ" },
-          { value: "KKTV", name: "KKTV", dataSerial: "N-NWViMWU4Z" },
-          { value: "KLBK TV", name: "KLBK TV", dataSerial: "N-ZjQwYTAxY" },
-          { value: "Life360", name: "Life360", dataSerial: "N-YmY4Njk3M" },
-        ],
-        csNetworks: [
-          { value: "WeatherBug", name: "WeatherBug", dataSerial: "N-OGFhY2U0N" },
-          { value: "TempestOne", name: "TempestOne", dataSerial: "N-MmM0NjFmO" },
-          { value: "Clemson University", name: "Clemson University", dataSerial: "N-NTVlODg0Y" },
-          { value: "Amazon", name: "Amazon", dataSerial: "N-YzdlMmU3N" },
-          { value: "Schools", name: "Schools", dataSerial: "N-ZGM1MjBhO" },
-          { value: "MyRadar Opt-Ins", name: "MyRadar Opt-Ins", dataSerial: "N-ZTZlOTZkO" },
-          { value: "Purple Air", name: "Purple Air", dataSerial: "N-OTgyOTU4O" },
-        ],
+        prodNetworks: [],
+        csNetworks: [],
         selectedNetwork: 'WeatherBug', // default network
         hubSerialNumber: '',
         tableData: [], // array of { network, timestamp, serial_number }
@@ -165,6 +140,33 @@
         this.activeTab = tabName;
         this.$router.push({ query: { ...this.$route.query, tab: tabName } });
         this.initializeTab();
+      },
+      async fetchNetworks() {
+        const urlDataProd = {
+          department: 'production_center'
+        };
+        const urlDataCS = {
+          department: 'customer_service'
+        };
+        try {
+          const prodResponse = await this.request.makeTempestInternalGetRequest("tempestinternal/networks", urlDataProd);
+          const csResponse = await this.request.makeTempestInternalGetRequest("tempestinternal/networks", urlDataCS);
+
+          if (prodResponse.data.status.status_code === 0 || csResponse.data.status.status_code === 0) {
+            this.prodNetworks = prodResponse.data.networks.map(network => ({
+              value: network.network_name,
+              name: network.network_name,
+              dataSerial: network.network_id || ''
+            }));
+            this.csNetworks = csResponse.data.networks.map(network => ({
+              value: network.network_name,
+              name: network.network_name,
+              dataSerial: network.network_id || ''
+            }));
+          }
+        } catch (error) {
+          console.error("Error fetching networks:", error);
+        }
       },
       initializeTab() {
         if (this.activeTab === 'prod') {
@@ -245,7 +247,6 @@
             type: this.type
           });
         }
-
         try {
           const data = await this.request.makePostRequest("network/hubs/v2", urlData);
           if (data.status.status_code === 0) {
@@ -291,35 +292,18 @@
         if (data.hubs.length > 0) {
           const network = this.findNetwork(data.network_id);
           const newEntries = data.hubs.map(hub => ({
-            network: network, // Ensure network name is included
+            network: network,
             timestamp: timestamp,
             serial_number: hub.serial_number
           }));
+
           this.tableData = [...newEntries, ...this.tableData];
         }
       },
       findNetwork(value) {
-        const networks = {
-          "N-OGFhY2U0N": "WeatherBug",
-          "N-MmM0NjFmO": "TempestOne",
-          "N-YzdlMmU3N": "Amazon",
-          "N-YjBhYzdhN": "Amazon CA",
-          "N-NTVlODg0Y": "Clemson University",
-          "N-ZWY0MmJlM": "WJAX",
-          "N-MzIyOTQ3M": "Amazon UK",
-          "N-ZGM1MjBhO": "Schools",
-          "N-ZDlmOGRiO": "TempestOne-Prologis",
-          "N-YWJlMWU2Z": "MyRadar Purchased",
-          "N-ZTZlOTZkO": "MyRadar Opt-Ins",
-          "N-OTgyOTU4O": "Purple Air",
-          "N-ZTk1MTcwM": "Grey TV",
-          "N-ZmIzMThkZ": "KHOU TV",
-          "N-NWViMWU4Z": "KKTV",
-          "N-ZjQwYTAxY": "KLBK TV",
-          "N-YmY4Njk3M": "Life360",
-        };
-
-        return networks[value] || 'Unknown';
+        const allNetworks = [...this.prodNetworks, ...this.csNetworks];
+        const network = allNetworks.find(network => network.dataSerial === value);
+        return network ? network.name : 'Unknown';
       },
       dismissModal() {
         this.showModal = false;
@@ -376,6 +360,7 @@
       } else {
         this.$router.replace({ query: { ...this.$route.query, tab: this.activeTab } });
       }
+      this.fetchNetworks(); // Fetch networks dynamically
       this.initializeTab();
     }
   }
