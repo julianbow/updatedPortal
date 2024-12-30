@@ -99,10 +99,11 @@ export default {
     cursor: pointer;
     border-bottom: 2px solid transparent;
     font-size: 16px;
+    color: #512b59;
 }
 
 .tabs button.active {
-    border-bottom: 2px solid #333;
+    border-bottom: 2px solid #512b59;
     font-weight: bold;
 }
 

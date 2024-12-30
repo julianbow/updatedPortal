@@ -138,7 +138,11 @@
       setTab(tabName) {
         if (!['cs', 'prod', 'hub', 'custom'].includes(tabName)) return;
         this.activeTab = tabName;
-        this.$router.push({ query: { ...this.$route.query, tab: tabName } });
+
+        // Replace the last segment of the path with the new tab name
+        const newPath = this.$route.path.split('/').slice(0, -1).join('/') + `/${tabName}`;
+        this.$router.replace(newPath); // Use replace to avoid adding to browser history
+
         this.initializeTab();
       },
       async fetchNetworks() {
@@ -151,7 +155,7 @@
         try {
           const prodResponse = await this.request.makeTempestInternalGetRequest("tempestinternal/networks", urlDataProd);
           const csResponse = await this.request.makeTempestInternalGetRequest("tempestinternal/networks", urlDataCS);
-
+console.log(prodResponse, csResponse);
           if (prodResponse.data.status.status_code === 0 || csResponse.data.status.status_code === 0) {
             this.prodNetworks = prodResponse.data.networks.map(network => ({
               value: network.network_name,
@@ -319,11 +323,12 @@
       },
     },
     watch: {
-      '$route.query.tab': {
+      '$route.path': {
         immediate: true,
-        handler(newValue) {
-          if (newValue && (newValue === 'prod' || newValue === 'cs')) {
-            this.activeTab = newValue;
+        handler(newPath) {
+          const tab = newPath.split('/').pop(); // Extract the last segment of the path
+          if (['prod', 'cs', 'hub', 'custom'].includes(tab)) {
+            this.activeTab = tab;
             this.initializeTab();
           }
         }
@@ -354,15 +359,18 @@
     },
     mounted() {
       this.updateTitle();
-      const tabFromUrl = this.$route.query.tab;
+      const tabFromUrl = this.$route.params.tab; // Get tab from path
       if (tabFromUrl && ['prod', 'cs', 'hub', 'custom'].includes(tabFromUrl)) {
         this.activeTab = tabFromUrl;
       } else {
-        this.$router.replace({ query: { ...this.$route.query, tab: this.activeTab } });
+        this.activeTab = 'cs'; // Default tab
+        this.$router.replace(`${this.$route.path}/cs`); // Redirect to default tab
       }
-      this.fetchNetworks(); // Fetch networks dynamically
+      if (this.activeTab === 'cs' || this.activeTab === 'prod') {
+        this.fetchNetworks(); // Fetch networks for initial tab
+      }
       this.initializeTab();
-    }
+    },
   }
   </script>
 

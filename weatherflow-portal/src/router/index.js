@@ -184,7 +184,14 @@ const router = createRouter({
       name: "networkManagement",
       component: NetworkManagementView,
       meta: { requiresAuth: true },
-    }
+    },
+    {
+      path: '/tools/network-management/:tab?',
+      name: 'networkManagement',
+      component: NetworkManagementView,
+      meta: { requiresAuth: true },
+      props: true, // Pass the tab parameter as a prop
+    },
   ],
 });
 
