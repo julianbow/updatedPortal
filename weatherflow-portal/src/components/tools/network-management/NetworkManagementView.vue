@@ -155,7 +155,7 @@
         try {
           const prodResponse = await this.request.makeTempestInternalGetRequest("tempestinternal/networks", urlDataProd);
           const csResponse = await this.request.makeTempestInternalGetRequest("tempestinternal/networks", urlDataCS);
-console.log(prodResponse, csResponse);
+
           if (prodResponse.data.status.status_code === 0 || csResponse.data.status.status_code === 0) {
             this.prodNetworks = prodResponse.data.networks.map(network => ({
               value: network.network_name,
@@ -319,8 +319,12 @@ console.log(prodResponse, csResponse);
         this.$emit("update-title", "Network Management");
       },
       goBack() {
-        this.$router.push({ name: 'tools' });
-      },
+        if (window.history.length > 1) {
+          this.$router.go(-1); // Go back to the last route in history
+        } else {
+          this.$router.push('/tools'); // Fallback in case there is no history
+        }
+  },
     },
     watch: {
       '$route.path': {
