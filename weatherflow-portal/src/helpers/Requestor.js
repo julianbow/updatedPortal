@@ -29,6 +29,15 @@ class Requestor {
     });
   }
 
+  makePutRequestDevCSV(endPoint, formData) {
+    const url = `${this.settings.baseUrl3}${endPoint}?api_key=${this.settings.apiKey2}`;
+    return axios.put(url, formData, {
+      headers: {
+        'Content-Type': 'multipart/form-data',
+      },
+    });
+  }
+
   makePutRequest(endPoint, urlData) {
     const url = `${this.settings.baseUrl}${endPoint}?api_key=${this.settings.apiKey}&${new URLSearchParams(urlData).toString()}`;
     return axios.put(url);

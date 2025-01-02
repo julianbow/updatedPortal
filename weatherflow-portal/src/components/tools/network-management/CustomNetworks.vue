@@ -21,7 +21,7 @@
                 :key="network.network_id"
                 @click="selectNetwork(network)"
               >
-                <td>{{ network.network_name }}</td>
+                <td style="cursor: pointer; text-decoration: underline;">{{ network.network_name }}</td>
                 <td>{{ network.network_id }}</td>
                 <td>{{ network.contract_stations_count }}</td>
                 <td>{{ network.purchased_hubs_count }}</td>
