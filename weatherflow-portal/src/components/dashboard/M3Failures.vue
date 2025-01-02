@@ -29,7 +29,12 @@
             </div>
           </div>
           <div class="metric-value">{{ formatNumber(metric.value) }}</div>
-          <MiniGraph :data="metric.data" :color="metric.color" :maxY="highestFailureCount" />
+          <MiniGraph
+            v-if="!loading"
+            :data="metric.data"
+            :color="metric.color"
+            :maxY="highestFailureCount"
+          />
         </div>
       </div>
     </div>
@@ -51,10 +56,6 @@ export default {
     },
     selectedPeriod: {
       type: String,
-      required: true,
-    },
-    totalFailures: {
-      type: Number,
       required: true,
     },
   },

@@ -14,9 +14,9 @@
         required: true, // Array of data points for the graph
       },
       maxY: {
-      type: Number,
-      required: true, // Maximum value for the Y-axis
-    },
+        type: Number,
+        required: true, // Maximum value for the Y-axis
+      },
     },
     mounted() {
       this.renderChart();
@@ -38,6 +38,7 @@
           },
           yAxis: {
             visible: false, // Hide Y-axis
+            min: 0,
             max: this.maxY,
             endOnTick: false
           },
@@ -61,21 +62,21 @@
                 },
               },
               enableMouseTracking: false, // Disable mouse tracking
-              fillColor: {
+                fillColor: {
                 linearGradient: { x1: 0, y1: 0, x2: 0, y2: 1 },
                 stops: [
-                  [0, "rgba(128, 128, 128, 0.5)"], // Light grey at the top
-                  // [1, "rgba(128, 128, 128, 0)"],   // Transparent at the bottom
+                  [0, "rgba(255, 0, 0, 0.5)"], // Light red at the top
+                  [1, "rgba(255, 0, 0, 0)"],   // Transparent at the bottom
                 ],
-              },
-              lineColor: "rgba(128, 128, 128, 1)", // Grey line color
+                },
+              lineColor: "rgba(255, 0, 0, 1)", // red line color
               lineWidth: 1,
             },
           },
           series: [
             {
               data: this.data,
-              color: "rgba(128, 128, 128, 1)", // Grey line color
+              color: "rgba(255, 0, 0, 1)", // red line color
             },
           ],
         });
