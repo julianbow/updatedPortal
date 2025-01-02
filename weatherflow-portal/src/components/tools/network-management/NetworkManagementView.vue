@@ -137,12 +137,16 @@
     methods: {
       setTab(tabName) {
         if (!['cs', 'prod', 'hub', 'custom'].includes(tabName)) return;
+
+        const basePath = this.$route.path.split('/').slice(0, 3).join('/');
+
+        if (tabName === 'custom') {
+          this.$router.replace(`${basePath}/custom`);
+        } else {
+          this.$router.replace(`${basePath}/${tabName}`);
+        }
+
         this.activeTab = tabName;
-
-        // Replace the last segment of the path with the new tab name
-        const newPath = this.$route.path.split('/').slice(0, -1).join('/') + `/${tabName}`;
-        this.$router.replace(newPath); // Use replace to avoid adding to browser history
-
         this.initializeTab();
       },
       async fetchNetworks() {
