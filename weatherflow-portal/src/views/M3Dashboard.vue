@@ -77,6 +77,7 @@
       :requestor="requestor"
       :selectedTimeRange="selectedTimeRange"
       :selectedPeriod="selectedPeriod"
+      :totalFailures="totalFailures"
     />
 
   </div>
@@ -101,6 +102,7 @@ data() {
     selectedTimeRange: "20160",
     selectedPeriod: "10",
     metrics: [],
+    totalFailures: 0,
     metricsSummary: [
       {
         id: 1,
@@ -157,6 +159,10 @@ methods: {
 
         const response = await this.requestor.makeMetricsChartDataRequest(metricName, 1, 20160);
         const values = response.data.values;
+
+        if (metricName === "mmm.sensor_fail_total_count.swd-ps02") {
+          this.totalFailures = Number(values[values.length - 1].split(',')[1]);
+        }
 
         if (Array.isArray(values) && values.length > 0) {
           const lastItem = values[values.length - 1].split(',');

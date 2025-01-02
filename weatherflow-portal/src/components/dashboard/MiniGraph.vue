@@ -13,6 +13,10 @@
         type: Array,
         required: true, // Array of data points for the graph
       },
+      maxY: {
+      type: Number,
+      required: true, // Maximum value for the Y-axis
+    },
     },
     mounted() {
       this.renderChart();
@@ -34,6 +38,8 @@
           },
           yAxis: {
             visible: false, // Hide Y-axis
+            max: this.maxY,
+            endOnTick: false
           },
           tooltip: {
             enabled: false, // Disable tooltips

@@ -29,7 +29,7 @@
             </div>
           </div>
           <div class="metric-value">{{ formatNumber(metric.value) }}</div>
-          <MiniGraph :data="metric.data" :color="metric.color" />
+          <MiniGraph :data="metric.data" :color="metric.color" :maxY="highestFailureCount" />
         </div>
       </div>
     </div>
@@ -53,6 +53,10 @@ export default {
       type: String,
       required: true,
     },
+    totalFailures: {
+      type: Number,
+      required: true,
+    },
   },
   components: {
     MiniGraph,
@@ -61,6 +65,7 @@ export default {
     return {
       loading: true,
       selectedSortOption: "highest",
+      highestFailureCount: 0,
       metrics: [
         {
           id: 1,
@@ -130,26 +135,27 @@ export default {
   },
   computed: {
     sortedFailures() {
-        if (this.selectedSortOption === "highest") {
-          return [...this.metrics]
-            .filter((metric) => Array.isArray(metric.data) && metric.data.length > 0)
-            .sort((a, b) => b.value - a.value);
-        } else if (this.selectedSortOption === "trending") {
-          return [...this.metrics]
-            .filter((metric) => Array.isArray(metric.data) && metric.data.length > 0)
-            .sort((a, b) => {
-              if (b.trendDirection === "up" && a.trendDirection !== "up") return 1;
-              if (a.trendDirection === "up" && b.trendDirection !== "up") return -1;
-              return Math.abs(b.change) - Math.abs(a.change);
-            });
-        }
-        return this.metrics;
-      },
+      if (this.selectedSortOption === "highest") {
+        return [...this.metrics]
+          .filter((metric) => Array.isArray(metric.data) && metric.data.length > 0)
+          .sort((a, b) => b.value - a.value);
+      } else if (this.selectedSortOption === "trending") {
+        return [...this.metrics]
+          .filter((metric) => Array.isArray(metric.data) && metric.data.length > 0)
+          .sort((a, b) => {
+            if (b.trendDirection === "up" && a.trendDirection !== "up") return 1;
+            if (a.trendDirection === "up" && b.trendDirection !== "up") return -1;
+            return Math.abs(b.change) - Math.abs(a.change);
+          });
+      }
+      return this.metrics;
+    },
   },
   methods: {
     async fetchFailureMetrics() {
       this.loading = true;
       try {
+        let maxFailure = 0;
         for (let metric of this.metrics) {
           const response = await this.requestor.makeMetricsChartDataRequest(
             metric.metric_name,
@@ -164,25 +170,33 @@ export default {
             const firstValue = metric.data[0];
 
             metric.value = lastValue;
-
-            metric.change = firstValue !== 0
-              ? ((lastValue - firstValue) / firstValue) * 100
-              : 0;
-
+            metric.change =
+              firstValue !== 0 ? ((lastValue - firstValue) / firstValue) * 100 : 0;
             metric.trendDirection = lastValue > firstValue ? "up" : "down";
+
+            // Track the maximum failure value
+            if (lastValue > maxFailure) {
+              maxFailure = lastValue;
+            }
           } else {
-            // Reset if no data is found
+            // Reset if no data
             metric.data = [];
             metric.value = 0;
             metric.change = 0;
             metric.trendDirection = null;
           }
         }
+
+        // Update highestFailureCount
+        this.highestFailureCount = Math.ceil(maxFailure / 1000) * 1000;
       } catch (error) {
         console.error("Error fetching failure metrics:", error);
       } finally {
         this.loading = false;
       }
+    },
+    sortFailures() {
+      // Trigger reactivity manually if necessary
     },
     formatNumber(value) {
       return typeof value === "number" ? new Intl.NumberFormat().format(value) : value;
@@ -193,13 +207,13 @@ export default {
   },
   watch: {
     selectedPeriod: {
-      immediate: false,
+      immediate: true,
       handler() {
         this.fetchFailureMetrics();
       }
     },
     selectedTimeRange: {
-      immediate: false,
+      immediate: true,
       handler() {
         this.fetchFailureMetrics();
       }
