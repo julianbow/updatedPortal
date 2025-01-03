@@ -5,12 +5,12 @@
             <span :class="{'type-tempest': !isTempestOne, 'type-tempestOne': isTempestOne}"></span>
           <div class="station-created">
             <p class="label">Station Created</p>
-            <span class="value">{{ formatTimestamp(stationDetails.created) }}</span>
+            <span class="value">{{ formatTimestamp(stationDetails.created_epoch) }}</span>
           </div>
           <div class="station-last-modified">
             <p class="label">Modified</p>
-            <span class="value" :data-timestamp="stationDetails.last_modified" :title="formatTimestamp(stationDetails.last_modified)">
-              {{ formatTimestamp(stationDetails.last_modified) }}
+            <span class="value" :data-timestamp="stationDetails.last_modified" :title="formatTimestamp(stationDetails.last_modified_epoch)">
+              {{ formatTimestamp(stationDetails.last_modified_epoch) }}
             </span>
           </div>
         </div>
@@ -133,7 +133,6 @@ export default {
   },
   props: {
     stationDetails: Object,
-    formatTimestamp: Function,
     requestor: Object,
     index: Number,
   },
@@ -258,6 +257,7 @@ export default {
       }
     },
     initializeDiagnostics() {
+      console.log(this.stationDetails)
       this.diagnostics = new Diagnostics({
         locationId: this.stationDetails.location_id,
         ready: () => {
@@ -339,6 +339,9 @@ export default {
         this.hardwareType = 'T1-HUBC-01b (5)';
         return this.hardwareType;
       }
+    },
+    formatTimestamp(timestamp) {
+      return Day.formatEpochStationDate(timestamp);
     },
     getDeviceTypeFromSerial(serial) {
       return DataDisplay.getDeviceTypeFromSerial(serial);

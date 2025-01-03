@@ -64,6 +64,10 @@ export default {
           this.searchResults = response.data;
           this.searchError = this.searchResults.length === 0;
           this.selectedUser = null;
+
+          if (this.searchResults.length === 1) {
+            this.showUser(this.searchResults[0].user_id);
+          }
         } else {
           this.searchError = true;
         }

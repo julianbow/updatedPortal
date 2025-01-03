@@ -442,7 +442,7 @@
   </script>
 
   <!-- Remove `scoped` so the global CSS rules (#datatable-container, .map-ctn, etc.) apply -->
-  <style>
+  <style scoped>
 /* General Styles */
 body {
     font-size: 16px;
