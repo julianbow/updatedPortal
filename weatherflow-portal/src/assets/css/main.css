@@ -208,3 +208,13 @@ html, body {
 .table tr:hover td {
     background-color: #eeeeee;
 }
+
+.keys {
+    display: inline-block;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    padding: 2px 4px;
+    margin: 0 4px;
+    font-family: monospace;
+    font-size: 12px;
+    }

@@ -64,6 +64,8 @@ export default {
         newTitle = "Tools";
       } else if (newTitle.includes("Cell")) {
         newTitle = "Tools";
+      } else if (newTitle.includes("VIP")) {
+        newTitle = "Tools";
       }
       this.setActive(newTitle);
     }

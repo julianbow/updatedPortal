@@ -85,7 +85,7 @@ class Requestor {
   }
 
   makeGetRequestDev(endPoint, urlData, includeSwd = false) {
-    const url = `${this.settings.baseUrl3}${includeSwd ? 'swd/rest/' : ''}${endPoint}?api_key=${this.settings.apiKey3}&${new URLSearchParams(urlData).toString()}`;
+    const url = `${this.settings.baseUrl3}${includeSwd ? 'swd/rest/' : ''}${endPoint}?api_key=${this.settings.apiKey2}&${new URLSearchParams(urlData).toString()}`;
     return axios.get(url);
   }
 

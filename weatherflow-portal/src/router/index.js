@@ -15,6 +15,7 @@ import FirmwareNightly from '@/components/tools/firmware/FirmwareNightly.vue';
 import FirmwareList from '@/components/tools/firmware/FirmwareList.vue';
 import QCView from '@/components/tools/qc/QCView.vue';
 import NetworkManagementView from '@/components/tools/network-management/NetworkManagementView.vue';
+import VipUsers from '@/components/tools/vip/VipUsers.vue';
 
 const auth = getAuth();
 
@@ -198,7 +199,12 @@ const router = createRouter({
       component: NetworkManagementView,
       props: true, // Pass route params as props
     },
-
+    {
+      path: "/tools/vip",
+      name: "vipUsers",
+      component: VipUsers,
+      meta: { requiresAuth: true },
+    }
   ],
 });
 
