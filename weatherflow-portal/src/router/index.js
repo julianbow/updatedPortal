@@ -16,6 +16,7 @@ import FirmwareList from '@/components/tools/firmware/FirmwareList.vue';
 import QCView from '@/components/tools/qc/QCView.vue';
 import NetworkManagementView from '@/components/tools/network-management/NetworkManagementView.vue';
 import VipUsers from '@/components/tools/vip/VipUsers.vue';
+import CellView from '@/components/tools/cellular/CellView.vue';
 
 const auth = getAuth();
 
@@ -203,6 +204,12 @@ const router = createRouter({
       path: "/tools/vip",
       name: "vipUsers",
       component: VipUsers,
+      meta: { requiresAuth: true },
+    },
+    {
+      path: "/tools/cellular",
+      name: "cellular",
+      component: CellView,
       meta: { requiresAuth: true },
     }
   ],

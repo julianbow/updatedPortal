@@ -20,12 +20,11 @@
           { title: "Firmware Updates - Hub Nightly", path: "/tools/firmware-nightly" },
           { title: "Firmware List (Hub & Tempest)", path: "/tools/firmware-list" },
           { title: "QC Dashboard", path: "/tools/qc-dashboard" },
-          // combine CS network management and Prod
+          // combine CS network management and Prod and custom networks
           { title: "Network Management", path: "/tools/network-management" },
           { title: "VIP Users", path: "/tools/vip" },
           // comibne cellular hub info and report
-          { title: "Cellular Hub Info", path: "/tools/cell-hub-info" },
-          { title: "Cell Hub Report", path: "/tools/cell-hub-report" },
+          { title: "Cellular Dashboard", path: "/tools/cellular" },
         ],
       };
     },
