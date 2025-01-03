@@ -33,7 +33,7 @@ export default {
       this.$router.push({ name: 'tools' });
     },
     updateTitle() {
-      this.$emit("update-title", "QC Dashboard");
+      this.$emit("update-title", "Cellular Dashboard");
     },
     setTab(tabName) {
       this.activeTab = tabName;

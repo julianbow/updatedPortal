@@ -258,26 +258,26 @@
     },
     methods: {
         loadGoogleMapsScript() {
-      return new Promise((resolve, reject) => {
-        if (typeof google !== 'undefined' && typeof google.maps !== 'undefined') {
-          resolve();
-        } else {
-          const existingScript = document.getElementById('googleMapsScript');
-          if (!existingScript) {
-            const script = document.createElement('script');
-            script.src = `https://maps.googleapis.com/maps/api/js?key=${apiKeyGoogle}`;
-            script.async = true;
-            script.defer = true;
-            script.id = 'googleMapsScript';
-            script.onload = resolve;
-            script.onerror = reject;
-            document.head.appendChild(script);
-          } else {
-            existingScript.onload = resolve;
-            existingScript.onerror = reject;
-          }
-        }
-      });
+            return new Promise((resolve, reject) => {
+                if (typeof google !== 'undefined' && typeof google.maps !== 'undefined') {
+                resolve();
+                } else {
+                const existingScript = document.getElementById('googleMapsScript');
+                if (!existingScript) {
+                    const script = document.createElement('script');
+                    script.src = `https://maps.googleapis.com/maps/api/js?key=${apiKeyGoogle}`;
+                    script.async = true;
+                    script.defer = true;
+                    script.id = 'googleMapsScript';
+                    script.onload = resolve;
+                    script.onerror = reject;
+                    document.head.appendChild(script);
+                } else {
+                    existingScript.onload = resolve;
+                    existingScript.onerror = reject;
+                }
+                }
+            });
     },
       async loadData() {
         this.isLoading = true;
